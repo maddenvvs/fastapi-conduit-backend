@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-import conduit.api.routes as api_routes
+import conduit.api.endpoints as api_endpoints
 
 
 def create_app() -> FastAPI:
@@ -8,7 +8,7 @@ def create_app() -> FastAPI:
 
     application = FastAPI()
 
-    application.include_router(api_routes.router)
+    application.include_router(api_endpoints.router)
 
     return application
 
