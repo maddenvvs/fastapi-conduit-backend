@@ -6,6 +6,7 @@ from conduit.domain.repositories.articles import IArticlesRepository
 from conduit.domain.repositories.tags import ITagsRepository
 from conduit.domain.services.articles import ArticlesService
 from conduit.domain.services.tags import TagsService
+from conduit.domain.services.users.user_auth_service import UserAuthService
 from conduit.persistence.repositories.articles import InMemoryArticlesRepository
 from conduit.persistence.repositories.tags import InMemoryTagsRepository
 
@@ -30,5 +31,10 @@ async def create_articles_service(
     return ArticlesService(repository=repository)
 
 
+async def create_user_auth_service() -> UserAuthService:
+    return UserAuthService()
+
+
 ITagsService = Annotated[TagsService, Depends(create_tags_service)]
 IArticlesService = Annotated[ArticlesService, Depends(create_articles_service)]
+IUserAuthService = Annotated[UserAuthService, Depends(create_user_auth_service)]
