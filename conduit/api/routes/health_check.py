@@ -2,7 +2,6 @@ from fastapi import APIRouter
 
 from conduit.api.contract.responses.health_check import HealthCheckApiResponse
 
-
 router = APIRouter(
     tags=["Health Check"],
 )
