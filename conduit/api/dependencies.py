@@ -10,12 +10,10 @@ from conduit.domain.services.articles import ArticlesService
 from conduit.domain.services.tags import TagsService
 from conduit.domain.services.users.user_auth_service import UserAuthService
 from conduit.persistence.repositories.articles import InMemoryArticlesRepository
-from conduit.persistence.repositories.tags import InMemoryTagsRepository
+from conduit.persistence.repositories.tags import SQLiteTagsRepository
 
-settings = get_settings()
-
-_engine = create_async_engine(**settings.sqlalchemy_engine)
-_session = async_sessionmaker(bind=_engine, expire_on_commit=False)
+DB_ENGINE = create_async_engine(**get_settings().sqlalchemy_engine)
+_session = async_sessionmaker(bind=DB_ENGINE, expire_on_commit=False)
 
 
 async def create_session() -> AsyncIterator[AsyncSession]:
@@ -34,7 +32,7 @@ DbSession = Annotated[AsyncSession, Depends(create_session)]
 
 
 async def create_tags_repository(session: DbSession) -> ITagsRepository:
-    return InMemoryTagsRepository()
+    return SQLiteTagsRepository(session)
 
 
 async def create_tags_service(
