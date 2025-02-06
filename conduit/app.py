@@ -9,11 +9,11 @@ def create_app() -> FastAPI:
 
     settings = get_settings()
 
-    application = FastAPI(**settings.fastapi_settings)
+    app = FastAPI(**settings.fastapi_settings)
 
-    application.include_router(api_endpoints.router)
+    app.include_router(api_endpoints.router)
 
-    return application
+    return app
 
 
 app = create_app()
