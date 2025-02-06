@@ -14,7 +14,7 @@ from conduit.persistence.repositories.tags import InMemoryTagsRepository
 
 settings = get_settings()
 
-_engine = create_async_engine(**settings.sqlalchemy_engine_settings)
+_engine = create_async_engine(**settings.sqlalchemy_engine)
 _session = async_sessionmaker(bind=_engine, expire_on_commit=False)
 
 
