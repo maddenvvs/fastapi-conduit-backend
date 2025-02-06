@@ -1,10 +1,15 @@
 from typing import Any
 
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    debug: bool = True
+    debug: bool
+    database_url: str
+
+    model_config = SettingsConfigDict(
+        env_file=(".env", ".env.prod"),
+    )
 
     @property
     def fastapi_settings(self) -> dict[str, Any]:
@@ -15,6 +20,6 @@ class Settings(BaseSettings):
     @property
     def sqlalchemy_engine_settings(self) -> dict[str, Any]:
         return dict(
-            url="sqlite+aiosqlite:///:memory:",
+            url=self.database_url,
             echo=True,
         )
