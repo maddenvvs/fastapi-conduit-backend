@@ -1,11 +1,12 @@
+import functools
 from typing import Any
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    debug: bool
-    database_url: str
+    debug: bool = False
+    database_url: str = ""
 
     model_config = SettingsConfigDict(
         env_file=(".env", ".env.prod"),
@@ -23,3 +24,8 @@ class Settings(BaseSettings):
             url=self.database_url,
             echo=True,
         )
+
+
+@functools.cache
+def get_settings() -> Settings:
+    return Settings()
