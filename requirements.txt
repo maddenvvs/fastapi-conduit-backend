@@ -3,3 +3,4 @@ pydantic==2.10.6
 SQLAlchemy==2.0.37
 aiosqlite==0.21.0
 greenlet==3.1.1
+pydantic-settings==2.7.1

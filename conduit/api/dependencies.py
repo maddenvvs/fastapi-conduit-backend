@@ -3,6 +3,7 @@ from typing import Annotated, AsyncIterator
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
+from conduit.api.settings import get_settings
 from conduit.domain.repositories.articles import IArticlesRepository
 from conduit.domain.repositories.tags import ITagsRepository
 from conduit.domain.services.articles import ArticlesService
@@ -11,7 +12,9 @@ from conduit.domain.services.users.user_auth_service import UserAuthService
 from conduit.persistence.repositories.articles import InMemoryArticlesRepository
 from conduit.persistence.repositories.tags import InMemoryTagsRepository
 
-_engine = create_async_engine("sqlite+aiosqlite:///:memory:", echo=True)
+settings = get_settings()
+
+_engine = create_async_engine(**settings.sqlalchemy_engine_settings)
 _session = async_sessionmaker(bind=_engine, expire_on_commit=False)
 
 
