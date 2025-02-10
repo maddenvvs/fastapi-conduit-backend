@@ -14,3 +14,9 @@ class LoggedInUser:
     bio: str
     image: str
     token: str
+
+
+@dataclass
+class User:
+    id: str
+    name: str
