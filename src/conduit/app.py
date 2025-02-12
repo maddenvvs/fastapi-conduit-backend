@@ -3,25 +3,31 @@ import contextlib
 from fastapi import FastAPI
 
 import conduit.api.endpoints as api_endpoints
-from conduit.api.dependencies import DB_ENGINE
-from conduit.api.settings import get_settings
-from conduit.persistence.models import create_tables_if_needed
+from conduit.containers import Container
+from conduit.persistence.database import Database
 
 
-@contextlib.asynccontextmanager
-async def app_lifespan(_: FastAPI):
-    await create_tables_if_needed(DB_ENGINE)
-    yield
+def app_lifespan(database: Database):
+
+    @contextlib.asynccontextmanager
+    async def lifespan(_: FastAPI):
+        await database.create_tables()
+        yield
+
+    return lifespan
 
 
 def create_app() -> FastAPI:
     """Creates the FastAPI application."""
 
-    settings = get_settings()
+    container = Container()
 
+    settings = container.app_settings()
+    lifespan = app_lifespan(container.db())
     app = FastAPI(
         **settings.fastapi,
-        lifespan=app_lifespan,
+        lifespan=lifespan,
+        container=container,
     )
 
     app.include_router(api_endpoints.router)

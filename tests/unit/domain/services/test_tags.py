@@ -1,40 +1,143 @@
+import logging
 import unittest.mock as mock
 
 import pytest
 
-from conduit.domain.repositories.tags import ITagsRepository
+from conduit.domain.entities.tags import Tag
+from conduit.domain.repositories.unit_of_work import UnitOfWork
 from conduit.domain.services.tags import TagsService
 
 
 @pytest.fixture
-def tags_repository() -> mock.AsyncMock:
-    return mock.create_autospec(spec=ITagsRepository, spec_set=True)
+def tags_service_logger() -> logging.Logger:
+    return mock.create_autospec(spec=logging.Logger, spec_set=True)
 
 
 @pytest.fixture
-def tags_service(tags_repository: ITagsRepository) -> TagsService:
-    return TagsService(tags_repository)
+def tags_service(
+    unit_of_work: UnitOfWork,
+    tags_service_logger: logging.Logger,
+) -> TagsService:
+    return TagsService(
+        unit_of_work=unit_of_work,
+        logger=tags_service_logger,
+    )
 
 
-@pytest.mark.anyio
-async def test_tags_service_returns_tags_when_tags_repository_has_them(
-    tags_service: TagsService,
-    tags_repository: mock.AsyncMock,
-):
-    tags_repository.get_all_tags.return_value = []
+class TestSuccessullyGetAllTags:
 
-    tags = await tags_service.get_all_tags()
+    @pytest.fixture(
+        autouse=True,
+        params=[
+            [
+                Tag(name="angularjs"),
+            ],
+            [
+                Tag(name="reactjs"),
+                Tag(name="angularjs"),
+                Tag(name="python"),
+            ],
+        ],
+    )
+    async def returned_tags(
+        self,
+        request: pytest.FixtureRequest,
+        tags_repository: mock.AsyncMock,
+    ):
+        tags_repository.get_all_tags.return_value = request.param
 
-    tags_repository.get_all_tags.assert_awaited_once()
-    assert len(tags) == 0
+    @pytest.mark.anyio
+    async def test_returns_tags(self, tags_service: TagsService):
+        returned_tags = await tags_service.get_all_tags()
 
+        assert len(returned_tags) > 0
 
-@pytest.mark.anyio
-async def test_tags_service_reraises_when_tags_repository_raises_exception(
-    tags_service: TagsService,
-    tags_repository: mock.AsyncMock,
-):
-    tags_repository.get_all_tags.side_effect = Exception("Something went wrong")
-
-    with pytest.raises(Exception, match=r"Something went wrong"):
+    @pytest.mark.anyio
+    async def test_tags_repository_was_invoked(
+        self,
+        tags_service: TagsService,
+        tags_repository: mock.AsyncMock,
+    ):
         await tags_service.get_all_tags()
+
+        tags_repository.get_all_tags.assert_awaited_once()
+
+    @pytest.mark.anyio
+    async def test_logs_the_initial_message(
+        self,
+        tags_service: TagsService,
+        tags_service_logger: mock.Mock,
+    ):
+        await tags_service.get_all_tags()
+
+        tags_service_logger.info.assert_any_call("Retrieving tags")
+
+    @pytest.mark.anyio
+    async def test_logs_the_final_message_with_time(
+        self,
+        tags_service: TagsService,
+        tags_service_logger: mock.Mock,
+    ):
+        await tags_service.get_all_tags()
+
+        tags_service_logger.info.assert_any_call(
+            "Retrieving tags took %dms",
+            mock.ANY,
+            extra=mock.ANY,
+        )
+
+
+class TestRepositoryRaisesException:
+
+    class CustomException(Exception):
+        pass
+
+    @pytest.fixture(autouse=True)
+    def failed_repository(self, tags_repository: mock.AsyncMock):
+        tags_repository.get_all_tags.side_effect = (
+            TestRepositoryRaisesException.CustomException("Something went wrong")
+        )
+
+    @pytest.mark.anyio
+    async def test_tags_service_reraises_exception(
+        self,
+        tags_service: TagsService,
+    ):
+        with pytest.raises(TestRepositoryRaisesException.CustomException):
+            await tags_service.get_all_tags()
+
+    @pytest.mark.anyio
+    async def test_tags_repository_was_invoked(
+        self,
+        tags_repository: mock.AsyncMock,
+        tags_service: TagsService,
+    ):
+        with pytest.raises(TestRepositoryRaisesException.CustomException):
+            await tags_service.get_all_tags()
+
+        tags_repository.get_all_tags.assert_awaited_once()
+
+    @pytest.mark.anyio
+    async def test_logs_the_initial_message(
+        self,
+        tags_service: TagsService,
+        tags_service_logger: mock.Mock,
+    ):
+        with pytest.raises(TestRepositoryRaisesException.CustomException):
+            await tags_service.get_all_tags()
+
+        tags_service_logger.info.assert_any_call("Retrieving tags")
+
+    @pytest.mark.anyio
+    async def test_tags_service_logger_logs_error(
+        self,
+        tags_service: TagsService,
+        tags_service_logger: mock.AsyncMock,
+    ):
+        with pytest.raises(TestRepositoryRaisesException.CustomException):
+            await tags_service.get_all_tags()
+
+        tags_service_logger.error.assert_called_once_with(
+            "Error retrieving tags",
+            extra=mock.ANY,
+        )

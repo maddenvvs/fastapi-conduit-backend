@@ -1,7 +1,9 @@
-from fastapi import APIRouter
+from dependency_injector.wiring import Provide, inject
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
-from conduit.api.dependencies import ITagsService
+from conduit.containers import Container
+from conduit.domain.services.tags import TagsService
 
 
 class ListTagsApiResponse(BaseModel):
@@ -16,7 +18,10 @@ router = APIRouter()
     response_model=ListTagsApiResponse,
     tags=["Tags"],
 )
-async def get_all_tags(tags_service: ITagsService) -> ListTagsApiResponse:
+@inject
+async def get_all_tags(
+    tags_service: TagsService = Depends(Provide[Container.tags_service]),
+) -> ListTagsApiResponse:
     tags = await tags_service.get_all_tags()
 
     return ListTagsApiResponse(

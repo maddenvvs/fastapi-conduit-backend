@@ -1,10 +1,12 @@
 import datetime
 
-from fastapi import APIRouter, status
+from dependency_injector.wiring import Provide, inject
+from fastapi import APIRouter, Depends, status
 from fastapi.responses import Response
 from pydantic import BaseModel, Field
 
-from conduit.api.dependencies import IArticlesService
+from conduit.containers import Container
+from conduit.domain.services.articles import ArticlesService
 
 
 class ArticleAuthorData(BaseModel):
@@ -42,9 +44,10 @@ router = APIRouter()
     },
     tags=["Articles"],
 )
+@inject
 async def get_article_by_slug(
     slug: str,
-    articles_service: IArticlesService,
+    articles_service: ArticlesService = Depends(Provide[Container.articles_service]),
 ):
     article = await articles_service.find_article_by_slug(slug)
 

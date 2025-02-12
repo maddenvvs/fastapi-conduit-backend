@@ -1,8 +1,10 @@
-from fastapi import APIRouter
+from dependency_injector.wiring import Provide, inject
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
-from conduit.api.dependencies import IUserAuthService
+from conduit.containers import Container
 from conduit.domain.entities.users import LoggedInUser, UserLoginDetails
+from conduit.domain.services.users.user_auth_service import UserAuthService
 
 
 class LoginUserDetails(BaseModel):
@@ -53,9 +55,11 @@ router = APIRouter()
     response_model=LoginUserApiResponse,
     tags=["Users"],
 )
+@inject
 async def login_user(
     request: LoginUserApiRequest,
-    user_auth_service: IUserAuthService,
+    user_auth_service: UserAuthService = Depends(Provide[Container.user_auth_service]),
 ) -> LoginUserApiResponse:
     logged_in_user = await user_auth_service.login_user(request.to_login_details())
+
     return LoginUserApiResponse.from_logged_in_user(logged_in_user)
