@@ -1,0 +1,16 @@
+.ve
+.venv
+.idea
+.pytest_cache
+.DS_Store
+.git
+__pycache__
+*.pyc
+*.pyo
+logs
+.coverage
+.env.example
+.pre-commit-config.yaml
+.python-version
+docker-compose.yaml
+Dockerfile
