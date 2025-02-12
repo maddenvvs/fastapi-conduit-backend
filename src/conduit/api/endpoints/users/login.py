@@ -1,3 +1,5 @@
+from typing import Optional
+
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
@@ -27,7 +29,7 @@ class LoggedInUserData(BaseModel):
     email: str
     username: str
     bio: str
-    image: str
+    image: Optional[str]
     token: str
 
 

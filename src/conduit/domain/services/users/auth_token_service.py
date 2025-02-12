@@ -1,7 +1,7 @@
 import dataclasses
 import datetime
 import logging
-from typing import Any
+from typing import Any, Optional
 
 import jwt
 
@@ -26,8 +26,8 @@ class AuthTokenService:
     def __init__(
         self,
         secret_key: str,
-        token_expiration_minutes: int,
         algorithm: str,
+        token_expiration_minutes: int,
         logger: logging.Logger = DEFAULT_LOGGER,
     ) -> None:
         self._secret_key = secret_key
@@ -35,13 +35,20 @@ class AuthTokenService:
         self._token_expiration_minutes = token_expiration_minutes
         self._logger = logger
 
-    def generate_jwt_token(self, user: User, current_time: datetime.datetime) -> str:
+    def generate_jwt_token(
+        self,
+        user: User,
+        current_time: Optional[datetime.datetime] = None,
+    ) -> str:
+        if current_time is None:
+            current_time = datetime.datetime.now(datetime.timezone.utc)
+
         expire = current_time + datetime.timedelta(
             minutes=self._token_expiration_minutes
         )
         payload: dict[str, Any] = {
             "user_id": user.id,
-            "username": user.name,
+            "username": user.username,
             "exp": expire,
         }
         return jwt.encode(payload, self._secret_key, algorithm=self._algorithm)  # type: ignore

@@ -77,7 +77,13 @@ class TestParseInvalidToken:
 
 
 def test_generate_token_produces_non_empty_token(auth_token_service: AuthTokenService):
-    user = User(id="321", name="Magnus Carlsen")
+    user = User(
+        id=321,
+        username="Magnus Carlsen",
+        email="a@a.com",
+        bio="",
+        image=None,
+    )
     current_time = datetime.datetime(2000, 1, 1, 0, 0, 0, 0)
 
     token_data = auth_token_service.generate_jwt_token(
