@@ -9,16 +9,10 @@ from conduit.domain.entities.users import (
 from conduit.domain.repositories.unit_of_work import UnitOfWork
 from conduit.domain.services.users.auth_token_service import AuthTokenService
 from conduit.domain.services.users.password_service import PasswordHasher
-
-
-@final
-class EmailAlreadyTakenException(Exception):
-    pass
-
-
-@final
-class UserNameAlreadyTakenException(Exception):
-    pass
+from conduit.domain.use_cases.register_user.exceptions import (
+    EmailAlreadyTakenException,
+    UserNameAlreadyTakenException,
+)
 
 
 @final
@@ -49,12 +43,14 @@ class RegisterUserUseCase:
     async def _create_user(self, register_user_details: RegisterUserDetails) -> User:
         async with self._uof.begin() as db:
             if await db.users.get_by_email_or_none(email=register_user_details.email):
-                raise EmailAlreadyTakenException()
+                raise EmailAlreadyTakenException(email=register_user_details.email)
 
             if await db.users.get_by_username_or_none(
                 username=register_user_details.username
             ):
-                raise UserNameAlreadyTakenException()
+                raise UserNameAlreadyTakenException(
+                    username=register_user_details.username
+                )
 
             hashed_password = self._password_hasher(register_user_details.password)
             return await db.users.add(

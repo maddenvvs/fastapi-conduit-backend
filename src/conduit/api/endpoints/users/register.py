@@ -6,7 +6,7 @@ from pydantic import BaseModel
 
 from conduit.containers import Container
 from conduit.domain.entities.users import RegisteredUser, RegisterUserDetails
-from conduit.domain.use_cases.register_user import RegisterUserUseCase
+from conduit.domain.use_cases.register_user.use_case import RegisterUserUseCase
 
 
 class RegisterUserData(BaseModel):

@@ -7,8 +7,8 @@ from conduit.domain.services.articles import ArticlesService
 from conduit.domain.services.tags import TagsService
 from conduit.domain.services.users.auth_token_service import AuthTokenService
 from conduit.domain.services.users.password_service import PasswordService
-from conduit.domain.services.users.user_auth_service import UserAuthService
-from conduit.domain.use_cases.register_user import RegisterUserUseCase
+from conduit.domain.use_cases.login_user.use_case import LoginUserUseCase
+from conduit.domain.use_cases.register_user.use_case import RegisterUserUseCase
 from conduit.persistence.database import Database
 from conduit.persistence.repositories.articles import InMemoryArticlesRepository
 from conduit.persistence.unit_of_work import SqliteUnitOfWork, context_factory
@@ -58,10 +58,6 @@ class Container(containers.DeclarativeContainer):
         repository=articles_repository,
     )
 
-    user_auth_service = providers.Factory(
-        UserAuthService,
-    )
-
     auth_token_service = providers.Factory(
         AuthTokenService,
         secret_key="secret_key",
@@ -74,4 +70,12 @@ class Container(containers.DeclarativeContainer):
         unit_of_work=unit_of_work,
         auth_token_service=auth_token_service,
         password_hasher=password_service.provided.hash_password,
+    )
+
+    login_user_use_case = providers.Factory(
+        LoginUserUseCase,
+        unit_of_work=unit_of_work,
+        auth_token_service=auth_token_service,
+        password_checker=password_service.provided.check_password,
+        now=now,
     )

@@ -6,7 +6,7 @@ from pydantic import BaseModel
 
 from conduit.containers import Container
 from conduit.domain.entities.users import LoggedInUser, UserLoginDetails
-from conduit.domain.services.users.user_auth_service import UserAuthService
+from conduit.domain.use_cases.login_user.use_case import LoginUserUseCase
 
 
 class LoginUserDetails(BaseModel):
@@ -60,8 +60,7 @@ router = APIRouter()
 @inject
 async def login_user(
     request: LoginUserApiRequest,
-    user_auth_service: UserAuthService = Depends(Provide[Container.user_auth_service]),
+    login_user: LoginUserUseCase = Depends(Provide[Container.login_user_use_case]),
 ) -> LoginUserApiResponse:
-    logged_in_user = await user_auth_service.login_user(request.to_login_details())
-
+    logged_in_user = await login_user(request.to_login_details())
     return LoginUserApiResponse.from_logged_in_user(logged_in_user)
