@@ -16,6 +16,7 @@ def model_to_entity(model: UserModel) -> User:
         username=model.username,
         bio=model.bio,
         image=model.image_url,
+        password_hash=model.password_hash,
     )
 
 

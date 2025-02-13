@@ -47,9 +47,19 @@ class User:
     username: str
     bio: str
     image: Optional[str]
+    password_hash: str
 
     def to_registered_user(self, token: str) -> RegisteredUser:
         return RegisteredUser(
+            email=self.email,
+            username=self.username,
+            bio=self.bio,
+            image=self.image,
+            token=token,
+        )
+
+    def to_logged_in_user(self, token: str) -> LoggedInUser:
+        return LoggedInUser(
             email=self.email,
             username=self.username,
             bio=self.bio,
