@@ -1,4 +1,5 @@
 import datetime
+from typing import Union
 
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, status
@@ -48,7 +49,7 @@ router = APIRouter()
 async def get_article_by_slug(
     slug: str,
     articles_service: ArticlesService = Depends(Provide[Container.articles_service]),
-):
+) -> Union[Response, GetArticleBySlugApiResponse]:
     article = await articles_service.find_article_by_slug(slug)
 
     if article is None:

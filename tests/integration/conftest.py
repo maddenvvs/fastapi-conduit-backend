@@ -1,4 +1,4 @@
-from typing import AsyncGenerator
+from typing import Any, AsyncGenerator
 
 import pytest
 from fastapi import FastAPI
@@ -38,7 +38,7 @@ def test_app(test_settings: Settings) -> FastAPI:
 
 
 @pytest.fixture(scope="session")
-def test_container(test_app: FastAPI) -> Container:
+def test_container(test_app: FastAPI) -> Any:
     return test_app.extra["container"]
 
 

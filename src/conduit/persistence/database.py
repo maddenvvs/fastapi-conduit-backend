@@ -1,6 +1,7 @@
 import contextlib
+from typing import AsyncIterator
 
-from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from conduit.persistence.models import Base
 
@@ -25,7 +26,7 @@ class Database:
             await conn.run_sync(Base.metadata.drop_all)
 
     @contextlib.asynccontextmanager
-    async def session(self):
+    async def session(self) -> AsyncIterator[AsyncSession]:
         async with self._session_maker() as session:
             try:
                 yield session

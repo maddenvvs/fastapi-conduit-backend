@@ -9,7 +9,7 @@ class TestSuccessfullyListTags:
     async def test_returns_status_OK_for_anonymous_user(
         self,
         anonymous_test_client: AsyncClient,
-    ):
+    ) -> None:
         response = await anonymous_test_client.get("/tags")
 
         assert response.status_code == status.HTTP_200_OK

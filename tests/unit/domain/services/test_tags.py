@@ -1,5 +1,6 @@
 import logging
 import unittest.mock as mock
+from typing import Any
 
 import pytest
 
@@ -9,7 +10,7 @@ from conduit.domain.services.tags import TagsService
 
 
 @pytest.fixture
-def tags_service_logger() -> logging.Logger:
+def tags_service_logger() -> Any:
     return mock.create_autospec(spec=logging.Logger, spec_set=True)
 
 
@@ -43,11 +44,11 @@ class TestSuccessullyGetAllTags:
         self,
         request: pytest.FixtureRequest,
         tags_repository: mock.AsyncMock,
-    ):
+    ) -> None:
         tags_repository.get_all_tags.return_value = request.param
 
     @pytest.mark.anyio
-    async def test_returns_tags(self, tags_service: TagsService):
+    async def test_returns_tags(self, tags_service: TagsService) -> None:
         returned_tags = await tags_service.get_all_tags()
 
         assert len(returned_tags) > 0
@@ -57,7 +58,7 @@ class TestSuccessullyGetAllTags:
         self,
         tags_service: TagsService,
         tags_repository: mock.AsyncMock,
-    ):
+    ) -> None:
         await tags_service.get_all_tags()
 
         tags_repository.get_all_tags.assert_awaited_once()
@@ -67,7 +68,7 @@ class TestSuccessullyGetAllTags:
         self,
         tags_service: TagsService,
         tags_service_logger: mock.Mock,
-    ):
+    ) -> None:
         await tags_service.get_all_tags()
 
         tags_service_logger.info.assert_any_call("Retrieving tags")
@@ -77,7 +78,7 @@ class TestSuccessullyGetAllTags:
         self,
         tags_service: TagsService,
         tags_service_logger: mock.Mock,
-    ):
+    ) -> None:
         await tags_service.get_all_tags()
 
         tags_service_logger.info.assert_any_call(
@@ -93,7 +94,7 @@ class TestRepositoryRaisesException:
         pass
 
     @pytest.fixture(autouse=True)
-    def failed_repository(self, tags_repository: mock.AsyncMock):
+    def failed_repository(self, tags_repository: Any) -> None:
         tags_repository.get_all_tags.side_effect = (
             TestRepositoryRaisesException.CustomException("Something went wrong")
         )
@@ -102,7 +103,7 @@ class TestRepositoryRaisesException:
     async def test_tags_service_reraises_exception(
         self,
         tags_service: TagsService,
-    ):
+    ) -> None:
         with pytest.raises(TestRepositoryRaisesException.CustomException):
             await tags_service.get_all_tags()
 
@@ -111,7 +112,7 @@ class TestRepositoryRaisesException:
         self,
         tags_repository: mock.AsyncMock,
         tags_service: TagsService,
-    ):
+    ) -> None:
         with pytest.raises(TestRepositoryRaisesException.CustomException):
             await tags_service.get_all_tags()
 
@@ -122,7 +123,7 @@ class TestRepositoryRaisesException:
         self,
         tags_service: TagsService,
         tags_service_logger: mock.Mock,
-    ):
+    ) -> None:
         with pytest.raises(TestRepositoryRaisesException.CustomException):
             await tags_service.get_all_tags()
 
@@ -133,7 +134,7 @@ class TestRepositoryRaisesException:
         self,
         tags_service: TagsService,
         tags_service_logger: mock.AsyncMock,
-    ):
+    ) -> None:
         with pytest.raises(TestRepositoryRaisesException.CustomException):
             await tags_service.get_all_tags()
 

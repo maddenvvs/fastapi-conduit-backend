@@ -51,11 +51,11 @@ class AuthTokenService:
             "username": user.username,
             "exp": expire,
         }
-        return jwt.encode(payload, self._secret_key, algorithm=self._algorithm)  # type: ignore
+        return jwt.encode(payload, self._secret_key, algorithm=self._algorithm)  # type: ignore[unused-ignore]
 
     def parse_jwt_token(self, token: str) -> TokenPayload:
         try:
-            payload = jwt.decode(token, self._secret_key, algorithms=[self._algorithm])  # type: ignore
+            payload = jwt.decode(token, self._secret_key, algorithms=[self._algorithm])  # type: ignore[unused-ignore]
         except jwt.InvalidTokenError as err:
             self._logger.error("Invalid JWT token", extra=dict(token=token, error=err))
             raise IncorrectJwtTokenException()

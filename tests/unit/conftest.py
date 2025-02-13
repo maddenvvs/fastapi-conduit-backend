@@ -1,6 +1,6 @@
 import contextlib
 import unittest.mock as mock
-from typing import AsyncIterator
+from typing import Any, AsyncIterator
 
 import pytest
 
@@ -10,12 +10,12 @@ from conduit.domain.repositories.users import UsersRepository
 
 
 @pytest.fixture
-def tags_repository() -> mock.AsyncMock:
+def tags_repository() -> Any:
     return mock.create_autospec(spec=ITagsRepository, spec_set=True)
 
 
 @pytest.fixture
-def users_repository() -> mock.AsyncMock:
+def users_repository() -> Any:
     return mock.create_autospec(spec=UsersRepository, spec_set=True)
 
 
@@ -52,7 +52,7 @@ class FakeUnitOfWork(UnitOfWork):
 def unit_of_work(
     tags_repository: ITagsRepository,
     users_repository: UsersRepository,
-):
+) -> FakeUnitOfWork:
     return FakeUnitOfWork(
         tags=tags_repository,
         users=users_repository,

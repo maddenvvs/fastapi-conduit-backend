@@ -14,13 +14,6 @@ from conduit.time import CurrentTime
 ContextFactory = Callable[[AsyncSession], UnitOfWorkContext]
 
 
-def context_factory(now: CurrentTime):
-    def inner_factory(session: AsyncSession):
-        return SqliteUnitOfWorkContext(session, now)
-
-    return inner_factory
-
-
 class SqliteUnitOfWorkContext(UnitOfWorkContext):
 
     def __init__(
@@ -38,6 +31,15 @@ class SqliteUnitOfWorkContext(UnitOfWorkContext):
     @property
     def users(self) -> UsersRepository:
         return self._users
+
+
+def context_factory(
+    now: CurrentTime,
+) -> Callable[[AsyncSession], SqliteUnitOfWorkContext]:
+    def inner_factory(session: AsyncSession) -> SqliteUnitOfWorkContext:
+        return SqliteUnitOfWorkContext(session, now)
+
+    return inner_factory
 
 
 class SqliteUnitOfWork(UnitOfWork):

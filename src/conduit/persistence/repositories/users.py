@@ -35,11 +35,13 @@ class SQLiteUsersRepository(UsersRepository):
         query = select(UserModel).where(UserModel.email == email)
         if user := await self._session.scalar(query):
             return model_to_entity(user)
+        return None
 
     async def get_by_username_or_none(self, username: str) -> Optional[User]:
         query = select(UserModel).where(UserModel.username == username)
         if user := await self._session.scalar(query):
             return model_to_entity(user)
+        return None
 
     async def add(self, user_details: CreateUserDetails) -> User:
         query = (

@@ -1,6 +1,7 @@
 import datetime
 import logging
 import unittest.mock as mock
+from typing import Any
 
 import pytest
 
@@ -12,7 +13,7 @@ from conduit.domain.services.users.auth_token_service import (
 
 
 @pytest.fixture
-def auth_token_service_logger():
+def auth_token_service_logger() -> Any:
     return mock.create_autospec(spec=logging.Logger, spec_set=True)
 
 
@@ -28,7 +29,7 @@ def auth_token_service(auth_token_service_logger: logging.Logger) -> AuthTokenSe
 
 def test_parse_valid_token_produces_correct_token_payload(
     auth_token_service: AuthTokenService,
-):
+) -> None:
     token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTIzIiwidXNlcm5hbWUiOiJKb2huIERvZSJ9.ZXjZuq_OM3VOYhLbjbpgldlBsTnyGQdgHvshyokLmHY"
 
     token_data = auth_token_service.parse_jwt_token(token)
@@ -46,14 +47,14 @@ class TestParseInvalidToken:
             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTIzIiwidXNlcm5hbWUiOiJKb2huIERvZSJ9.ZXjZuq_OM3VOYhLbjbpgldlBsTnyGQdgHvshyokLmH",
         ]
     )
-    def invalid_token(self, request: pytest.FixtureRequest) -> str:
+    def invalid_token(self, request: pytest.FixtureRequest) -> Any:
         return request.param
 
     def test_parse_token_raises_exception(
         self,
         auth_token_service: AuthTokenService,
         invalid_token: str,
-    ):
+    ) -> None:
         with pytest.raises(IncorrectJwtTokenException):
             auth_token_service.parse_jwt_token(invalid_token)
 
@@ -61,7 +62,7 @@ class TestParseInvalidToken:
         self,
         auth_token_service: AuthTokenService,
         auth_token_service_logger: mock.Mock,
-    ):
+    ) -> None:
         invalid_token = "invalid.token.value"
 
         with pytest.raises(IncorrectJwtTokenException):
@@ -76,13 +77,16 @@ class TestParseInvalidToken:
         )
 
 
-def test_generate_token_produces_non_empty_token(auth_token_service: AuthTokenService):
+def test_generate_token_produces_non_empty_token(
+    auth_token_service: AuthTokenService,
+) -> None:
     user = User(
         id=321,
         username="Magnus Carlsen",
         email="a@a.com",
         bio="",
         image=None,
+        password_hash="",
     )
     current_time = datetime.datetime(2000, 1, 1, 0, 0, 0, 0)
 
