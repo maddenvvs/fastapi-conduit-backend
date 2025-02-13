@@ -60,7 +60,7 @@ router = APIRouter()
     tags=["Users"],
 )
 @inject
-async def login_user(
+async def register_user(
     request: RegisterUserApiRequest,
     register_user: RegisterUserUseCase = Depends(
         Provide[Container.register_user_use_case]

@@ -11,12 +11,12 @@ class LoginUserUseCase:
         self,
         unit_of_work: UnitOfWork,
         password_checker: PasswordChecker,
-        token_service: AuthTokenService,
+        auth_token_service: AuthTokenService,
         now: CurrentTime,
     ):
         self._uow = unit_of_work
         self._password_checker = password_checker
-        self._token_service = token_service
+        self._token_service = auth_token_service
         self._now = now
 
     async def __call__(self, login_details: UserLoginDetails) -> LoggedInUser:
