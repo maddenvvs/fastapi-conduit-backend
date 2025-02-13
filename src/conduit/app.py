@@ -1,20 +1,19 @@
 import contextlib
+from typing import cast
 
 from fastapi import FastAPI
 
 import conduit.api.endpoints as api_endpoints
+import conduit.api.errors as errors
 from conduit.containers import Container
-from conduit.persistence.database import Database
 
 
-def app_lifespan(database: Database):
-
-    @contextlib.asynccontextmanager
-    async def lifespan(_: FastAPI):
-        await database.create_tables()
-        yield
-
-    return lifespan
+@contextlib.asynccontextmanager
+async def app_lifespan(app: FastAPI):
+    container = cast(Container, app.extra["container"])  # type: ignore
+    database = container.db()
+    await database.create_tables()
+    yield
 
 
 def create_app() -> FastAPI:
@@ -23,14 +22,15 @@ def create_app() -> FastAPI:
     container = Container()
 
     settings = container.app_settings()
-    lifespan = app_lifespan(container.db())
     app = FastAPI(
         **settings.fastapi,
-        lifespan=lifespan,
+        lifespan=app_lifespan,
         container=container,
     )
 
     app.include_router(api_endpoints.router)
+
+    errors.register_error_handlers(app)
 
     return app
 
