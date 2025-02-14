@@ -14,3 +14,4 @@ logs
 .python-version
 docker-compose.yaml
 Dockerfile
+tests
