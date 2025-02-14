@@ -5,8 +5,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from conduit.domain.entities.users import CreateUserDetails, User
 from conduit.domain.repositories.users import UsersRepository
-from conduit.persistence.models import UserModel
-from conduit.time import CurrentTime
+from conduit.infrastructure.persistence.models import UserModel
+from conduit.infrastructure.time import CurrentTime
 
 
 def model_to_entity(model: UserModel) -> User:

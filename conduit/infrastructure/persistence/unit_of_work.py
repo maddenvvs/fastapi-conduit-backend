@@ -6,10 +6,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from conduit.domain.repositories.tags import ITagsRepository
 from conduit.domain.repositories.unit_of_work import UnitOfWork, UnitOfWorkContext
 from conduit.domain.repositories.users import UsersRepository
-from conduit.persistence.database import Database
-from conduit.persistence.repositories.tags import SQLiteTagsRepository
-from conduit.persistence.repositories.users import SQLiteUsersRepository
-from conduit.time import CurrentTime
+from conduit.infrastructure.persistence.database import Database
+from conduit.infrastructure.persistence.repositories.tags import SQLiteTagsRepository
+from conduit.infrastructure.persistence.repositories.users import SQLiteUsersRepository
+from conduit.infrastructure.time import CurrentTime
 
 ContextFactory = Callable[[AsyncSession], UnitOfWorkContext]
 

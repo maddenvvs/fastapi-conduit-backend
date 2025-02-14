@@ -3,7 +3,7 @@ from typing import AsyncIterator
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
-from conduit.persistence.models import Base
+from conduit.infrastructure.persistence.models import Base
 
 
 class Database:

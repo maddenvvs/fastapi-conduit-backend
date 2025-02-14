@@ -10,10 +10,15 @@ from conduit.domain.services.users.password_service import PasswordService
 from conduit.domain.use_cases.list_tags.use_case import ListTagsUseCase
 from conduit.domain.use_cases.login_user.use_case import LoginUserUseCase
 from conduit.domain.use_cases.register_user.use_case import RegisterUserUseCase
-from conduit.persistence.database import Database
-from conduit.persistence.repositories.articles import InMemoryArticlesRepository
-from conduit.persistence.unit_of_work import SqliteUnitOfWork, context_factory
-from conduit.time import current_time
+from conduit.infrastructure.persistence.database import Database
+from conduit.infrastructure.persistence.repositories.articles import (
+    InMemoryArticlesRepository,
+)
+from conduit.infrastructure.persistence.unit_of_work import (
+    SqliteUnitOfWork,
+    context_factory,
+)
+from conduit.infrastructure.time import current_time
 
 
 @final

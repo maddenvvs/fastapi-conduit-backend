@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from conduit.domain.entities.tags import Tag
 from conduit.domain.repositories.tags import ITagsRepository
-from conduit.persistence.models import TagModel
+from conduit.infrastructure.persistence.models import TagModel
 
 TAGS = [
     Tag("reactjs"),
