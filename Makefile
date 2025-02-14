@@ -23,4 +23,4 @@ docker_restart:
 	docker-compose up -d
 
 types:
-	MYPYPATH="src:$MYPATH" mypy --namespace-packages -p "conduit" -p "tests" --config-file mypy.ini
+	mypy --namespace-packages -p "conduit" -p "tests" --config-file mypy.ini
