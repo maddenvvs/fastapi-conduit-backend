@@ -1,13 +1,19 @@
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
+from typing_extensions import Self
 
 from conduit.containers import Container
-from conduit.domain.services.tags import TagsService
+from conduit.domain.entities.tags import Tag
+from conduit.domain.use_cases.list_tags.use_case import ListTagsUseCase
 
 
 class ListTagsApiResponse(BaseModel):
     tags: list[str]
+
+    @classmethod
+    def from_domain(cls, tags: list[Tag]) -> Self:
+        return cls(tags=[tag.name for tag in tags])
 
 
 router = APIRouter()
@@ -20,10 +26,7 @@ router = APIRouter()
 )
 @inject
 async def get_all_tags(
-    tags_service: TagsService = Depends(Provide[Container.tags_service]),
+    list_tags: ListTagsUseCase = Depends(Provide[Container.list_tags_use_case]),
 ) -> ListTagsApiResponse:
-    tags = await tags_service.get_all_tags()
-
-    return ListTagsApiResponse(
-        tags=[tag.name for tag in tags],
-    )
+    tags = await list_tags()
+    return ListTagsApiResponse.from_domain(tags)

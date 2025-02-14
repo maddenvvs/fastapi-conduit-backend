@@ -7,6 +7,7 @@ from conduit.domain.services.articles import ArticlesService
 from conduit.domain.services.tags import TagsService
 from conduit.domain.services.users.auth_token_service import AuthTokenService
 from conduit.domain.services.users.password_service import PasswordService
+from conduit.domain.use_cases.list_tags.use_case import ListTagsUseCase
 from conduit.domain.use_cases.login_user.use_case import LoginUserUseCase
 from conduit.domain.use_cases.register_user.use_case import RegisterUserUseCase
 from conduit.persistence.database import Database
@@ -78,4 +79,9 @@ class Container(containers.DeclarativeContainer):
         auth_token_service=auth_token_service,
         password_checker=password_service.provided.check_password,
         now=now,
+    )
+
+    list_tags_use_case = providers.Factory(
+        ListTagsUseCase,
+        tags_service=tags_service,
     )
