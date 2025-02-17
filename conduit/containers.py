@@ -27,7 +27,7 @@ class Container(containers.DeclarativeContainer):
 
     __self__: providers.Self["Container"] = providers.Self()
 
-    wiring_config = containers.WiringConfiguration(packages=[".api.endpoints"])
+    wiring_config = containers.WiringConfiguration(packages=[".api"])
 
     now = providers.Object(current_time)
 

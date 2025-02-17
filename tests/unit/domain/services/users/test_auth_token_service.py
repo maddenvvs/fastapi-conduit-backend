@@ -34,8 +34,8 @@ def test_parse_valid_token_produces_correct_token_payload(
 
     token_data = auth_token_service.parse_jwt_token(token)
 
-    assert token_data.user_id == "123"
-    assert token_data.user_name == "John Doe"
+    assert token_data.user_id == 123
+    assert token_data.username == "John Doe"
 
 
 class TestParseInvalidToken:

@@ -1,5 +1,3 @@
-from dataclasses import asdict
-
 from conduit.domain.entities.articles import (
     ArticleAuthor,
     ArticleWithAuthor,
@@ -36,7 +34,12 @@ class CreateArticleUseCase:
             await db.tags.add_many(created_article.id, article_details.tags)
 
         return ArticleWithAuthor(
-            **asdict(created_article),
+            slug=created_article.slug,
+            description=created_article.description,
+            body=created_article.body,
+            title=created_article.title,
+            created_at=created_article.created_at,
+            updated_at=created_article.updated_at,
             author=ArticleAuthor(
                 username=profile.username,
                 bio=profile.bio,

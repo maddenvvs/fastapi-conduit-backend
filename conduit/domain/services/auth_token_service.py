@@ -5,15 +5,15 @@ from typing import Any, Optional
 
 import jwt
 
-from conduit.domain.entities.users import User
+from conduit.domain.entities.users import User, UserID
 
 DEFAULT_LOGGER = logging.getLogger(__name__)
 
 
 @dataclasses.dataclass(frozen=True)
 class TokenPayload:
-    user_id: str
-    user_name: str
+    user_id: UserID
+    username: str
 
 
 class IncorrectJwtTokenException(Exception):
@@ -61,6 +61,6 @@ class AuthTokenService:
             raise IncorrectJwtTokenException()
 
         return TokenPayload(
-            user_id=payload["user_id"],
-            user_name=payload["username"],
+            user_id=int(payload["user_id"], base=10),
+            username=payload["username"],
         )
