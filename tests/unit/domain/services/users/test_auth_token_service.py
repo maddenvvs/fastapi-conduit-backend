@@ -6,7 +6,7 @@ from typing import Any
 import pytest
 
 from conduit.domain.entities.users import User
-from conduit.domain.services.users.auth_token_service import (
+from conduit.domain.services.auth_token_service import (
     AuthTokenService,
     IncorrectJwtTokenException,
 )

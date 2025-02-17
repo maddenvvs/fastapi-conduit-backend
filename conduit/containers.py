@@ -2,23 +2,24 @@ from typing import final
 
 from dependency_injector import containers, providers
 
-from conduit.api.settings import get_settings
-from conduit.domain.services.articles import ArticlesService
-from conduit.domain.services.tags import TagsService
-from conduit.domain.services.users.auth_token_service import AuthTokenService
-from conduit.domain.services.users.password_service import PasswordService
+from conduit.domain.services.auth_token_service import AuthTokenService
+from conduit.domain.services.password_service import PasswordService
+from conduit.domain.services.profiles_service import ProfilesService
+from conduit.domain.services.tags_service import TagsService
+from conduit.domain.use_cases.create_article.use_case import CreateArticleUseCase
+from conduit.domain.use_cases.get_article_by_slug.use_case import (
+    GetArticleBySlugUseCase,
+)
 from conduit.domain.use_cases.list_tags.use_case import ListTagsUseCase
 from conduit.domain.use_cases.login_user.use_case import LoginUserUseCase
 from conduit.domain.use_cases.register_user.use_case import RegisterUserUseCase
 from conduit.infrastructure.persistence.database import Database
-from conduit.infrastructure.persistence.repositories.articles import (
-    InMemoryArticlesRepository,
-)
 from conduit.infrastructure.persistence.unit_of_work import (
     SqliteUnitOfWork,
     context_factory,
 )
 from conduit.infrastructure.time import current_time
+from conduit.settings import get_settings
 
 
 @final
@@ -55,20 +56,16 @@ class Container(containers.DeclarativeContainer):
         unit_of_work=unit_of_work,
     )
 
-    articles_repository = providers.Factory(
-        InMemoryArticlesRepository,
-    )
-
-    articles_service = providers.Factory(
-        ArticlesService,
-        repository=articles_repository,
-    )
-
     auth_token_service = providers.Factory(
         AuthTokenService,
         secret_key="secret_key",
         algorithm="HS256",
         token_expiration_minutes=30,
+    )
+
+    profiles_service = providers.Factory(
+        ProfilesService,
+        unit_of_work=unit_of_work,
     )
 
     register_user_use_case = providers.Factory(
@@ -89,4 +86,15 @@ class Container(containers.DeclarativeContainer):
     list_tags_use_case = providers.Factory(
         ListTagsUseCase,
         tags_service=tags_service,
+    )
+
+    get_article_by_slug_use_case = providers.Factory(
+        GetArticleBySlugUseCase,
+        unit_of_work=unit_of_work,
+    )
+
+    create_article_use_case = providers.Factory(
+        CreateArticleUseCase,
+        unit_of_work=unit_of_work,
+        profiles_service=profiles_service,
     )

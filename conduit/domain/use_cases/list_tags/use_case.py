@@ -1,5 +1,5 @@
 from conduit.domain.entities.tags import Tag
-from conduit.domain.services.tags import TagsService
+from conduit.domain.services.tags_service import TagsService
 
 
 class ListTagsUseCase:

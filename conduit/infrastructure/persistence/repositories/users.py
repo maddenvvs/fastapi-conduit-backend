@@ -3,7 +3,7 @@ from typing import Optional, final
 from sqlalchemy import insert, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from conduit.domain.entities.users import CreateUserDetails, User
+from conduit.domain.entities.users import CreateUserDetails, User, UserID
 from conduit.domain.repositories.users import UsersRepository
 from conduit.infrastructure.persistence.models import UserModel
 from conduit.infrastructure.time import CurrentTime
@@ -30,6 +30,12 @@ class SQLiteUsersRepository(UsersRepository):
     ) -> None:
         self._session = session
         self._now = now
+
+    async def get_by_id_or_none(self, id: UserID) -> Optional[User]:
+        query = select(UserModel).where(UserModel.id == id)
+        if user := await self._session.scalar(query):
+            return model_to_entity(user)
+        return None
 
     async def get_by_email_or_none(self, email: str) -> Optional[User]:
         query = select(UserModel).where(UserModel.email == email)

@@ -3,7 +3,7 @@ from typing import AsyncIterator, cast
 
 from fastapi import FastAPI
 
-import conduit.api.endpoints as api_endpoints
+import conduit.api.endpoints.routes as api_endpoints
 import conduit.api.errors as errors
 from conduit.containers import Container
 

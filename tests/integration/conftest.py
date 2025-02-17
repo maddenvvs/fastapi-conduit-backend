@@ -4,9 +4,9 @@ import pytest
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 
-from conduit.api.settings import Settings
 from conduit.app import create_app
 from conduit.containers import Container
+from conduit.settings import Settings
 
 
 @pytest.fixture(scope="session")

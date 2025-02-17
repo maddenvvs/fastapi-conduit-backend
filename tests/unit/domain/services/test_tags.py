@@ -6,7 +6,7 @@ import pytest
 
 from conduit.domain.entities.tags import Tag
 from conduit.domain.repositories.unit_of_work import UnitOfWork
-from conduit.domain.services.tags import TagsService
+from conduit.domain.services.tags_service import TagsService
 
 
 @pytest.fixture
