@@ -31,12 +31,12 @@ class TestSuccessullyGetAllTags:
         autouse=True,
         params=[
             [
-                Tag(name="angularjs"),
+                Tag(id=1, name="angularjs"),
             ],
             [
-                Tag(name="reactjs"),
-                Tag(name="angularjs"),
-                Tag(name="python"),
+                Tag(id=2, name="reactjs"),
+                Tag(id=4, name="angularjs"),
+                Tag(id=7, name="python"),
             ],
         ],
     )

@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from sqlalchemy import ForeignKey
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
@@ -25,4 +26,31 @@ class TagModel(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(nullable=False, unique=True)
+    created_at: Mapped[datetime]
+
+
+class ArticleModel(Base):
+    __tablename__ = "articles"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    author_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    slug: Mapped[str] = mapped_column(nullable=False, unique=True)
+    title: Mapped[str]
+    description: Mapped[str]
+    body: Mapped[str]
+    created_at: Mapped[datetime]
+    updated_at: Mapped[datetime]
+
+
+class ArticleTagModel(Base):
+    __tablename__ = "articles_tags"
+
+    article_id: Mapped[int] = mapped_column(
+        ForeignKey("articles.id", ondelete="CASCADE"),
+        primary_key=True,
+    )
+    tag_id: Mapped[int] = mapped_column(
+        ForeignKey("tags.id"),
+        primary_key=True,
+    )
     created_at: Mapped[datetime]

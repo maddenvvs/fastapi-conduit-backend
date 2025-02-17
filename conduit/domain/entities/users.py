@@ -1,6 +1,10 @@
 from dataclasses import dataclass
 from typing import Optional
 
+from typing_extensions import TypeAlias
+
+UserID: TypeAlias = int
+
 
 @dataclass(frozen=True)
 class UserLoginDetails:
@@ -42,7 +46,7 @@ class CreateUserDetails:
 
 @dataclass
 class User:
-    id: int
+    id: UserID
     email: str
     username: str
     bio: str

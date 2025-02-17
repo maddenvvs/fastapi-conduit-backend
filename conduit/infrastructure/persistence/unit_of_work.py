@@ -3,10 +3,14 @@ from typing import AsyncIterator, Callable
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from conduit.domain.repositories.tags import ITagsRepository
+from conduit.domain.repositories.articles import ArticlesRepository
+from conduit.domain.repositories.tags import TagsRepository
 from conduit.domain.repositories.unit_of_work import UnitOfWork, UnitOfWorkContext
 from conduit.domain.repositories.users import UsersRepository
 from conduit.infrastructure.persistence.database import Database
+from conduit.infrastructure.persistence.repositories.articles import (
+    SQLiteArticlesRepository,
+)
 from conduit.infrastructure.persistence.repositories.tags import SQLiteTagsRepository
 from conduit.infrastructure.persistence.repositories.users import SQLiteUsersRepository
 from conduit.infrastructure.time import CurrentTime
@@ -21,16 +25,21 @@ class SqliteUnitOfWorkContext(UnitOfWorkContext):
         session: AsyncSession,
         now: CurrentTime,
     ) -> None:
-        self._tags = SQLiteTagsRepository(session)
+        self._tags = SQLiteTagsRepository(session, now)
         self._users = SQLiteUsersRepository(session, now)
+        self._articles = SQLiteArticlesRepository(session, now)
 
     @property
-    def tags(self) -> ITagsRepository:
+    def tags(self) -> TagsRepository:
         return self._tags
 
     @property
     def users(self) -> UsersRepository:
         return self._users
+
+    @property
+    def articles(self) -> ArticlesRepository:
+        return self._articles
 
 
 def context_factory(
