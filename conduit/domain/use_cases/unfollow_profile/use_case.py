@@ -1,0 +1,14 @@
+from typing import final
+
+from conduit.domain.entities.users import User
+from conduit.domain.services.profiles_service import ProfilesService
+
+
+@final
+class UnfollowProfileUseCase:
+
+    def __init__(self, profiles_service: ProfilesService) -> None:
+        self._profiles_service = profiles_service
+
+    async def __call__(self, username: str, current_user: User) -> None:
+        return await self._profiles_service.unfollow_profile(username, current_user)

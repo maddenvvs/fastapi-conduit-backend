@@ -21,6 +21,14 @@ class UserModel(Base):
     updated_at: Mapped[datetime] = mapped_column(nullable=True)
 
 
+class FollowerModel(Base):
+    __tablename__ = "followers"
+
+    follower_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
+    following_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
+    created_at: Mapped[datetime]
+
+
 class TagModel(Base):
     __tablename__ = "tags"
 
