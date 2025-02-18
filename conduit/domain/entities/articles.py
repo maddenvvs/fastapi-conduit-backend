@@ -43,6 +43,20 @@ class ArticleWithAuthor:
 
 @final
 @dataclass
+class BodylessArticleWithAuthor:
+    slug: str
+    title: str
+    description: str
+    tags: list[str]
+    created_at: datetime.datetime
+    updated_at: datetime.datetime
+    author: ArticleAuthor
+    favorited: bool = field(default=False)
+    favorites_count: int = field(default=0)
+
+
+@final
+@dataclass
 class Article:
     id: ArticleID
     author_id: AuthorID

@@ -62,3 +62,17 @@ class ArticleTagModel(Base):
         primary_key=True,
     )
     created_at: Mapped[datetime]
+
+
+class FavoriteModel(Base):
+    __tablename__ = "favorites"
+
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id"),
+        primary_key=True,
+    )
+    article_id: Mapped[int] = mapped_column(
+        ForeignKey("articles.id", ondelete="CASCADE"),
+        primary_key=True,
+    )
+    created_at: Mapped[datetime]

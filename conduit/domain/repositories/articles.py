@@ -1,7 +1,13 @@
 import abc
 from typing import Optional
 
-from conduit.domain.entities.articles import Article, AuthorID, NewArticleDetails
+from conduit.domain.entities.articles import (
+    Article,
+    AuthorID,
+    BodylessArticleWithAuthor,
+    NewArticleDetails,
+)
+from conduit.domain.entities.users import UserID
 
 
 class ArticlesRepository(abc.ABC):
@@ -13,3 +19,11 @@ class ArticlesRepository(abc.ABC):
     async def add(
         self, author_id: AuthorID, article_details: NewArticleDetails
     ) -> Article: ...
+
+    @abc.abstractmethod
+    async def list_by_followings(
+        self, user_id: UserID, limit: int, offset: int
+    ) -> list[BodylessArticleWithAuthor]: ...
+
+    @abc.abstractmethod
+    async def count_by_followings(self, user_id: UserID) -> int: ...
