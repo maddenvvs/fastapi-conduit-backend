@@ -1,5 +1,5 @@
-from dataclasses import dataclass
-from typing import Optional
+from dataclasses import dataclass, field
+from typing import Optional, final
 
 from typing_extensions import TypeAlias
 
@@ -42,6 +42,16 @@ class CreateUserDetails:
     username: str
     email: str
     password_hash: str
+
+
+@final
+@dataclass(frozen=True)
+class UpdateUserDetails:
+    username: Optional[str] = field(default=None)
+    email: Optional[str] = field(default=None)
+    password_hash: Optional[str] = field(default=None)
+    bio: Optional[str] = field(default=None)
+    image_url: Optional[str] = field(default=None)
 
 
 @dataclass

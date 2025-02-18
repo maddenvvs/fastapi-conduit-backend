@@ -3,7 +3,12 @@ from typing import Optional, final
 from sqlalchemy import insert, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from conduit.domain.entities.users import CreateUserDetails, User, UserID
+from conduit.domain.entities.users import (
+    CreateUserDetails,
+    UpdateUserDetails,
+    User,
+    UserID,
+)
 from conduit.domain.repositories.users import UsersRepository
 from conduit.infrastructure.persistence.models import UserModel
 from conduit.infrastructure.time import CurrentTime
@@ -64,3 +69,26 @@ class SQLiteUsersRepository(UsersRepository):
         result = await self._session.execute(query)
         user = result.scalar_one()
         return model_to_entity(user)
+
+    async def update(self, user_id: UserID, update_details: UpdateUserDetails) -> User:
+        current_time = self._now()
+        query = insert(UserModel).values(updated_at=current_time).returning(UserModel)
+
+        if update_details.username is not None:
+            query = query.values(username=update_details.username)
+
+        if update_details.email is not None:
+            query = query.values(email=update_details.email)
+
+        if update_details.password_hash is not None:
+            query = query.values(password_hash=update_details.password_hash)
+
+        if update_details.bio is not None:
+            query = query.values(bio=update_details.bio)
+
+        if update_details.image_url is not None:
+            query = query.values(image_url=update_details.image_url)
+
+        result = await self._session.execute(query)
+        updated_user = result.scalar_one()
+        return model_to_entity(updated_user)

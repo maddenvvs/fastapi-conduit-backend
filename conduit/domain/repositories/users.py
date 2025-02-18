@@ -1,7 +1,12 @@
 import abc
 from typing import Optional
 
-from conduit.domain.entities.users import CreateUserDetails, User, UserID
+from conduit.domain.entities.users import (
+    CreateUserDetails,
+    UpdateUserDetails,
+    User,
+    UserID,
+)
 
 
 class UsersRepository(abc.ABC):
@@ -28,4 +33,11 @@ class UsersRepository(abc.ABC):
     async def add(
         self,
         user_details: CreateUserDetails,
+    ) -> User: ...
+
+    @abc.abstractmethod
+    async def update(
+        self,
+        user_id: UserID,
+        update_details: UpdateUserDetails,
     ) -> User: ...
