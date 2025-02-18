@@ -10,7 +10,7 @@ from conduit.containers import Container
 
 @contextlib.asynccontextmanager
 async def app_lifespan(app: FastAPI) -> AsyncIterator[None]:
-    container = cast(Container, app.extra["container"])  # type: ignore[unused-ignore]
+    container = cast(Container, app.extra["container"])
     database = container.db()
     await database.create_tables()
     yield
