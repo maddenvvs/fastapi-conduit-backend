@@ -14,6 +14,9 @@ from conduit.domain.use_cases.get_current_user.use_case import GetCurrentUserUse
 from conduit.domain.use_cases.list_tags.use_case import ListTagsUseCase
 from conduit.domain.use_cases.login_user.use_case import LoginUserUseCase
 from conduit.domain.use_cases.register_user.use_case import RegisterUserUseCase
+from conduit.domain.use_cases.update_current_user.use_case import (
+    UpdateCurrentUserUseCase,
+)
 from conduit.infrastructure.persistence.database import Database
 from conduit.infrastructure.persistence.unit_of_work import (
     SqliteUnitOfWork,
@@ -102,4 +105,10 @@ class Container(containers.DeclarativeContainer):
 
     get_current_user_use_case = providers.Factory(
         GetCurrentUserUseCase,
+    )
+
+    update_current_user_use_case = providers.Factory(
+        UpdateCurrentUserUseCase,
+        unit_of_work=unit_of_work,
+        password_hasher=password_service.provided.hash_password,
     )

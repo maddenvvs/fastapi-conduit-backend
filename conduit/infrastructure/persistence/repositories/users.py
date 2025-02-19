@@ -1,6 +1,6 @@
 from typing import Optional, final
 
-from sqlalchemy import insert, select
+from sqlalchemy import insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from conduit.domain.entities.users import (
@@ -72,7 +72,12 @@ class SQLiteUsersRepository(UsersRepository):
 
     async def update(self, user_id: UserID, update_details: UpdateUserDetails) -> User:
         current_time = self._now()
-        query = insert(UserModel).values(updated_at=current_time).returning(UserModel)
+        query = (
+            update(UserModel)
+            .where(UserModel.id == user_id)
+            .values(updated_at=current_time)
+            .returning(UserModel)
+        )
 
         if update_details.username is not None:
             query = query.values(username=update_details.username)

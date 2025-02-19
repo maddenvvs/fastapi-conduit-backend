@@ -45,11 +45,11 @@ class ValidationErrorApiResponse(BaseModel):
             if field_path is None or len(field_path) == 0:
                 field_name = "_request"
             else:
-                field_name = field_path[-1]
+                field_name = str(field_path[-1])
 
-            message = error.get("msg", None)
+            message = error.get("msg", "")
             context = error.get("ctx", {})
-            reason = context.get("reason", None)
+            reason = context.get("reason", "")
 
             error_message = reason or message or "Invalid request"
 
