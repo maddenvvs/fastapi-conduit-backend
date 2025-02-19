@@ -6,6 +6,7 @@ from pydantic import BaseModel, EmailStr, Field
 from typing_extensions import Self
 
 from conduit.api import open_api
+from conduit.api.tags import Tag
 from conduit.containers import Container
 from conduit.domain.entities.users import LoggedInUser, UserLoginDetails
 from conduit.domain.use_cases.login_user.use_case import LoginUserUseCase
@@ -85,7 +86,7 @@ router = APIRouter()
     },
     status_code=status.HTTP_200_OK,
     summary="Log in a user",
-    tags=["Users"],
+    tags=[Tag.Users],
 )
 @inject
 async def login_user(

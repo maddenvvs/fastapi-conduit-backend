@@ -7,6 +7,7 @@ from typing_extensions import Self
 
 from conduit.api import open_api
 from conduit.api.security.dependencies import OptionalCurrentUser
+from conduit.api.tags import Tag
 from conduit.containers import Container
 from conduit.domain.entities.profiles import Profile
 from conduit.domain.use_cases.get_profile_by_name.use_case import (
@@ -62,7 +63,7 @@ router = APIRouter()
     },
     status_code=status.HTTP_200_OK,
     summary="Get profile details by username",
-    tags=["Profiles"],
+    tags=[Tag.Profiles],
 )
 @inject
 async def get_profile_by_username(

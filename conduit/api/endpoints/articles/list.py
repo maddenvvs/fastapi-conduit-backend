@@ -8,6 +8,7 @@ from typing_extensions import Self
 
 from conduit.api import open_api
 from conduit.api.security.dependencies import OptionalCurrentUser
+from conduit.api.tags import Tag
 from conduit.containers import Container
 from conduit.domain.entities.articles import BodylessArticleWithAuthor
 from conduit.domain.use_cases.list_articles.use_case import (
@@ -84,7 +85,7 @@ router = APIRouter()
     },
     status_code=status.HTTP_200_OK,
     summary="List all articles",
-    tags=["Articles"],
+    tags=[Tag.Articles],
 )
 @inject
 async def list_articles(

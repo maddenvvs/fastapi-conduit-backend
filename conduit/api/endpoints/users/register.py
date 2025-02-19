@@ -6,6 +6,7 @@ from pydantic import BaseModel, EmailStr, Field
 from typing_extensions import Self
 
 from conduit.api import open_api
+from conduit.api.tags import Tag
 from conduit.containers import Container
 from conduit.domain.entities.users import RegisteredUser, RegisterUserDetails
 from conduit.domain.use_cases.register_user.use_case import RegisterUserUseCase
@@ -93,7 +94,7 @@ router = APIRouter()
     },
     status_code=status.HTTP_201_CREATED,
     summary="Register a new user",
-    tags=["Users"],
+    tags=[Tag.Users],
 )
 @inject
 async def register_user(

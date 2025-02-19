@@ -8,6 +8,7 @@ from typing_extensions import Self
 
 from conduit.api import open_api
 from conduit.api.security.dependencies import CurrentUser
+from conduit.api.tags import Tag
 from conduit.containers import Container
 from conduit.domain.entities.articles import ArticleWithAuthor, NewArticleDetails
 from conduit.domain.use_cases.create_article.use_case import CreateArticleUseCase
@@ -116,7 +117,7 @@ router = APIRouter()
     },
     status_code=status.HTTP_201_CREATED,
     summary="Create a new article",
-    tags=["Articles"],
+    tags=[Tag.Articles],
 )
 @inject
 async def create_article(

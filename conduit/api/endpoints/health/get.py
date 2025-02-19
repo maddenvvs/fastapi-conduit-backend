@@ -1,6 +1,8 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
 
+from conduit.api.tags import Tag
+
 
 class HealthCheckApiResponse(BaseModel):
     success: bool
@@ -20,7 +22,7 @@ router = APIRouter()
 @router.get(
     path="/health",
     response_model=HealthCheckApiResponse,
-    tags=["Health"],
+    tags=[Tag.Health],
 )
 async def health_check() -> HealthCheckApiResponse:
     return SUCCESS_RESPONSE

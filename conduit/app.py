@@ -5,6 +5,7 @@ from fastapi import FastAPI
 
 import conduit.api.endpoints.routes as api_endpoints
 import conduit.api.errors as errors
+from conduit.api import tags
 from conduit.containers import Container
 
 
@@ -23,8 +24,15 @@ def create_app() -> FastAPI:
 
     settings = container.app_settings()
     app = FastAPI(
-        **settings.fastapi,
+        title="Conduit Realworld REST API",
+        summary="Implementation of Conduit Realworld API using FastAPI.",
+        description="Inspirational link: [Realworld GitHub](https://github.com/gothinkster/realworld)",
+        version="0.1.0",
         lifespan=app_lifespan,
+        docs_url="/",
+        openapi_tags=tags.open_api_tags_metadata(),
+        redoc_url=None,  # Disable ReDoc documentaion
+        **settings.fastapi,
         container=container,
     )
 

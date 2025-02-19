@@ -7,6 +7,7 @@ from typing_extensions import Self
 
 from conduit.api import open_api
 from conduit.api.security.dependencies import CurrentUser, JwtToken
+from conduit.api.tags import Tag
 from conduit.containers import Container
 from conduit.domain.entities.users import User
 from conduit.domain.use_cases.update_current_user.use_case import (
@@ -113,7 +114,7 @@ router = APIRouter()
     },
     status_code=status.HTTP_200_OK,
     summary="Update current user details",
-    tags=["Users"],
+    tags=[Tag.Users],
 )
 @inject
 async def update_current_user(

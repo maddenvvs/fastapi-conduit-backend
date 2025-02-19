@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field
 from typing_extensions import Self
 
 from conduit.api.security.dependencies import OptionalCurrentUser
+from conduit.api.tags import Tag
 from conduit.containers import Container
 from conduit.domain.entities.articles import ArticleWithAuthor
 from conduit.domain.use_cases.get_article_by_slug.use_case import (
@@ -68,7 +69,7 @@ router = APIRouter()
 @router.get(
     path="/articles/{slug}",
     response_model=GetArticleBySlugApiResponse,
-    tags=["Articles"],
+    tags=[Tag.Articles],
 )
 @inject
 async def get_article_by_slug(

@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from typing_extensions import Self
 
+from conduit.api import tags
 from conduit.containers import Container
 from conduit.domain.entities.tags import Tag
 from conduit.domain.use_cases.list_tags.use_case import ListTagsUseCase
@@ -22,7 +23,7 @@ router = APIRouter()
 @router.get(
     path="/tags",
     response_model=ListTagsApiResponse,
-    tags=["Tags"],
+    tags=[tags.Tag.Tags],
 )
 @inject
 async def get_all_tags(
