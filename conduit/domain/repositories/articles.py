@@ -5,7 +5,7 @@ from conduit.domain.entities.articles import (
     Article,
     AuthorID,
     BodylessArticleWithAuthor,
-    NewArticleDetails,
+    NewArticleDetailsWithSlug,
 )
 from conduit.domain.entities.users import UserID
 
@@ -17,7 +17,7 @@ class ArticlesRepository(abc.ABC):
 
     @abc.abstractmethod
     async def add(
-        self, author_id: AuthorID, article_details: NewArticleDetails
+        self, author_id: AuthorID, article_details: NewArticleDetailsWithSlug
     ) -> Article: ...
 
     @abc.abstractmethod

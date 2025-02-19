@@ -5,6 +5,7 @@ from dependency_injector import containers, providers
 from conduit.domain.services.auth_token_service import AuthTokenService
 from conduit.domain.services.password_service import PasswordService
 from conduit.domain.services.profiles_service import ProfilesService
+from conduit.domain.services.slug_service import SlugService
 from conduit.domain.services.tags_service import TagsService
 from conduit.domain.use_cases.create_article.use_case import CreateArticleUseCase
 from conduit.domain.use_cases.get_article_by_slug.use_case import (
@@ -39,6 +40,8 @@ class Container(containers.DeclarativeContainer):
     now = providers.Object(current_time)
 
     password_service = providers.Singleton(PasswordService)
+
+    slug_service = providers.Singleton(SlugService)
 
     app_settings = providers.Singleton(get_settings)
 
@@ -104,6 +107,7 @@ class Container(containers.DeclarativeContainer):
         CreateArticleUseCase,
         unit_of_work=unit_of_work,
         profiles_service=profiles_service,
+        slug_service=slug_service,
     )
 
     get_current_user_use_case = providers.Factory(

@@ -9,7 +9,7 @@ from conduit.domain.entities.articles import (
     ArticleAuthor,
     AuthorID,
     BodylessArticleWithAuthor,
-    NewArticleDetails,
+    NewArticleDetailsWithSlug,
 )
 from conduit.domain.entities.users import UserID
 from conduit.domain.repositories.articles import ArticlesRepository
@@ -70,14 +70,14 @@ class SQLiteArticlesRepository(ArticlesRepository):
     async def add(
         self,
         author_id: AuthorID,
-        article_details: NewArticleDetails,
+        article_details: NewArticleDetailsWithSlug,
     ) -> Article:
         current_time = self._now()
         query = (
             insert(ArticleModel)
             .values(
                 author_id=author_id,
-                slug=article_details.title,
+                slug=article_details.slug,
                 title=article_details.title,
                 description=article_details.description,
                 body=article_details.body,

@@ -18,6 +18,16 @@ class NewArticleDetails:
 
 
 @final
+@dataclass(frozen=True)
+class NewArticleDetailsWithSlug:
+    title: str
+    slug: str
+    description: str
+    body: str
+    tags: list[str] = field(default_factory=list)
+
+
+@final
 @dataclass
 class ArticleAuthor:
     username: str
