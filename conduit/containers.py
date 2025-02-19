@@ -15,6 +15,7 @@ from conduit.domain.use_cases.get_current_user.use_case import GetCurrentUserUse
 from conduit.domain.use_cases.get_profile_by_name.use_case import (
     GetProfileByNameUseCase,
 )
+from conduit.domain.use_cases.list_articles.use_case import ListArticlesUseCase
 from conduit.domain.use_cases.list_tags.use_case import ListTagsUseCase
 from conduit.domain.use_cases.login_user.use_case import LoginUserUseCase
 from conduit.domain.use_cases.register_user.use_case import RegisterUserUseCase
@@ -108,6 +109,11 @@ class Container(containers.DeclarativeContainer):
         unit_of_work=unit_of_work,
         profiles_service=profiles_service,
         slug_service=slug_service,
+    )
+
+    list_articles_use_case = providers.Factory(
+        ListArticlesUseCase,
+        unit_of_work=unit_of_work,
     )
 
     get_current_user_use_case = providers.Factory(

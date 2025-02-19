@@ -1,6 +1,6 @@
 from typing import Any, Optional
 
-from sqlalchemy import exists, func, insert, select, true
+from sqlalchemy import exists, func, insert, literal, select, true
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.functions import count
 
@@ -50,7 +50,7 @@ def _to_bodyless_article(row: Any) -> BodylessArticleWithAuthor:
         author=ArticleAuthor(
             username=row.username,
             bio=row.bio,
-            image=row.image,
+            image=row.image_url,
             following=row.following,
         ),
     )
@@ -163,5 +163,84 @@ class SQLiteArticlesRepository(ArticlesRepository):
             and FollowerModel.following_id == ArticleModel.id,
         )
 
+        result = await self._session.execute(query)
+        return result.scalar_one()
+
+    async def list_by_filters(
+        self,
+        user_id: Optional[UserID],
+        limit: int,
+        offset: int,
+    ) -> list[BodylessArticleWithAuthor]:
+        query = (
+            select(
+                ArticleModel.id.label("id"),
+                ArticleModel.author_id.label("author_id"),
+                ArticleModel.slug.label("slug"),
+                ArticleModel.title.label("title"),
+                ArticleModel.description.label("description"),
+                ArticleModel.created_at.label("created_at"),
+                ArticleModel.updated_at.label("updated_at"),
+                UserModel.id.label("user_id"),
+                UserModel.username.label("username"),
+                UserModel.bio.label("bio"),
+                UserModel.email.label("email"),
+                UserModel.image_url.label("image_url"),
+                exists()
+                .where(
+                    (FollowerModel.follower_id == user_id)
+                    & (FollowerModel.following_id == ArticleModel.author_id)
+                )
+                .correlate(FollowerModel, ArticleModel)
+                .label("following"),
+                # Subquery for favorites count.
+                # select(func.count(FavoriteModel.article_id))
+                # .where(FavoriteModel.article_id == ArticleModel.id)
+                # .scalar_subquery()
+                # .correlate(FavoriteModel, ArticleModel)
+                literal(0).label("favorites_count"),
+                # # Subquery to check if favorited by user with id `user_id`.
+                # exists()
+                # .where(
+                #     (FavoriteModel.user_id == user_id)
+                #     & (FavoriteModel.article_id == ArticleModel.id)
+                # )
+                # .correlate(FavoriteModel, ArticleModel)
+                # .label("favorited"),
+                true().label("favorited"),
+                # # Concatenate tags.
+                func.group_concat(TagModel.name, ", ").label("tags"),
+            )
+            .outerjoin(
+                UserModel,
+                ArticleModel.author_id == UserModel.id,
+            )
+            .outerjoin(ArticleTagModel, ArticleTagModel.article_id == ArticleModel.id)
+            .outerjoin(FavoriteModel, FavoriteModel.article_id == ArticleModel.id)
+            .outerjoin(TagModel, TagModel.id == ArticleTagModel.tag_id)
+            .group_by(
+                ArticleModel.id,
+                ArticleModel.author_id,
+                ArticleModel.slug,
+                ArticleModel.title,
+                ArticleModel.description,
+                ArticleModel.created_at,
+                ArticleModel.updated_at,
+                UserModel.id,
+                UserModel.username,
+                UserModel.bio,
+                UserModel.email,
+                UserModel.image_url,
+            )
+            .order_by(ArticleModel.created_at.desc())
+        )
+
+        query = query.limit(limit).offset(offset)
+        articles = await self._session.execute(query)
+
+        return [_to_bodyless_article(row) for row in articles]
+
+    async def count_by_filters(self) -> int:
+        query = select(count(ArticleModel.id))
         result = await self._session.execute(query)
         return result.scalar_one()
