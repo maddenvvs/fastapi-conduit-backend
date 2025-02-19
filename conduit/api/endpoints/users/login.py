@@ -3,6 +3,7 @@ from typing import Annotated, Optional, final
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Body, Depends, status
 from pydantic import BaseModel, EmailStr, Field
+from typing_extensions import Self
 
 from conduit.api import open_api
 from conduit.containers import Container
@@ -61,7 +62,7 @@ class LoginUserApiResponse(BaseModel):
     user: LoggedInUserData
 
     @classmethod
-    def from_logged_in_user(cls, user: LoggedInUser) -> "LoginUserApiResponse":
+    def from_logged_in_user(cls, user: LoggedInUser) -> Self:
         return cls(
             user=LoggedInUserData(
                 username=user.username,

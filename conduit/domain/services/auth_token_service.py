@@ -61,6 +61,6 @@ class AuthTokenService:
             raise IncorrectJwtTokenException()
 
         return TokenPayload(
-            user_id=int(payload["user_id"], base=10),
+            user_id=payload["user_id"],
             username=payload["username"],
         )

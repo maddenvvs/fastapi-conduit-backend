@@ -20,7 +20,7 @@ def auth_token_service_logger() -> Any:
 @pytest.fixture
 def auth_token_service(auth_token_service_logger: logging.Logger) -> AuthTokenService:
     return AuthTokenService(
-        secret_key="secret_key",
+        secret_key="very_long_secret_key_to_use_for_test",
         algorithm="HS256",
         token_expiration_minutes=30,
         logger=auth_token_service_logger,
@@ -30,7 +30,7 @@ def auth_token_service(auth_token_service_logger: logging.Logger) -> AuthTokenSe
 def test_parse_valid_token_produces_correct_token_payload(
     auth_token_service: AuthTokenService,
 ) -> None:
-    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTIzIiwidXNlcm5hbWUiOiJKb2huIERvZSJ9.ZXjZuq_OM3VOYhLbjbpgldlBsTnyGQdgHvshyokLmHY"
+    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMjMsInVzZXJuYW1lIjoiSm9obiBEb2UifQ.gvogduV7_BTMZH7LZ-c7atu1bUKEdHc743ggO3N_Bmc"
 
     token_data = auth_token_service.parse_jwt_token(token)
 
