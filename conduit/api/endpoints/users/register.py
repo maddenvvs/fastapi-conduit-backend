@@ -1,10 +1,11 @@
 from typing import Annotated, Optional, final
 
 from dependency_injector.wiring import Provide, inject
-from fastapi import APIRouter, Body, Depends
+from fastapi import APIRouter, Body, Depends, status
 from pydantic import BaseModel, EmailStr, Field
 from typing_extensions import Self
 
+from conduit.api import open_api
 from conduit.containers import Container
 from conduit.domain.entities.users import RegisteredUser, RegisterUserDetails
 from conduit.domain.use_cases.register_user.use_case import RegisterUserUseCase
@@ -86,8 +87,12 @@ router = APIRouter()
 @router.post(
     path="/users",
     response_model=RegisterUserApiResponse,
-    tags=["Users"],
+    responses={
+        **open_api.validation_error(),
+    },
+    status_code=status.HTTP_201_CREATED,
     summary="Register a new user",
+    tags=["Users"],
 )
 @inject
 async def register_user(

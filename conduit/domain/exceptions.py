@@ -2,7 +2,7 @@ class DomainException(Exception):
     """Base domain exception."""
 
 
-class ValidationException(DomainException):
+class DomainValidationException(DomainException):
     """Base validation exception."""
 
     def __init__(

@@ -1,10 +1,10 @@
 from typing import final
 
-from conduit.domain.exceptions import ValidationException
+from conduit.domain.exceptions import DomainValidationException
 
 
 @final
-class EmailAlreadyTakenException(ValidationException):
+class EmailAlreadyTakenException(DomainValidationException):
     def __init__(self, email: str, *args: object) -> None:
         super().__init__(
             "email",
@@ -14,7 +14,7 @@ class EmailAlreadyTakenException(ValidationException):
 
 
 @final
-class UserNameAlreadyTakenException(ValidationException):
+class UserNameAlreadyTakenException(DomainValidationException):
     def __init__(
         self,
         username: str,
