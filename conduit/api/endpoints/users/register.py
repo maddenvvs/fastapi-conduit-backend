@@ -45,6 +45,7 @@ class RegisterUserApiRequest(BaseModel):
 class RegisteredUserData(BaseModel):
     email: str = Field(
         description="The email address of the registered user.",
+        examples=["user@example.com"],
     )
     username: str = Field(
         description="The username of the registered user.",
