@@ -2,11 +2,14 @@ from typing import Any, Union, final
 
 from fastapi import status
 from pydantic import BaseModel, Field
+from typing_extensions import TypeAlias
 
 from conduit.api.errors import ValidationErrorApiResponse
 
+OpenApiResponseDefinition: TypeAlias = dict[Union[int, str], dict[str, Any]]
 
-def validation_error() -> dict[Union[int, str], dict[str, Any]]:
+
+def validation_error() -> OpenApiResponseDefinition:
     return {
         status.HTTP_422_UNPROCESSABLE_ENTITY: {
             "model": ValidationErrorApiResponse,
@@ -37,7 +40,7 @@ class HttpExceptionApiResponse(BaseModel):
     )
 
 
-def unauthorized_error() -> dict[Union[int, str], dict[str, Any]]:
+def unauthorized_error() -> OpenApiResponseDefinition:
     return {
         status.HTTP_401_UNAUTHORIZED: {
             "model": HttpExceptionApiResponse,
@@ -46,6 +49,24 @@ def unauthorized_error() -> dict[Union[int, str], dict[str, Any]]:
                 "application/json": {
                     "example": {
                         "detail": "Missing authorization credentials",
+                    }
+                }
+            },
+        },
+    }
+
+
+def not_found_error(entity_name: str) -> OpenApiResponseDefinition:
+    detail_message = f"{entity_name} is not found"
+
+    return {
+        status.HTTP_401_UNAUTHORIZED: {
+            "model": HttpExceptionApiResponse,
+            "description": "Not Found",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "detail": detail_message,
                     }
                 }
             },

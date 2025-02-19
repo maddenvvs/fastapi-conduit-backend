@@ -31,15 +31,17 @@ OptionalJwtToken = Annotated[str, Depends(optional_token_security)]
 
 @inject
 async def get_current_user_or_none(
-    jwt_token: JwtToken,
+    jwt_token: OptionalJwtToken,
     auth_token_service: AuthTokenService = Depends(
         Provide[Container.auth_token_service]
     ),
     unit_of_work: UnitOfWork = Depends(Provide[Container.unit_of_work]),
 ) -> Optional[User]:
-    token_payload = auth_token_service.parse_jwt_token(jwt_token)
-    async with unit_of_work.begin() as db:
-        return await db.users.get_by_id_or_none(token_payload.user_id)
+    if jwt_token:
+        token_payload = auth_token_service.parse_jwt_token(jwt_token)
+        async with unit_of_work.begin() as db:
+            return await db.users.get_by_id_or_none(token_payload.user_id)
+    return None
 
 
 @inject
