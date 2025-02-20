@@ -37,12 +37,12 @@ class ProfileData(BaseModel):
 
 @final
 class GetProfileByNameApiResponse(BaseModel):
-    user: ProfileData
+    profile: ProfileData
 
     @classmethod
     def from_domain(cls, profile: Profile) -> Self:
         return cls(
-            user=ProfileData(
+            profile=ProfileData(
                 username=profile.username,
                 bio=profile.bio,
                 image=profile.image,
