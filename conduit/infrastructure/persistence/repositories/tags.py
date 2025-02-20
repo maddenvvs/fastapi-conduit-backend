@@ -26,6 +26,9 @@ class SQLiteTagsRepository(TagsRepository):
         return [model_to_entity(tag_model) for tag_model in tags]
 
     async def add_many(self, article_id: int, tags: list[str]) -> list[Tag]:
+        if len(tags) == 0:
+            return []
+
         current_time = self._now()
         insert_query = (
             insert(TagModel)
