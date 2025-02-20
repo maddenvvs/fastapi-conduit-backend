@@ -1,4 +1,3 @@
-import datetime
 from typing import Annotated, Optional, final
 
 from dependency_injector.wiring import Provide, inject
@@ -7,6 +6,7 @@ from pydantic import BaseModel, Field
 from typing_extensions import Self
 
 from conduit.api import open_api
+from conduit.api.json import DateTime
 from conduit.api.security.dependencies import OptionalCurrentUser
 from conduit.api.tags import Tag
 from conduit.containers import Container
@@ -32,8 +32,8 @@ class ListedArticleData(BaseModel):
     title: str
     description: str
     tags: list[str] = Field(alias="tagList")
-    created_at: datetime.datetime = Field(alias="createdAt")
-    updated_at: datetime.datetime = Field(alias="updatedAt")
+    created_at: DateTime = Field(alias="createdAt")
+    updated_at: DateTime = Field(alias="updatedAt")
     favorited: bool
     favorites_count: int = Field(alias="favoritesCount")
     author: ArticleAuthorData

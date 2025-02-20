@@ -1,12 +1,12 @@
-import datetime
 from typing import Annotated, Optional, final
 
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Body, Depends, status
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, Field
 from typing_extensions import Self
 
 from conduit.api import open_api
+from conduit.api.json import DateTime
 from conduit.api.security.dependencies import CurrentUser
 from conduit.api.tags import Tag
 from conduit.containers import Container
@@ -69,15 +69,11 @@ class CreatedArticleData(BaseModel):
     description: str
     body: str
     tags: list[str] = Field(alias="tagList")
-    created_at: datetime.datetime = Field(alias="createdAt")
-    updated_at: datetime.datetime = Field(alias="updatedAt")
+    created_at: DateTime = Field(alias="createdAt")
+    updated_at: DateTime = Field(alias="updatedAt")
     favorited: bool
     favorites_count: int = Field(alias="favoritesCount")
     author: ArticleAuthorData
-
-    model_config = ConfigDict(
-        json_encoders={datetime.datetime: lambda d: d.strftime("%Y-%m-%dT%H:%M:%SZ")}
-    )
 
 
 @final
