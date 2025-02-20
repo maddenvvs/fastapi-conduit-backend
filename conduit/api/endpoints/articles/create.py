@@ -3,7 +3,7 @@ from typing import Annotated, Optional, final
 
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Body, Depends, status
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 from typing_extensions import Self
 
 from conduit.api import open_api
@@ -74,6 +74,10 @@ class CreatedArticleData(BaseModel):
     favorited: bool
     favorites_count: int = Field(alias="favoritesCount")
     author: ArticleAuthorData
+
+    model_config = ConfigDict(
+        json_encoders={datetime.datetime: lambda d: d.strftime("%Y-%m-%dT%H:%M:%SZ")}
+    )
 
 
 @final
