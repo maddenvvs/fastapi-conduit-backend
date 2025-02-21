@@ -4,9 +4,7 @@ from sqlalchemy.dialects.sqlite import insert
 from conduit.domain.entities.tags import Tag
 from conduit.domain.repositories.tags import TagsRepository
 from conduit.infrastructure.persistence.models import ArticleTagModel, TagModel
-from conduit.infrastructure.persistence.repositories.unit_of_work import (
-    SqlAlchemyUnitOfWork,
-)
+from conduit.infrastructure.persistence.unit_of_work import SqlAlchemyUnitOfWork
 from conduit.infrastructure.time import CurrentTime
 
 

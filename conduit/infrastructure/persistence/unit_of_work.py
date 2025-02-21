@@ -1,69 +1,78 @@
-import contextlib
-from typing import AsyncIterator, Callable
+from types import TracebackType
+from typing import Optional, final
 
 from sqlalchemy.ext.asyncio import AsyncSession
+from typing_extensions import Self
 
-from conduit.domain.repositories.articles import ArticlesRepository
-from conduit.domain.repositories.followers import FollowersRepository
-from conduit.domain.repositories.unit_of_work import UnitOfWork, UnitOfWorkContext
-from conduit.domain.repositories.users import UsersRepository
+from conduit.domain.unit_of_work import UnitOfWork, UnitOfWorkFactory
 from conduit.infrastructure.persistence.database import Database
-from conduit.infrastructure.persistence.repositories.articles import (
-    SQLiteArticlesRepository,
-)
-from conduit.infrastructure.persistence.repositories.followers import (
-    SQLiteFollowersRepository,
-)
-from conduit.infrastructure.persistence.repositories.users import SQLiteUsersRepository
-from conduit.infrastructure.time import CurrentTime
-
-ContextFactory = Callable[[AsyncSession], UnitOfWorkContext]
 
 
-class SqliteUnitOfWorkContext(UnitOfWorkContext):
+@final
+class SqlAlchemyUnitOfWork(UnitOfWork):
 
-    def __init__(
-        self,
-        session: AsyncSession,
-        now: CurrentTime,
-    ) -> None:
-        self._users = SQLiteUsersRepository(session, now)
-        self._articles = SQLiteArticlesRepository(session, now)
-        self._followers = SQLiteFollowersRepository(session, now)
-
-    @property
-    def users(self) -> UsersRepository:
-        return self._users
-
-    @property
-    def articles(self) -> ArticlesRepository:
-        return self._articles
-
-    @property
-    def followers(self) -> FollowersRepository:
-        return self._followers
-
-
-def context_factory(
-    now: CurrentTime,
-) -> Callable[[AsyncSession], SqliteUnitOfWorkContext]:
-    def inner_factory(session: AsyncSession) -> SqliteUnitOfWorkContext:
-        return SqliteUnitOfWorkContext(session, now)
-
-    return inner_factory
-
-
-class SqliteUnitOfWork(UnitOfWork):
-
-    def __init__(
-        self,
-        db: Database,
-        context_factory: ContextFactory,
-    ):
+    def __init__(self, db: Database) -> None:
         self._db = db
-        self._context_factory = context_factory
+        self._session: Optional[AsyncSession] = None
 
-    @contextlib.asynccontextmanager
-    async def begin(self) -> AsyncIterator[UnitOfWorkContext]:
-        async with self._db.session() as session:
-            yield self._context_factory(session)
+    @property
+    def session(self) -> AsyncSession:
+        if self._session is None:
+            raise RuntimeError("No session")
+
+        return self._session
+
+    async def commit(self) -> None:
+        await self.session.commit()
+
+    async def rollback(self) -> None:
+        await self.session.rollback()
+
+    async def close(self) -> None:
+        await self.session.close()
+
+    async def __aenter__(self) -> Self:
+        self.set_current_context()
+        self._session = self._db.create_session()
+        return self
+
+    async def __aexit__(
+        self,
+        exc_type: Optional[type[BaseException]],
+        exc_value: Optional[BaseException],
+        traceback: Optional[TracebackType],
+    ) -> Optional[bool]:
+        self.remove_current_context()
+
+        if exc_type is None:
+            await self.commit()
+        else:
+            await self.rollback()
+
+        await self.close()
+
+        if exc_type is not None and exc_value is not None:
+            raise exc_value.with_traceback(traceback)
+
+        return None
+
+    @staticmethod
+    def get_current_unit_of_work() -> "SqlAlchemyUnitOfWork":
+        context = UnitOfWork.get_current_context()
+        if not isinstance(context, SqlAlchemyUnitOfWork):
+            raise RuntimeError("Context session is not of type 'SqlAlchemyUnitOfWork'")
+        return context
+
+    @staticmethod
+    def get_current_session() -> AsyncSession:
+        return SqlAlchemyUnitOfWork.get_current_unit_of_work().session
+
+
+@final
+class SqlAlchemyUnitOfWorkFactory(UnitOfWorkFactory):
+
+    def __init__(self, db: Database) -> None:
+        self._db = db
+
+    def __call__(self) -> UnitOfWork:
+        return SqlAlchemyUnitOfWork(self._db)

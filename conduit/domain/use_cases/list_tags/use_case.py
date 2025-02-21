@@ -6,11 +6,11 @@ from conduit.domain.unit_of_work import UnitOfWorkFactory
 class ListTagsUseCase:
     def __init__(
         self,
-        tags_service: TagsService,
         uow_factory: UnitOfWorkFactory,
+        tags_service: TagsService,
     ) -> None:
-        self._tags_service = tags_service
         self._uow_factory = uow_factory
+        self._tags_service = tags_service
 
     async def __call__(self) -> list[Tag]:
         return await self._list_tags()

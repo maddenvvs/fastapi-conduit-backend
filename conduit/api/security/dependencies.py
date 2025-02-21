@@ -9,8 +9,9 @@ from typing_extensions import TypeAlias
 from conduit.api.security.http_token_header import HttpTokenHeader
 from conduit.containers import Container
 from conduit.domain.entities.users import User
-from conduit.domain.repositories.unit_of_work import UnitOfWork
+from conduit.domain.repositories.users import UsersRepository
 from conduit.domain.services.auth_token_service import AuthTokenService
+from conduit.domain.unit_of_work import UnitOfWorkFactory
 
 token_security = HttpTokenHeader(
     name="Authorization",
@@ -35,12 +36,13 @@ async def get_current_user_or_none(
     auth_token_service: AuthTokenService = Depends(
         Provide[Container.auth_token_service]
     ),
-    unit_of_work: UnitOfWork = Depends(Provide[Container.unit_of_work]),
+    uow_factory: UnitOfWorkFactory = Depends(Provide[Container.uow_factory]),
+    users_repository: UsersRepository = Depends(Provide[Container.users_repository]),
 ) -> Optional[User]:
     if jwt_token:
         token_payload = auth_token_service.parse_jwt_token(jwt_token)
-        async with unit_of_work.begin() as db:
-            return await db.users.get_by_id_or_none(token_payload.user_id)
+        async with uow_factory():
+            return await users_repository.get_by_id_or_none(token_payload.user_id)
     return None
 
 
@@ -50,11 +52,12 @@ async def get_current_user(
     auth_token_service: AuthTokenService = Depends(
         Provide[Container.auth_token_service]
     ),
-    unit_of_work: UnitOfWork = Depends(Provide[Container.unit_of_work]),
+    uow_factory: UnitOfWorkFactory = Depends(Provide[Container.uow_factory]),
+    users_repository: UsersRepository = Depends(Provide[Container.users_repository]),
 ) -> User:
     token_payload = auth_token_service.parse_jwt_token(jwt_token)
-    async with unit_of_work.begin() as db:
-        user = await db.users.get_by_id_or_none(token_payload.user_id)
+    async with uow_factory():
+        user = await users_repository.get_by_id_or_none(token_payload.user_id)
     if user is None:
         raise HTTPException(
             status_code=http_status.HTTP_401_UNAUTHORIZED,

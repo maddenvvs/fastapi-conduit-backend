@@ -1,7 +1,6 @@
 from typing import Optional, final
 
 from sqlalchemy import insert, select, update
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from conduit.domain.entities.users import (
     CreateUserDetails,
@@ -11,6 +10,7 @@ from conduit.domain.entities.users import (
 )
 from conduit.domain.repositories.users import UsersRepository
 from conduit.infrastructure.persistence.models import UserModel
+from conduit.infrastructure.persistence.unit_of_work import SqlAlchemyUnitOfWork
 from conduit.infrastructure.time import CurrentTime
 
 
@@ -30,31 +30,37 @@ class SQLiteUsersRepository(UsersRepository):
 
     def __init__(
         self,
-        session: AsyncSession,
         now: CurrentTime,
     ) -> None:
-        self._session = session
         self._now = now
 
     async def get_by_id_or_none(self, id: UserID) -> Optional[User]:
+        session = SqlAlchemyUnitOfWork.get_current_session()
+
         query = select(UserModel).where(UserModel.id == id)
-        if user := await self._session.scalar(query):
+        if user := await session.scalar(query):
             return model_to_entity(user)
         return None
 
     async def get_by_email_or_none(self, email: str) -> Optional[User]:
+        session = SqlAlchemyUnitOfWork.get_current_session()
+
         query = select(UserModel).where(UserModel.email == email)
-        if user := await self._session.scalar(query):
+        if user := await session.scalar(query):
             return model_to_entity(user)
         return None
 
     async def get_by_username_or_none(self, username: str) -> Optional[User]:
+        session = SqlAlchemyUnitOfWork.get_current_session()
+
         query = select(UserModel).where(UserModel.username == username)
-        if user := await self._session.scalar(query):
+        if user := await session.scalar(query):
             return model_to_entity(user)
         return None
 
     async def add(self, user_details: CreateUserDetails) -> User:
+        session = SqlAlchemyUnitOfWork.get_current_session()
+
         query = (
             insert(UserModel)
             .values(
@@ -66,11 +72,13 @@ class SQLiteUsersRepository(UsersRepository):
             )
             .returning(UserModel)
         )
-        result = await self._session.execute(query)
+        result = await session.execute(query)
         user = result.scalar_one()
         return model_to_entity(user)
 
     async def update(self, user_id: UserID, update_details: UpdateUserDetails) -> User:
+        session = SqlAlchemyUnitOfWork.get_current_session()
+
         current_time = self._now()
         query = (
             update(UserModel)
@@ -94,6 +102,6 @@ class SQLiteUsersRepository(UsersRepository):
         if update_details.image_url is not None:
             query = query.values(image_url=update_details.image_url)
 
-        result = await self._session.execute(query)
+        result = await session.execute(query)
         updated_user = result.scalar_one()
         return model_to_entity(updated_user)

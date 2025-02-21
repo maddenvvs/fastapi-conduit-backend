@@ -1,7 +1,6 @@
 from typing import Any, Optional
 
 from sqlalchemy import exists, func, insert, literal, select, true
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.functions import count
 
 from conduit.domain.entities.articles import (
@@ -21,6 +20,7 @@ from conduit.infrastructure.persistence.models import (
     TagModel,
     UserModel,
 )
+from conduit.infrastructure.persistence.unit_of_work import SqlAlchemyUnitOfWork
 from conduit.infrastructure.time import CurrentTime
 
 
@@ -57,13 +57,14 @@ def _to_bodyless_article(row: Any) -> BodylessArticleWithAuthor:
 
 
 class SQLiteArticlesRepository(ArticlesRepository):
-    def __init__(self, session: AsyncSession, now: CurrentTime):
-        self._session = session
+    def __init__(self, now: CurrentTime):
         self._now = now
 
     async def get_by_slug_or_none(self, slug: str) -> Optional[Article]:
+        session = SqlAlchemyUnitOfWork.get_current_session()
+
         query = select(ArticleModel).where(ArticleModel.slug == slug)
-        if article := await self._session.scalar(query):
+        if article := await session.scalar(query):
             return _model_to_entity(article)
         return None
 
@@ -72,7 +73,9 @@ class SQLiteArticlesRepository(ArticlesRepository):
         author_id: AuthorID,
         article_details: NewArticleDetailsWithSlug,
     ) -> Article:
+        session = SqlAlchemyUnitOfWork.get_current_session()
         current_time = self._now()
+
         query = (
             insert(ArticleModel)
             .values(
@@ -86,12 +89,14 @@ class SQLiteArticlesRepository(ArticlesRepository):
             )
             .returning(ArticleModel)
         )
-        result = await self._session.execute(query)
+        result = await session.execute(query)
         return _model_to_entity(result.scalar_one())
 
     async def list_by_followings(
         self, user_id: UserID, limit: int, offset: int
     ) -> list[BodylessArticleWithAuthor]:
+        session = SqlAlchemyUnitOfWork.get_current_session()
+
         query = (
             select(
                 ArticleModel.id.label("id"),
@@ -152,18 +157,20 @@ class SQLiteArticlesRepository(ArticlesRepository):
         )
 
         query = query.limit(limit).offset(offset)
-        articles = await self._session.execute(query)
+        articles = await session.execute(query)
 
         return [_to_bodyless_article(row) for row in articles]
 
     async def count_by_followings(self, user_id: UserID) -> int:
+        session = SqlAlchemyUnitOfWork.get_current_session()
+
         query = select(count(ArticleModel.id)).join(
             FollowerModel,
             FollowerModel.follower_id == user_id
             and FollowerModel.following_id == ArticleModel.id,
         )
 
-        result = await self._session.execute(query)
+        result = await session.execute(query)
         return result.scalar_one()
 
     async def list_by_filters(
@@ -172,6 +179,8 @@ class SQLiteArticlesRepository(ArticlesRepository):
         limit: int,
         offset: int,
     ) -> list[BodylessArticleWithAuthor]:
+        session = SqlAlchemyUnitOfWork.get_current_session()
+
         query = (
             select(
                 ArticleModel.id.label("id"),
@@ -236,11 +245,13 @@ class SQLiteArticlesRepository(ArticlesRepository):
         )
 
         query = query.limit(limit).offset(offset)
-        articles = await self._session.execute(query)
+        articles = await session.execute(query)
 
         return [_to_bodyless_article(row) for row in articles]
 
     async def count_by_filters(self) -> int:
+        session = SqlAlchemyUnitOfWork.get_current_session()
+
         query = select(count(ArticleModel.id))
-        result = await self._session.execute(query)
+        result = await session.execute(query)
         return result.scalar_one()
