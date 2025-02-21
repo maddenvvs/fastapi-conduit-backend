@@ -23,6 +23,10 @@ from conduit.domain.use_cases.update_current_user.use_case import (
     UpdateCurrentUserUseCase,
 )
 from conduit.infrastructure.persistence.database import Database
+from conduit.infrastructure.persistence.repositories.tags import SQLiteTagsRepository
+from conduit.infrastructure.persistence.repositories.unit_of_work import (
+    SqlAlchemyUnitOfWorkFactory,
+)
 from conduit.infrastructure.persistence.unit_of_work import (
     SqliteUnitOfWork,
     context_factory,
@@ -62,9 +66,19 @@ class Container(containers.DeclarativeContainer):
         context_factory=uow_context_factory,
     )
 
+    uow_factory = providers.Factory(
+        SqlAlchemyUnitOfWorkFactory,
+        db=db,
+    )
+
+    tags_repository = providers.Factory(
+        SQLiteTagsRepository,
+        now=now,
+    )
+
     tags_service = providers.Factory(
         TagsService,
-        unit_of_work=unit_of_work,
+        tags_repository=tags_repository,
     )
 
     auth_token_service = providers.Factory(
@@ -97,6 +111,7 @@ class Container(containers.DeclarativeContainer):
     list_tags_use_case = providers.Factory(
         ListTagsUseCase,
         tags_service=tags_service,
+        uow_factory=uow_factory,
     )
 
     get_article_by_slug_use_case = providers.Factory(
@@ -107,8 +122,10 @@ class Container(containers.DeclarativeContainer):
     create_article_use_case = providers.Factory(
         CreateArticleUseCase,
         unit_of_work=unit_of_work,
+        uow_factory=uow_factory,
         profiles_service=profiles_service,
         slug_service=slug_service,
+        tags_repository=tags_repository,
     )
 
     list_articles_use_case = providers.Factory(

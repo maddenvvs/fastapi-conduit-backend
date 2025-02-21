@@ -5,9 +5,11 @@ from conduit.domain.entities.articles import (
     NewArticleDetails,
     NewArticleDetailsWithSlug,
 )
+from conduit.domain.repositories.tags import TagsRepository
 from conduit.domain.repositories.unit_of_work import UnitOfWork
 from conduit.domain.services.profiles_service import ProfilesService
 from conduit.domain.services.slug_service import SlugService
+from conduit.domain.unit_of_work import UnitOfWorkFactory
 from conduit.domain.use_cases.create_article.exceptions import (
     ArticleProfileMissingException,
 )
@@ -17,12 +19,16 @@ class CreateArticleUseCase:
     def __init__(
         self,
         unit_of_work: UnitOfWork,
+        uow_factory: UnitOfWorkFactory,
         profiles_service: ProfilesService,
         slug_service: SlugService,
+        tags_repository: TagsRepository,
     ) -> None:
         self._uow = unit_of_work
+        self._uow_factory = uow_factory
         self._profiles_service = profiles_service
         self._slug_service = slug_service
+        self._tags_repository = tags_repository
 
     async def __call__(
         self,
@@ -41,9 +47,12 @@ class CreateArticleUseCase:
             tags=article_details.tags,
         )
 
-        async with self._uow.begin() as db:
+        async with self._uow.begin() as db, self._uow_factory():
             created_article = await db.articles.add(author_id, slugged_article)
-            await db.tags.add_many(created_article.id, article_details.tags)
+            await self._tags_repository.add_many(
+                created_article.id,
+                article_details.tags,
+            )
 
         return ArticleWithAuthor(
             slug=created_article.slug,

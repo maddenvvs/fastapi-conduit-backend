@@ -5,7 +5,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from conduit.domain.repositories.articles import ArticlesRepository
 from conduit.domain.repositories.followers import FollowersRepository
-from conduit.domain.repositories.tags import TagsRepository
 from conduit.domain.repositories.unit_of_work import UnitOfWork, UnitOfWorkContext
 from conduit.domain.repositories.users import UsersRepository
 from conduit.infrastructure.persistence.database import Database
@@ -15,7 +14,6 @@ from conduit.infrastructure.persistence.repositories.articles import (
 from conduit.infrastructure.persistence.repositories.followers import (
     SQLiteFollowersRepository,
 )
-from conduit.infrastructure.persistence.repositories.tags import SQLiteTagsRepository
 from conduit.infrastructure.persistence.repositories.users import SQLiteUsersRepository
 from conduit.infrastructure.time import CurrentTime
 
@@ -29,14 +27,9 @@ class SqliteUnitOfWorkContext(UnitOfWorkContext):
         session: AsyncSession,
         now: CurrentTime,
     ) -> None:
-        self._tags = SQLiteTagsRepository(session, now)
         self._users = SQLiteUsersRepository(session, now)
         self._articles = SQLiteArticlesRepository(session, now)
         self._followers = SQLiteFollowersRepository(session, now)
-
-    @property
-    def tags(self) -> TagsRepository:
-        return self._tags
 
     @property
     def users(self) -> UsersRepository:

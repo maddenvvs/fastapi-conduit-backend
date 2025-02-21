@@ -5,7 +5,7 @@ from typing import Any
 import pytest
 
 from conduit.domain.entities.tags import Tag
-from conduit.domain.repositories.unit_of_work import UnitOfWork
+from conduit.domain.repositories.tags import TagsRepository
 from conduit.domain.services.tags_service import TagsService
 
 
@@ -16,11 +16,11 @@ def tags_service_logger() -> Any:
 
 @pytest.fixture
 def tags_service(
-    unit_of_work: UnitOfWork,
+    tags_repository: TagsRepository,
     tags_service_logger: logging.Logger,
 ) -> TagsService:
     return TagsService(
-        unit_of_work=unit_of_work,
+        tags_repository=tags_repository,
         logger=tags_service_logger,
     )
 

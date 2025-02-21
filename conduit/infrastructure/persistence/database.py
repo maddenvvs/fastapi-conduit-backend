@@ -18,7 +18,7 @@ class Database:
             bind=self._engine,
             expire_on_commit=False,
             # autobegin=False,
-            # close_resets_only=False,
+            close_resets_only=False,
         )
 
     async def database_exists(self) -> bool:
@@ -26,7 +26,7 @@ class Database:
         if database is None:
             return True
         if database == ":memory:":
-            return True
+            return False
 
         if not os.path.isfile(database) or os.path.getsize(database) < 100:
             return False
@@ -63,6 +63,9 @@ class Database:
                 raise
             finally:
                 await session.close()
+
+    def create_session(self) -> AsyncSession:
+        return self._session()
 
     async def seed_database(self) -> None:
         current_time = datetime.datetime.now(datetime.timezone.utc)
