@@ -1,12 +1,13 @@
 from typing import Any, Optional, Sequence, final
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 from typing_extensions import Self
 
 from conduit.domain.exceptions import DomainValidationException
+from conduit.domain.use_cases.login_user.exceptions import InvalidCredentialsException
 
 
 @final
@@ -17,7 +18,7 @@ class ValidationErrorApiResponse(BaseModel):
 
     def to_json_response(self) -> JSONResponse:
         return JSONResponse(
-            status_code=422,
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             content=self.model_dump(),
         )
 
@@ -84,6 +85,16 @@ async def domain_validation_error_handler(
     ).to_json_response()
 
 
+async def invalid_credentials_error_handler(
+    _: Request,
+    exc: InvalidCredentialsException,
+) -> JSONResponse:
+    return JSONResponse(content=None, status_code=status.HTTP_401_UNAUTHORIZED)
+
+
 def register_error_handlers(app: FastAPI) -> None:
-    app.add_exception_handler(RequestValidationError, request_validation_error_handler)  # type: ignore
-    app.add_exception_handler(DomainValidationException, domain_validation_error_handler)  # type: ignore
+    app.exception_handler(RequestValidationError)(request_validation_error_handler)
+    app.exception_handler(DomainValidationException)(domain_validation_error_handler)
+    app.exception_handler(InvalidCredentialsException)(
+        invalid_credentials_error_handler
+    )

@@ -1,9 +1,8 @@
 from typing import final
 
-from conduit.domain.exceptions import DomainValidationException
+from conduit.domain.exceptions import DomainException
 
 
 @final
-class InvalidCredentialsException(DomainValidationException):
-    def __init__(self, field: str, reason: str, *args: object) -> None:
-        super().__init__(field, reason, *args)
+class InvalidCredentialsException(DomainException):
+    pass

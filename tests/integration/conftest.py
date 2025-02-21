@@ -6,6 +6,7 @@ from httpx import ASGITransport, AsyncClient
 
 from conduit.app import create_app
 from conduit.containers import Container
+from conduit.infrastructure.persistence.database import Database
 from conduit.settings import Settings
 
 
@@ -29,6 +30,7 @@ def test_settings(
         database_url=test_sqlite_database_url,
         debug=True,
         jwt_secret_key="secret_key_example_for_test_purposes",
+        jwt_token_expiration_minutes=60 * 24,
     )
     return settings
 
@@ -43,15 +45,18 @@ def test_container(test_app: FastAPI) -> Any:
     return test_app.extra["container"]
 
 
+@pytest.fixture(scope="session")
+def test_db(test_container: Container) -> Database:
+    return test_container.db()
+
+
 @pytest.fixture(scope="session", autouse=True)
 async def test_sqlite_database(
-    test_container: Container,
+    test_db: Database,
 ) -> AsyncGenerator[None, None]:
-    database = test_container.db()
-
-    await database.create_tables()
+    await test_db.create_tables()
     yield
-    await database.drop_tables()
+    await test_db.drop_tables()
 
 
 @pytest.fixture

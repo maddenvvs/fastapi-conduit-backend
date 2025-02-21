@@ -29,16 +29,10 @@ class LoginUserUseCase:
             )
 
         if user is None:
-            raise InvalidCredentialsException(
-                field="email",
-                reason=f"There is no user with email '{login_details.email}'",
-            )
+            raise InvalidCredentialsException("There is no user with provided email")
 
         if not self._password_checker(login_details.password, user.password_hash):
-            raise InvalidCredentialsException(
-                field="password",
-                reason=f"Incorrect password",
-            )
+            raise InvalidCredentialsException("Incorrect password")
 
         token = self._token_service.generate_jwt_token(user, self._now())
         return user.to_logged_in_user(token)

@@ -40,6 +40,15 @@ class HttpExceptionApiResponse(BaseModel):
     )
 
 
+def unauthorized_error_no_body() -> OpenApiResponseDefinition:
+    return {
+        status.HTTP_401_UNAUTHORIZED: {
+            "model": HttpExceptionApiResponse,
+            "description": "Unauthorized",
+        },
+    }
+
+
 def unauthorized_error() -> OpenApiResponseDefinition:
     return {
         status.HTTP_401_UNAUTHORIZED: {

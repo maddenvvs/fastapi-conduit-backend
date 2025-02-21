@@ -82,6 +82,7 @@ router = APIRouter()
     path="/users/login",
     response_model=LoginUserApiResponse,
     responses={
+        **open_api.unauthorized_error_no_body(),
         **open_api.validation_error(),
     },
     status_code=status.HTTP_200_OK,
