@@ -92,9 +92,9 @@ class Container(containers.DeclarativeContainer):
 
     auth_token_service = providers.Factory(
         AuthTokenService,
-        secret_key="secret_key",
-        algorithm="HS256",
-        token_expiration_minutes=30,
+        secret_key=app_settings.provided.jwt_secret_key,
+        algorithm=app_settings.provided.jwt_algorithm,
+        token_expiration_minutes=app_settings.provided.jwt_token_expiration_minutes,
     )
 
     profiles_service = providers.Factory(

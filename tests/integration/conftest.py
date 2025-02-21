@@ -28,6 +28,7 @@ def test_settings(
         _env_file=None,  # type: ignore
         database_url=test_sqlite_database_url,
         debug=True,
+        jwt_secret_key="secret_key_example_for_test_purposes",
     )
     return settings
 
