@@ -6,7 +6,9 @@ import conduit.api.endpoints.articles.get_by_slug as articles_get_by_slug
 import conduit.api.endpoints.articles.list as list_articles
 import conduit.api.endpoints.articles.unfavorite as articles_unfavorite
 import conduit.api.endpoints.health.get as health_get
-import conduit.api.endpoints.profiles.get_profile_by_username as profiles_get_by_username
+import conduit.api.endpoints.profiles.follow as profiles_follow
+import conduit.api.endpoints.profiles.get_by_username as profiles_get_by_username
+import conduit.api.endpoints.profiles.unfollow as profiles_unfollow
 import conduit.api.endpoints.tags.list as tags_list
 import conduit.api.endpoints.users.get_current_user as users_get_current_user
 import conduit.api.endpoints.users.login as users_login
@@ -29,5 +31,7 @@ router.include_router(users_register.router)
 router.include_router(users_login.router)
 
 router.include_router(profiles_get_by_username.router)
+router.include_router(profiles_follow.router)
+router.include_router(profiles_unfollow.router)
 
 router.include_router(health_get.router)

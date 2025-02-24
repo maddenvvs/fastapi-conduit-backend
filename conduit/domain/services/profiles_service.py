@@ -2,6 +2,7 @@ from typing import Optional, final
 
 from conduit.domain.entities.profiles import Profile
 from conduit.domain.entities.users import User, UserID
+from conduit.domain.exceptions import DomainException
 from conduit.domain.repositories.followers import FollowersRepository
 from conduit.domain.repositories.users import UsersRepository
 
@@ -67,18 +68,17 @@ class ProfilesService:
         current_user: User,
     ) -> None:
         if username == current_user.username:
-            raise Exception
+            raise DomainException("Cannot follow yourself")
 
         target_user = await self._users_repository.get_by_username_or_none(username)
-
         if target_user is None:
-            raise Exception
+            raise DomainException("Cannot follow non-existing user")
 
         if await self._followers_repository.exists(
             follower_id=current_user.id,
             following_id=target_user.id,
         ):
-            raise Exception
+            raise DomainException("Profile is already followed")
 
         await self._followers_repository.create(
             follower_id=current_user.id,
@@ -91,18 +91,17 @@ class ProfilesService:
         current_user: User,
     ) -> None:
         if username == current_user.username:
-            raise Exception
+            raise DomainException("Cannot follow yourself")
 
         target_user = await self._users_repository.get_by_username_or_none(username)
-
         if target_user is None:
-            raise Exception
+            raise DomainException("Cannot follow non-existing user")
 
         if not await self._followers_repository.exists(
             follower_id=current_user.id,
             following_id=target_user.id,
         ):
-            raise Exception
+            raise DomainException("Profile is already unfollowed")
 
         await self._followers_repository.delete(
             follower_id=current_user.id,

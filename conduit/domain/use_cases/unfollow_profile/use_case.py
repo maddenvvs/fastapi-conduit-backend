@@ -1,5 +1,7 @@
-from typing import final
+from dataclasses import asdict
+from typing import Optional, final
 
+from conduit.domain.entities.profiles import Profile
 from conduit.domain.entities.users import User
 from conduit.domain.services.profiles_service import ProfilesService
 from conduit.domain.unit_of_work import UnitOfWorkFactory
@@ -16,6 +18,18 @@ class UnfollowProfileUseCase:
         self._uow_factory = uow_factory
         self._profiles_service = profiles_service
 
-    async def __call__(self, username: str, current_user: User) -> None:
+    async def __call__(
+        self,
+        username: str,
+        current_user: User,
+    ) -> Optional[Profile]:
         async with self._uow_factory():
-            return await self._profiles_service.unfollow_profile(username, current_user)
+            profile = await self._profiles_service.get_by_username_or_none(username)
+            if profile is None:
+                return None
+
+            await self._profiles_service.unfollow_profile(username, current_user)
+            return Profile(
+                **asdict(profile),
+                following=True,
+            )
