@@ -9,6 +9,7 @@ from conduit.domain.services.profiles_service import ProfilesService
 from conduit.domain.services.slug_service import SlugService
 from conduit.domain.services.tags_service import TagsService
 from conduit.domain.use_cases.create_article.use_case import CreateArticleUseCase
+from conduit.domain.use_cases.favorite_article.use_case import FavoriteArticleUseCase
 from conduit.domain.use_cases.get_article_by_slug.use_case import (
     GetArticleBySlugUseCase,
 )
@@ -20,12 +21,18 @@ from conduit.domain.use_cases.list_articles.use_case import ListArticlesUseCase
 from conduit.domain.use_cases.list_tags.use_case import ListTagsUseCase
 from conduit.domain.use_cases.login_user.use_case import LoginUserUseCase
 from conduit.domain.use_cases.register_user.use_case import RegisterUserUseCase
+from conduit.domain.use_cases.unfavorite_article.use_case import (
+    UnfavoriteArticleUseCase,
+)
 from conduit.domain.use_cases.update_current_user.use_case import (
     UpdateCurrentUserUseCase,
 )
 from conduit.infrastructure.persistence.database import Database
 from conduit.infrastructure.persistence.repositories.articles import (
     SQLiteArticlesRepository,
+)
+from conduit.infrastructure.persistence.repositories.favorites import (
+    SQLiteFavoritesRepository,
 )
 from conduit.infrastructure.persistence.repositories.followers import (
     SQLiteFollowersRepository,
@@ -84,6 +91,11 @@ class Container(containers.DeclarativeContainer):
         now=now,
     )
 
+    favorites_repository = providers.Factory(
+        SQLiteFavoritesRepository,
+        now=now,
+    )
+
     # Services
 
     tags_service = providers.Factory(
@@ -108,6 +120,7 @@ class Container(containers.DeclarativeContainer):
         ArticlesService,
         articles_repository=articles_repository,
         profiles_service=profiles_service,
+        favorites_repository=favorites_repository,
     )
 
     # Use cases
@@ -171,4 +184,16 @@ class Container(containers.DeclarativeContainer):
         GetProfileByNameUseCase,
         uow_factory=uow_factory,
         profiles_service=profiles_service,
+    )
+
+    favorite_article_use_case = providers.Factory(
+        FavoriteArticleUseCase,
+        uow_factory=uow_factory,
+        articles_service=articles_service,
+    )
+
+    unfavorite_article_use_case = providers.Factory(
+        UnfavoriteArticleUseCase,
+        uow_factory=uow_factory,
+        articles_service=articles_service,
     )

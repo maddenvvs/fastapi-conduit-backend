@@ -39,6 +39,7 @@ class ArticleAuthor:
 @final
 @dataclass
 class ArticleWithAuthor:
+    id: ArticleID
     slug: str
     title: str
     description: str

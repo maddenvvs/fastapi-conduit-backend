@@ -58,6 +58,7 @@ class CreateArticleUseCase:
             )
 
         return ArticleWithAuthor(
+            id=created_article.id,
             slug=created_article.slug,
             description=created_article.description,
             body=created_article.body,

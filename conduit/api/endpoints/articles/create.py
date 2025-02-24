@@ -1,16 +1,15 @@
-from typing import Annotated, Optional, final
+from typing import Annotated, final
 
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Body, Depends, status
 from pydantic import BaseModel, Field
-from typing_extensions import Self
 
 from conduit.api import open_api
-from conduit.api.json import DateTime
+from conduit.api.endpoints.articles.contract import ArticleWithAuthorApiResponse
 from conduit.api.security.dependencies import CurrentUser
 from conduit.api.tags import Tag
 from conduit.containers import Container
-from conduit.domain.entities.articles import ArticleWithAuthor, NewArticleDetails
+from conduit.domain.entities.articles import NewArticleDetails
 from conduit.domain.use_cases.create_article.use_case import CreateArticleUseCase
 
 
@@ -54,63 +53,12 @@ class CreateArticleApiRequest(BaseModel):
         )
 
 
-@final
-class ArticleAuthorData(BaseModel):
-    username: str
-    bio: str
-    image: Optional[str]
-    following: bool
-
-
-@final
-class CreatedArticleData(BaseModel):
-    slug: str
-    title: str
-    description: str
-    body: str
-    tags: list[str] = Field(alias="tagList")
-    created_at: DateTime = Field(alias="createdAt")
-    updated_at: DateTime = Field(alias="updatedAt")
-    favorited: bool
-    favorites_count: int = Field(alias="favoritesCount")
-    author: ArticleAuthorData
-
-
-@final
-class CreateArticleApiResponse(BaseModel):
-    article: CreatedArticleData
-
-    @classmethod
-    def from_domain(cls, article: ArticleWithAuthor) -> Self:
-        author = article.author
-
-        return cls(
-            article=CreatedArticleData(
-                slug=article.slug,
-                title=article.title,
-                description=article.description,
-                body=article.body,
-                tagList=article.tags,
-                createdAt=article.created_at,
-                updatedAt=article.updated_at,
-                favorited=article.favorited,
-                favoritesCount=article.favorites_count,
-                author=ArticleAuthorData(
-                    username=author.username,
-                    bio=author.bio,
-                    image=author.image,
-                    following=author.following,
-                ),
-            )
-        )
-
-
 router = APIRouter()
 
 
 @router.post(
     path="/articles",
-    response_model=CreateArticleApiResponse,
+    response_model=ArticleWithAuthorApiResponse,
     responses={
         **open_api.unauthorized_error(),
         **open_api.validation_error(),
@@ -126,6 +74,6 @@ async def create_article(
     create_article: CreateArticleUseCase = Depends(
         Provide[Container.create_article_use_case]
     ),
-) -> CreateArticleApiResponse:
+) -> ArticleWithAuthorApiResponse:
     created_article = await create_article(new_article.to_domain(), current_user.id)
-    return CreateArticleApiResponse.from_domain(created_article)
+    return ArticleWithAuthorApiResponse.from_domain(created_article)
