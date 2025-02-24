@@ -2,6 +2,7 @@ from typing import final
 
 from dependency_injector import containers, providers
 
+from conduit.domain.services.articles_service import ArticlesService
 from conduit.domain.services.auth_token_service import AuthTokenService
 from conduit.domain.services.password_service import PasswordService
 from conduit.domain.services.profiles_service import ProfilesService
@@ -103,6 +104,12 @@ class Container(containers.DeclarativeContainer):
         followers_repository=followers_repository,
     )
 
+    articles_service = providers.Factory(
+        ArticlesService,
+        articles_repository=articles_repository,
+        profiles_service=profiles_service,
+    )
+
     # Use cases
 
     register_user_use_case = providers.Factory(
@@ -130,6 +137,8 @@ class Container(containers.DeclarativeContainer):
 
     get_article_by_slug_use_case = providers.Factory(
         GetArticleBySlugUseCase,
+        uow_factory=uow_factory,
+        articles_service=articles_service,
     )
 
     create_article_use_case = providers.Factory(

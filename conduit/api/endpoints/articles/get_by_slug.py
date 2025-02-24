@@ -1,10 +1,11 @@
-from typing import Optional
+from typing import Annotated, Optional
 
 from dependency_injector.wiring import Provide, inject
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, Path
 from pydantic import BaseModel, Field
 from typing_extensions import Self
 
+from conduit.api import open_api
 from conduit.api.json import DateTime
 from conduit.api.security.dependencies import OptionalCurrentUser
 from conduit.api.tags import Tag
@@ -69,15 +70,26 @@ router = APIRouter()
 @router.get(
     path="/articles/{slug}",
     response_model=GetArticleBySlugApiResponse,
+    responses={
+        **open_api.unauthorized_error(),
+        **open_api.not_found_error("Article"),
+    },
+    summary="Get article by slug",
     tags=[Tag.Articles],
 )
 @inject
 async def get_article_by_slug(
-    slug: str,
+    slug: Annotated[str, Path(description="Article slug generated after creation")],
     optional_user: OptionalCurrentUser,
     get_article_by_slug: GetArticleBySlugUseCase = Depends(
         Provide[Container.get_article_by_slug_use_case]
     ),
 ) -> GetArticleBySlugApiResponse:
     article = await get_article_by_slug(slug, optional_user)
+    if article is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Article not found",
+        )
+
     return GetArticleBySlugApiResponse.from_domain(article)

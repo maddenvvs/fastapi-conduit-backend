@@ -78,6 +78,7 @@ async def anonymous_test_client(
 @pytest.fixture(scope="session")
 async def registered_user() -> UserModel:
     return UserModel(
+        id=1,
         username="admin",
         email="admin@gmail.com",
         password_hash="oops_i_did_it_again",
