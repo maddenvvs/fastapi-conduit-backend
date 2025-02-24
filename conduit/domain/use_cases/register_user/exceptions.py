@@ -5,10 +5,10 @@ from conduit.domain.exceptions import DomainValidationException
 
 @final
 class EmailAlreadyTakenException(DomainValidationException):
-    def __init__(self, email: str, *args: object) -> None:
+    def __init__(self, *args: object) -> None:
         super().__init__(
             "email",
-            f"Email '{email}' is already taken",
+            f"Email is taken",
             *args,
         )
 
@@ -17,11 +17,10 @@ class EmailAlreadyTakenException(DomainValidationException):
 class UserNameAlreadyTakenException(DomainValidationException):
     def __init__(
         self,
-        username: str,
         *args: object,
     ) -> None:
         super().__init__(
             "username",
-            f"Username '{username}' is already taken",
+            f"Username is taken",
             *args,
         )

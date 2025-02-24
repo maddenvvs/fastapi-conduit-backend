@@ -48,14 +48,12 @@ class RegisterUserUseCase:
             if await self._users_repository.get_by_email_or_none(
                 email=register_user_details.email
             ):
-                raise EmailAlreadyTakenException(email=register_user_details.email)
+                raise EmailAlreadyTakenException()
 
             if await self._users_repository.get_by_username_or_none(
                 username=register_user_details.username
             ):
-                raise UserNameAlreadyTakenException(
-                    username=register_user_details.username
-                )
+                raise UserNameAlreadyTakenException()
 
             hashed_password = self._password_hasher(register_user_details.password)
             return await self._users_repository.add(
