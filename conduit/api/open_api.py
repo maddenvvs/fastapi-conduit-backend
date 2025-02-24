@@ -69,7 +69,7 @@ def not_found_error(entity_name: str) -> OpenApiResponseDefinition:
     detail_message = f"{entity_name} is not found"
 
     return {
-        status.HTTP_401_UNAUTHORIZED: {
+        status.HTTP_404_NOT_FOUND: {
             "model": HttpExceptionApiResponse,
             "description": "Not Found",
             "content": {
