@@ -176,7 +176,7 @@ class TestWhenLoginToExistingUser:
     class TestWithInvalidPassword:
 
         @pytest.fixture
-        async def valid_login_response(
+        async def invalid_login_response(
             self, anonymous_test_client: AsyncClient
         ) -> Response:
             response = await anonymous_test_client.post(
@@ -191,11 +191,13 @@ class TestWhenLoginToExistingUser:
             return response
 
         @pytest.mark.anyio
-        async def test_returns_status_200_OK(
-            self, valid_login_response: Response
+        async def test_returns_status_401_unauthorized(
+            self, invalid_login_response: Response
         ) -> None:
-            assert valid_login_response.status_code == 401
+            assert invalid_login_response.status_code == 401
 
         @pytest.mark.anyio
-        async def test_returns_jwt_token(self, valid_login_response: Response) -> None:
-            assert valid_login_response.json() is None
+        async def test_returns_empty_body(
+            self, invalid_login_response: Response
+        ) -> None:
+            assert invalid_login_response.json() is None
