@@ -32,8 +32,8 @@ def create_app() -> FastAPI:
         docs_url="/",
         openapi_tags=tags.open_api_tags_metadata(),
         redoc_url=None,  # Disable ReDoc documentaion
-        **settings.fastapi,
         container=container,
+        **settings.fastapi,
     )
 
     app.include_router(api_endpoints.router)
