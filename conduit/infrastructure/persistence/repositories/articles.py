@@ -1,11 +1,12 @@
 from typing import Any, Optional
 
-from sqlalchemy import exists, func, insert, literal, select, true
+from sqlalchemy import delete, exists, func, insert, literal, select, true
 from sqlalchemy.sql.functions import count
 
 from conduit.domain.entities.articles import (
     Article,
     ArticleAuthor,
+    ArticleID,
     AuthorID,
     BodylessArticleWithAuthor,
     NewArticleDetailsWithSlug,
@@ -255,3 +256,8 @@ class SQLiteArticlesRepository(ArticlesRepository):
         query = select(count(ArticleModel.id))
         result = await session.execute(query)
         return result.scalar_one()
+
+    async def delete_by_id(self, article_id: ArticleID) -> None:
+        session = SqlAlchemyUnitOfWork.get_current_session()
+        query = delete(ArticleModel).where(ArticleModel.id == article_id)
+        await session.execute(query)

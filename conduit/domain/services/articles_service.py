@@ -96,3 +96,17 @@ class ArticlesService:
             favorited=False,
             favorites_count=article.favorites_count - 1,
         )
+
+    async def delete_by_slug(
+        self,
+        slug: str,
+        current_user: User,
+    ) -> None:
+        article = await self._articles_repository.get_by_slug_or_none(slug)
+        if article is None:
+            raise DomainException("Article not found")
+
+        if article.author_id != current_user.id:
+            raise DomainException("You don't own the article")
+
+        await self._articles_repository.delete_by_id(article.id)

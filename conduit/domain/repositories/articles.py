@@ -3,6 +3,7 @@ from typing import Optional
 
 from conduit.domain.entities.articles import (
     Article,
+    ArticleID,
     AuthorID,
     BodylessArticleWithAuthor,
     NewArticleDetailsWithSlug,
@@ -35,3 +36,6 @@ class ArticlesRepository(abc.ABC):
 
     @abc.abstractmethod
     async def count_by_filters(self) -> int: ...
+
+    @abc.abstractmethod
+    async def delete_by_id(self, article_id: ArticleID) -> None: ...

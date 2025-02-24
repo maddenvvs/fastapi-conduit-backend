@@ -9,6 +9,9 @@ from conduit.domain.services.profiles_service import ProfilesService
 from conduit.domain.services.slug_service import SlugService
 from conduit.domain.services.tags_service import TagsService
 from conduit.domain.use_cases.create_article.use_case import CreateArticleUseCase
+from conduit.domain.use_cases.delete_article_by_slug.use_case import (
+    DeleteArticleBySlugUseCase,
+)
 from conduit.domain.use_cases.favorite_article.use_case import FavoriteArticleUseCase
 from conduit.domain.use_cases.follow_profile.use_case import FollowProfileUseCase
 from conduit.domain.use_cases.get_article_by_slug.use_case import (
@@ -208,6 +211,12 @@ class Container(containers.DeclarativeContainer):
 
     unfavorite_article_use_case = providers.Factory(
         UnfavoriteArticleUseCase,
+        uow_factory=uow_factory,
+        articles_service=articles_service,
+    )
+
+    delete_article_by_slug_use_case = providers.Factory(
+        DeleteArticleBySlugUseCase,
         uow_factory=uow_factory,
         articles_service=articles_service,
     )
