@@ -90,7 +90,7 @@ router = APIRouter()
 @inject
 async def list_articles(
     optional_user: OptionalCurrentUser,
-    limit: Annotated[int, Query(ge=1, le=20)] = 20,
+    limit: Annotated[int, Query(ge=1, le=50)] = 20,
     offset: Annotated[int, Query(ge=0)] = 0,
     use_case: ListArticlesUseCase = Depends(Provide[Container.list_articles_use_case]),
 ) -> ListArticlesApiResponse:
