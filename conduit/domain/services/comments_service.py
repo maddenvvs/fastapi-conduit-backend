@@ -3,11 +3,13 @@ from typing import Optional, final
 from conduit.domain.entities.comments import (
     Comment,
     CommentAuthor,
+    CommentID,
     CommentWithAuthor,
     NewComment,
 )
 from conduit.domain.entities.profiles import Profile, ProfileID
 from conduit.domain.entities.users import User
+from conduit.domain.exceptions import DomainException
 from conduit.domain.repositories.comments import CommentsRepository
 from conduit.domain.services.articles_service import ArticlesService
 from conduit.domain.services.profiles_service import ProfilesService
@@ -91,6 +93,24 @@ class CommentsService:
             )
             for comment in raw_comments
         ]
+
+    async def delete_comment(
+        self,
+        slug: str,
+        comment_id: CommentID,
+        current_user: User,
+    ) -> bool:
+        article = await self._articles_service.get_article_by_slug(slug, current_user)
+        if article is None:
+            return False
+
+        comment = await self._comments_repository.get(comment_id)
+        if comment.author_id != current_user.id:
+            raise DomainException("Can't delete comments not created by you")
+
+        await self._comments_repository.delete(comment_id)
+
+        return True
 
     async def _get_profiles_map(
         self,

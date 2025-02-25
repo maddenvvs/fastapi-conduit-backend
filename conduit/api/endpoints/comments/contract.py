@@ -1,10 +1,13 @@
-from typing import Optional, final
+from typing import Annotated, Optional, final
 
+from fastapi import Path
 from pydantic import BaseModel, Field
-from typing_extensions import Self
+from typing_extensions import Self, TypeAlias
 
 from conduit.api.json import DateTime
 from conduit.domain.entities.comments import CommentWithAuthor
+
+ArticleID: TypeAlias = Annotated[int, Path()]
 
 
 @final

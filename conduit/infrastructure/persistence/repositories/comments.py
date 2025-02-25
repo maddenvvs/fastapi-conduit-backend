@@ -1,6 +1,6 @@
 from typing import final
 
-from sqlalchemy import insert, select
+from sqlalchemy import delete, insert, select
 
 from conduit.domain.entities.articles import ArticleID
 from conduit.domain.entities.comments import Comment, NewComment
@@ -53,3 +53,15 @@ class SQLiteCommentsRepository(CommentsRepository):
 
         comments = await session.scalars(query)
         return [_to_domain_comment(comment) for comment in comments]
+
+    async def get(self, comment_id: ArticleID) -> Comment:
+        session = SqlAlchemyUnitOfWork.get_current_session()
+        query = select(CommentModel).where(CommentModel.id == comment_id)
+        result = await session.execute(query)
+        comment = result.scalar_one()
+        return _to_domain_comment(comment)
+
+    async def delete(self, comment_id: ArticleID) -> None:
+        session = SqlAlchemyUnitOfWork.get_current_session()
+        query = delete(CommentModel).where(CommentModel.id == comment_id)
+        await session.execute(query)
