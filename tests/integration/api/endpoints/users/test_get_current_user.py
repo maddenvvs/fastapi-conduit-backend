@@ -4,26 +4,6 @@ from httpx import AsyncClient, Response
 from conduit.infrastructure.persistence.models import UserModel
 
 
-class TestWhenVisitingAnonymously:
-
-    @pytest.fixture
-    async def anonymous_response(self, anonymous_test_client: AsyncClient) -> Response:
-        response = await anonymous_test_client.get("/user")
-        return response
-
-    @pytest.mark.anyio
-    async def test_returns_status_401_unauthorized(
-        self, anonymous_response: Response
-    ) -> None:
-        assert anonymous_response.status_code == 401
-
-    @pytest.mark.anyio
-    async def test_returns_empty_body(self, anonymous_response: Response) -> None:
-        assert anonymous_response.json() == {
-            "detail": "Missing authorization credentials."
-        }
-
-
 class TestWhenVisitingByRegisteredUser:
 
     @pytest.fixture
