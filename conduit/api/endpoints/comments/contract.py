@@ -36,6 +36,21 @@ class CommentDetails(BaseModel):
     body: str
     author: CommentAuthor
 
+    @classmethod
+    def from_domain(cls, comment: CommentWithAuthor) -> Self:
+        return cls(
+            id=comment.id,
+            created_at=comment.created_at,
+            updated_at=comment.updated_at,
+            body=comment.body,
+            author=CommentAuthor(
+                username="NO",
+                bio="NO",
+                image=None,
+                following=False,
+            ),
+        )
+
 
 @final
 class CommentDetailsApiResponse(BaseModel):
@@ -44,16 +59,16 @@ class CommentDetailsApiResponse(BaseModel):
     @classmethod
     def from_domain(cls, comment: CommentWithAuthor) -> Self:
         return cls(
-            comment=CommentDetails(
-                id=comment.id,
-                created_at=comment.created_at,
-                updated_at=comment.updated_at,
-                body=comment.body,
-                author=CommentAuthor(
-                    username="NO",
-                    bio="NO",
-                    image=None,
-                    following=False,
-                ),
-            )
+            comment=CommentDetails.from_domain(comment),
+        )
+
+
+@final
+class ListCommentsApiResponse(BaseModel):
+    comments: list[CommentDetails]
+
+    @classmethod
+    def from_domain(cls, comments: list[CommentWithAuthor]) -> Self:
+        return cls(
+            comments=[CommentDetails.from_domain(comment) for comment in comments],
         )

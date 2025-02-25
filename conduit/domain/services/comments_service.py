@@ -1,13 +1,31 @@
 from typing import Optional, final
 
 from conduit.domain.entities.comments import (
+    Comment,
     CommentAuthor,
     CommentWithAuthor,
     NewComment,
 )
+from conduit.domain.entities.profiles import Profile, ProfileID
 from conduit.domain.entities.users import User
 from conduit.domain.repositories.comments import CommentsRepository
 from conduit.domain.services.articles_service import ArticlesService
+from conduit.domain.services.profiles_service import ProfilesService
+
+
+def _to_comment_with_author(comment: Comment, author: Profile) -> CommentWithAuthor:
+    return CommentWithAuthor(
+        id=comment.id,
+        body=comment.body,
+        created_at=comment.created_at,
+        updated_at=comment.updated_at,
+        author=CommentAuthor(
+            username=author.username,
+            bio=author.bio,
+            image=author.image,
+            following=author.following,
+        ),
+    )
 
 
 @final
@@ -16,9 +34,11 @@ class CommentsService:
         self,
         comments_repository: CommentsRepository,
         articles_service: ArticlesService,
+        profiles_service: ProfilesService,
     ) -> None:
         self._comments_repository = comments_repository
         self._articles_service = articles_service
+        self._profiles_service = profiles_service
 
     async def add_comment_to_article(
         self,
@@ -38,8 +58,7 @@ class CommentsService:
             )
         )
 
-        author = article.author
-
+        author = current_user
         return CommentWithAuthor(
             id=comment.id,
             created_at=comment.created_at,
@@ -49,6 +68,35 @@ class CommentsService:
                 bio=author.bio,
                 username=author.username,
                 image=author.image,
-                following=author.following,
+                following=False,
             ),
         )
+
+    async def list_article_comments(
+        self,
+        slug: str,
+        current_user: Optional[User],
+    ) -> Optional[list[CommentWithAuthor]]:
+        article = await self._articles_service.get_article_by_slug(slug, current_user)
+        if article is None:
+            return None
+
+        raw_comments = await self._comments_repository.list_by_article_id(article.id)
+        profiles_map = await self._get_profiles_map(raw_comments, current_user)
+
+        return [
+            _to_comment_with_author(
+                comment,
+                profiles_map[comment.author_id],
+            )
+            for comment in raw_comments
+        ]
+
+    async def _get_profiles_map(
+        self,
+        comments: list[Comment],
+        current_user: Optional[User],
+    ) -> dict[ProfileID, Profile]:
+        user_ids = [comment.author_id for comment in comments]
+        profiles = await self._profiles_service.list_by_user_ids(user_ids, current_user)
+        return {profile.id: profile for profile in profiles}

@@ -14,7 +14,7 @@ from conduit.infrastructure.persistence.unit_of_work import SqlAlchemyUnitOfWork
 from conduit.infrastructure.time import CurrentTime
 
 
-def model_to_entity(model: UserModel) -> User:
+def _model_to_entity(model: UserModel) -> User:
     return User(
         id=model.id,
         email=model.email,
@@ -39,7 +39,7 @@ class SQLiteUsersRepository(UsersRepository):
 
         query = select(UserModel).where(UserModel.id == id)
         if user := await session.scalar(query):
-            return model_to_entity(user)
+            return _model_to_entity(user)
         return None
 
     async def get_by_email_or_none(self, email: str) -> Optional[User]:
@@ -47,7 +47,7 @@ class SQLiteUsersRepository(UsersRepository):
 
         query = select(UserModel).where(UserModel.email == email)
         if user := await session.scalar(query):
-            return model_to_entity(user)
+            return _model_to_entity(user)
         return None
 
     async def get_by_username_or_none(self, username: str) -> Optional[User]:
@@ -55,7 +55,7 @@ class SQLiteUsersRepository(UsersRepository):
 
         query = select(UserModel).where(UserModel.username == username)
         if user := await session.scalar(query):
-            return model_to_entity(user)
+            return _model_to_entity(user)
         return None
 
     async def add(self, user_details: CreateUserDetails) -> User:
@@ -74,7 +74,7 @@ class SQLiteUsersRepository(UsersRepository):
         )
         result = await session.execute(query)
         user = result.scalar_one()
-        return model_to_entity(user)
+        return _model_to_entity(user)
 
     async def update(self, user_id: UserID, update_details: UpdateUserDetails) -> User:
         session = SqlAlchemyUnitOfWork.get_current_session()
@@ -104,4 +104,11 @@ class SQLiteUsersRepository(UsersRepository):
 
         result = await session.execute(query)
         updated_user = result.scalar_one()
-        return model_to_entity(updated_user)
+        return _model_to_entity(updated_user)
+
+    async def list_by_user_ids(self, user_ids: list[int]) -> list[User]:
+        session = SqlAlchemyUnitOfWork.get_current_session()
+
+        query = select(UserModel).where(UserModel.id.in_(user_ids))
+        users = await session.scalars(query)
+        return [_model_to_entity(user) for user in users]

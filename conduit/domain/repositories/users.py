@@ -41,3 +41,6 @@ class UsersRepository(abc.ABC):
         user_id: UserID,
         update_details: UpdateUserDetails,
     ) -> User: ...
+
+    @abc.abstractmethod
+    async def list_by_user_ids(self, user_ids: list[UserID]) -> list[User]: ...

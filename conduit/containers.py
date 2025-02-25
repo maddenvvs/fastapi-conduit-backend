@@ -24,6 +24,7 @@ from conduit.domain.use_cases.get_profile_by_name.use_case import (
     GetProfileByNameUseCase,
 )
 from conduit.domain.use_cases.list_articles.use_case import ListArticlesUseCase
+from conduit.domain.use_cases.list_comments.use_case import ListArticleCommentsUseCase
 from conduit.domain.use_cases.list_tags.use_case import ListTagsUseCase
 from conduit.domain.use_cases.login_user.use_case import LoginUserUseCase
 from conduit.domain.use_cases.register_user.use_case import RegisterUserUseCase
@@ -241,4 +242,11 @@ class Container(containers.DeclarativeContainer):
         AddCommentToArticleUseCase,
         uow_factory=uow_factory,
         comments_service=comments_service,
+    )
+
+    list_article_comments_use_case = providers.Factory(
+        ListArticleCommentsUseCase,
+        uow_factory=uow_factory,
+        comments_service=comments_service,
+        profiles_service=profiles_service,
     )

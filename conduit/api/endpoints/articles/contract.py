@@ -11,6 +11,7 @@ ArticleSlug: TypeAlias = Annotated[
     str,
     Path(
         description="Article slug generated after creation",
+        min_length=1,
     ),
 ]
 

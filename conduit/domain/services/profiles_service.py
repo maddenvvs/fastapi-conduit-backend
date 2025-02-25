@@ -7,6 +7,16 @@ from conduit.domain.repositories.followers import FollowersRepository
 from conduit.domain.repositories.users import UsersRepository
 
 
+def _to_profile(user: User, following: bool) -> Profile:
+    return Profile(
+        id=user.id,
+        username=user.username,
+        bio=user.bio,
+        image=user.image,
+        following=following,
+    )
+
+
 @final
 class ProfilesService:
 
@@ -32,13 +42,7 @@ class ProfilesService:
         if current_user is not None:
             is_following = True
 
-        return Profile(
-            id=target_user.id,
-            username=target_user.username,
-            bio=target_user.bio,
-            image=target_user.image,
-            following=is_following,
-        )
+        return _to_profile(target_user, is_following)
 
     async def get_by_username_or_none(
         self,
@@ -54,13 +58,7 @@ class ProfilesService:
         if current_user is not None:
             is_following = True
 
-        return Profile(
-            id=target_user.id,
-            username=target_user.username,
-            bio=target_user.bio,
-            image=target_user.image,
-            following=is_following,
-        )
+        return _to_profile(target_user, is_following)
 
     async def follow_profile(
         self,
@@ -107,3 +105,11 @@ class ProfilesService:
             follower_id=current_user.id,
             following_id=target_user.id,
         )
+
+    async def list_by_user_ids(
+        self,
+        user_ids: list[UserID],
+        current_user: Optional[User],
+    ) -> list[Profile]:
+        target_users = await self._users_repository.list_by_user_ids(user_ids)
+        return [_to_profile(user, following=False) for user in target_users]
