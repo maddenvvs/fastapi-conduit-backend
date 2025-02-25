@@ -27,7 +27,7 @@ class Settings(BaseSettings):
     def sqlalchemy_engine(self) -> dict[str, Any]:
         return dict(
             url=self.database_url,
-            echo=True,
+            echo=self.debug,
         )
 
 
