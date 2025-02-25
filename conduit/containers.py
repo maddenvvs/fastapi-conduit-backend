@@ -16,6 +16,7 @@ from conduit.domain.use_cases.delete_article_by_slug.use_case import (
 )
 from conduit.domain.use_cases.delete_comment.use_case import DeleteArticleCommentUseCase
 from conduit.domain.use_cases.favorite_article.use_case import FavoriteArticleUseCase
+from conduit.domain.use_cases.feed_articles.use_case import FeedArticlesUseCase
 from conduit.domain.use_cases.follow_profile.use_case import FollowProfileUseCase
 from conduit.domain.use_cases.get_article_by_slug.use_case import (
     GetArticleBySlugUseCase,
@@ -189,6 +190,12 @@ class Container(containers.DeclarativeContainer):
 
     list_articles_use_case = providers.Factory(
         ListArticlesUseCase,
+        uow_factory=uow_factory,
+        articles_repository=articles_repository,
+    )
+
+    feed_articles_use_case = providers.Factory(
+        FeedArticlesUseCase,
         uow_factory=uow_factory,
         articles_repository=articles_repository,
     )

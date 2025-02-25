@@ -3,6 +3,7 @@ from fastapi import APIRouter
 import conduit.api.endpoints.articles.create as create_article
 import conduit.api.endpoints.articles.delete as articles_delete_by_slug
 import conduit.api.endpoints.articles.favorite as articles_favorite
+import conduit.api.endpoints.articles.feed as feed_articles
 import conduit.api.endpoints.articles.get_by_slug as articles_get_by_slug
 import conduit.api.endpoints.articles.list as list_articles
 import conduit.api.endpoints.articles.unfavorite as articles_unfavorite
@@ -21,6 +22,7 @@ import conduit.api.endpoints.users.update_current_user as users_update_current_u
 
 router = APIRouter(prefix="/api")
 
+router.include_router(feed_articles.router)
 router.include_router(articles_get_by_slug.router)
 router.include_router(articles_favorite.router)
 router.include_router(articles_unfavorite.router)

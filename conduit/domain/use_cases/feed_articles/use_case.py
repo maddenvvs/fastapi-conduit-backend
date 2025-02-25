@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import final
 
 from conduit.domain.entities.articles import BodylessArticleWithAuthor
-from conduit.domain.entities.users import UserID
+from conduit.domain.entities.users import User
 from conduit.domain.repositories.articles import ArticlesRepository
 from conduit.domain.unit_of_work import UnitOfWorkFactory
 
@@ -10,7 +10,7 @@ from conduit.domain.unit_of_work import UnitOfWorkFactory
 @final
 @dataclass(frozen=True)
 class FeedArticlesRequest:
-    user_id: UserID
+    user: User
     limit: int
     offset: int
 
@@ -36,12 +36,12 @@ class FeedArticlesUseCase:
     async def __call__(self, feed_request: FeedArticlesRequest) -> FeedArticlesResponse:
         async with self._uof_factory():
             articles = await self._articles_repository.list_by_followings(
-                user_id=feed_request.user_id,
+                user_id=feed_request.user.id,
                 limit=feed_request.limit,
                 offset=feed_request.offset,
             )
             articles_count = await self._articles_repository.count_by_followings(
-                feed_request.user_id
+                feed_request.user.id
             )
 
         return FeedArticlesResponse(

@@ -115,24 +115,24 @@ class SQLiteArticlesRepository(ArticlesRepository):
                 true().label("following"),
                 # Subquery for favorites count.
                 select(func.count(FavoriteModel.article_id))
-                .where(FavoriteModel.article_id == Article.id)
+                .where(FavoriteModel.article_id == ArticleModel.id)
                 .scalar_subquery()
                 .label("favorites_count"),
                 # Subquery to check if favorited by user with id `user_id`.
                 exists()
                 .where(
                     (FavoriteModel.user_id == user_id)
-                    & (FavoriteModel.article_id == Article.id)
+                    & (FavoriteModel.article_id == ArticleModel.id)
                 )
                 .label("favorited"),
                 # Concatenate tags.
-                func.string_agg(TagModel.name, ", ").label("tags"),
+                func.group_concat(TagModel.name, ", ").label("tags"),
             )
             .join(
                 UserModel,
                 ArticleModel.author_id == UserModel.id,
             )
-            .join(ArticleTagModel, ArticleTagModel.article_id == Article.id)
+            .join(ArticleTagModel, ArticleTagModel.article_id == ArticleModel.id)
             .join(TagModel, TagModel.id == ArticleTagModel.tag_id)
             .filter(
                 UserModel.id.in_(
