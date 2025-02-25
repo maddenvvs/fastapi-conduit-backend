@@ -24,7 +24,7 @@ router = APIRouter()
     tags=[Tag.Comments],
 )
 @inject
-async def add_comment_to_article(
+async def list_article_comments(
     slug: ArticleSlug,
     current_user: OptionalCurrentUser,
     list_comments: ListArticleCommentsUseCase = Depends(
