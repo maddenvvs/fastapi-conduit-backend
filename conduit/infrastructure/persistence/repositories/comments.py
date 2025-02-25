@@ -1,12 +1,24 @@
 from typing import final
 
-from sqlalchemy import insert
+from sqlalchemy import insert, select
 
+from conduit.domain.entities.articles import ArticleID
 from conduit.domain.entities.comments import Comment, NewComment
 from conduit.domain.repositories.comments import CommentsRepository
 from conduit.infrastructure.persistence.models import CommentModel
 from conduit.infrastructure.persistence.unit_of_work import SqlAlchemyUnitOfWork
 from conduit.infrastructure.time import CurrentTime
+
+
+def _to_domain_comment(comment: CommentModel) -> Comment:
+    return Comment(
+        id=comment.id,
+        author_id=comment.author_id,
+        article_id=comment.article_id,
+        body=comment.body,
+        created_at=comment.created_at,
+        updated_at=comment.updated_at,
+    )
 
 
 @final
@@ -33,12 +45,11 @@ class SQLiteCommentsRepository(CommentsRepository):
 
         result = await session.execute(query)
         created_comment = result.scalar_one()
+        return _to_domain_comment(created_comment)
 
-        return Comment(
-            id=created_comment.id,
-            author_id=created_comment.author_id,
-            article_id=created_comment.article_id,
-            body=created_comment.body,
-            created_at=created_comment.created_at,
-            updated_at=created_comment.updated_at,
-        )
+    async def list_by_article_id(self, article_id: ArticleID) -> list[Comment]:
+        session = SqlAlchemyUnitOfWork.get_current_session()
+        query = select(CommentModel).where(CommentModel.article_id == article_id)
+
+        comments = await session.scalars(query)
+        return [_to_domain_comment(comment) for comment in comments]
