@@ -4,10 +4,12 @@ from dependency_injector import containers, providers
 
 from conduit.domain.services.articles_service import ArticlesService
 from conduit.domain.services.auth_token_service import AuthTokenService
+from conduit.domain.services.comments_service import CommentsService
 from conduit.domain.services.password_service import PasswordService
 from conduit.domain.services.profiles_service import ProfilesService
 from conduit.domain.services.slug_service import SlugService
 from conduit.domain.services.tags_service import TagsService
+from conduit.domain.use_cases.add_comment.use_case import AddCommentToArticleUseCase
 from conduit.domain.use_cases.create_article.use_case import CreateArticleUseCase
 from conduit.domain.use_cases.delete_article_by_slug.use_case import (
     DeleteArticleBySlugUseCase,
@@ -35,6 +37,9 @@ from conduit.domain.use_cases.update_current_user.use_case import (
 from conduit.infrastructure.persistence.database import Database
 from conduit.infrastructure.persistence.repositories.articles import (
     SQLiteArticlesRepository,
+)
+from conduit.infrastructure.persistence.repositories.comments import (
+    SQLiteCommentsRepository,
 )
 from conduit.infrastructure.persistence.repositories.favorites import (
     SQLiteFavoritesRepository,
@@ -101,6 +106,11 @@ class Container(containers.DeclarativeContainer):
         now=now,
     )
 
+    comments_repository = providers.Factory(
+        SQLiteCommentsRepository,
+        now=now,
+    )
+
     # Services
 
     tags_service = providers.Factory(
@@ -126,6 +136,12 @@ class Container(containers.DeclarativeContainer):
         articles_repository=articles_repository,
         profiles_service=profiles_service,
         favorites_repository=favorites_repository,
+    )
+
+    comments_service = providers.Factory(
+        CommentsService,
+        comments_repository=comments_repository,
+        articles_service=articles_service,
     )
 
     # Use cases
@@ -219,4 +235,10 @@ class Container(containers.DeclarativeContainer):
         DeleteArticleBySlugUseCase,
         uow_factory=uow_factory,
         articles_service=articles_service,
+    )
+
+    add_comment_to_article_use_case = providers.Factory(
+        AddCommentToArticleUseCase,
+        uow_factory=uow_factory,
+        comments_service=comments_service,
     )

@@ -76,3 +76,20 @@ class FavoriteModel(Base):
         primary_key=True,
     )
     created_at: Mapped[datetime]
+
+
+class CommentModel(Base):
+    __tablename__ = "comments"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    article_id: Mapped[int] = mapped_column(
+        ForeignKey("articles.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    author_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id"),
+        nullable=False,
+    )
+    body: Mapped[str] = mapped_column(nullable=False)
+    created_at: Mapped[datetime]
+    updated_at: Mapped[datetime]
