@@ -7,6 +7,7 @@ import conduit.api.endpoints.articles.feed as feed_articles
 import conduit.api.endpoints.articles.get_by_slug as articles_get_by_slug
 import conduit.api.endpoints.articles.list as list_articles
 import conduit.api.endpoints.articles.unfavorite as articles_unfavorite
+import conduit.api.endpoints.articles.update as article_update
 import conduit.api.endpoints.comments.add as add_comment
 import conduit.api.endpoints.comments.delete as delete_comment
 import conduit.api.endpoints.comments.list as list_comments
@@ -24,6 +25,7 @@ router = APIRouter(prefix="/api")
 
 router.include_router(feed_articles.router)
 router.include_router(articles_get_by_slug.router)
+router.include_router(article_update.router)
 router.include_router(articles_favorite.router)
 router.include_router(articles_unfavorite.router)
 router.include_router(list_articles.router)
