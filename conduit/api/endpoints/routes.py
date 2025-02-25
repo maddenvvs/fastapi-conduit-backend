@@ -7,6 +7,7 @@ import conduit.api.endpoints.articles.get_by_slug as articles_get_by_slug
 import conduit.api.endpoints.articles.list as list_articles
 import conduit.api.endpoints.articles.unfavorite as articles_unfavorite
 import conduit.api.endpoints.comments.add as add_comment
+import conduit.api.endpoints.comments.delete as delete_comment
 import conduit.api.endpoints.comments.list as list_comments
 import conduit.api.endpoints.health.get as health_get
 import conduit.api.endpoints.profiles.follow as profiles_follow
@@ -29,6 +30,7 @@ router.include_router(articles_delete_by_slug.router)
 
 router.include_router(list_comments.router)
 router.include_router(add_comment.router)
+router.include_router(delete_comment.router)
 
 router.include_router(tags_list.router)
 
