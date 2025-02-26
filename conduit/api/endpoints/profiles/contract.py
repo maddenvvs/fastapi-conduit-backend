@@ -10,6 +10,7 @@ Username: TypeAlias = Annotated[
     str,
     Path(
         description="Username of a registered user.",
+        min_length=1,
     ),
 ]
 

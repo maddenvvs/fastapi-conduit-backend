@@ -36,7 +36,7 @@ async def get_profile_by_username(
     if profile_details is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Profile is not found.",
+            detail="Profile not found",
         )
 
     return ProfileDetailsApiResponse.from_profile(profile_details)

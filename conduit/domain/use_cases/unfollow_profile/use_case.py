@@ -1,4 +1,3 @@
-from dataclasses import asdict
 from typing import Optional, final
 
 from conduit.domain.entities.profiles import Profile
@@ -30,6 +29,9 @@ class UnfollowProfileUseCase:
 
             await self._profiles_service.unfollow_profile(username, current_user)
             return Profile(
-                **asdict(profile),
+                id=profile.id,
+                username=profile.username,
+                bio=profile.bio,
+                image=profile.image,
                 following=True,
             )

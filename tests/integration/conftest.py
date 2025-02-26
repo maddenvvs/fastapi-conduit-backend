@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, AsyncGenerator
+from typing import Any, AsyncGenerator, Callable
 
 import pytest
 from fastapi import FastAPI
@@ -76,17 +76,26 @@ async def anonymous_test_client(
 
 
 @pytest.fixture(scope="session")
-async def registered_user() -> UserModel:
-    return UserModel(
-        id=1,
-        username="admin",
-        email="admin@gmail.com",
-        password_hash="oops_i_did_it_again",
-        bio="Admin user.",
-        image_url=None,
-        created_at=datetime(year=2020, month=1, day=1),
-        updated_at=datetime(year=2020, month=1, day=1),
-    )
+async def user_model_factory() -> Callable[..., UserModel]:
+    def factory(**kwargs: Any) -> UserModel:
+        default_kwagrs: dict[str, Any] = dict(
+            username="admin",
+            email="admin@gmail.com",
+            password_hash="oops_i_did_it_again",
+            bio="Admin user.",
+            image_url=None,
+            created_at=datetime(year=2020, month=1, day=1),
+            updated_at=datetime(year=2020, month=1, day=1),
+        )
+        user_model_args = {**default_kwagrs, **kwargs}
+        return UserModel(**user_model_args)
+
+    return factory
+
+
+@pytest.fixture(scope="session")
+async def registered_user(user_model_factory: Callable[..., UserModel]) -> UserModel:
+    return user_model_factory()
 
 
 @pytest.fixture(scope="session", autouse=True)

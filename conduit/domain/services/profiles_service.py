@@ -40,7 +40,10 @@ class ProfilesService:
 
         is_following = False
         if current_user is not None:
-            is_following = True
+            is_following = await self._followers_repository.exists(
+                current_user.id,
+                target_user.id,
+            )
 
         return _to_profile(target_user, is_following)
 
@@ -50,13 +53,15 @@ class ProfilesService:
         current_user: Optional[User] = None,
     ) -> Optional[Profile]:
         target_user = await self._users_repository.get_by_username_or_none(username)
-
         if target_user is None:
             return None
 
         is_following = False
         if current_user is not None:
-            is_following = True
+            is_following = await self._followers_repository.exists(
+                current_user.id,
+                target_user.id,
+            )
 
         return _to_profile(target_user, is_following)
 
