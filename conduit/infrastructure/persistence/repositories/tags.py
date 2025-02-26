@@ -1,3 +1,5 @@
+from typing import final
+
 from sqlalchemy import select
 from sqlalchemy.dialects.sqlite import insert
 
@@ -8,13 +10,14 @@ from conduit.infrastructure.persistence.unit_of_work import SqlAlchemyUnitOfWork
 from conduit.infrastructure.time import CurrentTime
 
 
-def model_to_entity(model: TagModel) -> Tag:
+def _tag_model_to_tag(model: TagModel) -> Tag:
     return Tag(
         id=model.id,
         name=model.name,
     )
 
 
+@final
 class SQLiteTagsRepository(TagsRepository):
     def __init__(self, now: CurrentTime) -> None:
         self._now = now
@@ -23,7 +26,7 @@ class SQLiteTagsRepository(TagsRepository):
         session = SqlAlchemyUnitOfWork.get_current_session()
         query = select(TagModel)
         tags = await session.scalars(query)
-        return [model_to_entity(tag_model) for tag_model in tags]
+        return [_tag_model_to_tag(tag_model) for tag_model in tags]
 
     async def add_many(self, article_id: int, tags: list[str]) -> list[Tag]:
         if len(tags) == 0:
@@ -48,7 +51,7 @@ class SQLiteTagsRepository(TagsRepository):
 
         select_query = select(TagModel).where(TagModel.name.in_(tags))
         selected_tags = await session.scalars(select_query)
-        tags_to_return = [model_to_entity(tag_model) for tag_model in selected_tags]
+        tags_to_return = [_tag_model_to_tag(tag_model) for tag_model in selected_tags]
 
         link_query = (
             insert(ArticleTagModel)

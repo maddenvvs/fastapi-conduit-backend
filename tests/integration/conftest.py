@@ -135,3 +135,39 @@ async def registered_user_client(
         },
     ) as client:
         yield client
+
+
+@pytest.fixture(
+    params=[
+        None,
+        dict(email="admin@gmail.com", password="oops_i_did_it_again"),
+    ]
+)
+async def any_client(
+    request: pytest.FixtureRequest,
+    test_app: FastAPI,
+    test_base_url: str,
+) -> AsyncGenerator[AsyncClient, None]:
+    user_credentials = request.param
+
+    async with AsyncClient(
+        transport=ASGITransport(app=test_app),
+        base_url=test_base_url,
+        headers={
+            "Content-Type": "application/json",
+        },
+    ) as client:
+        if user_credentials is not None:
+            response = await client.post(
+                "/users/login",
+                json=dict(
+                    user=dict(
+                        email=user_credentials["email"],
+                        password=user_credentials["password"],
+                    )
+                ),
+            )
+            token = response.json()["user"]["token"]
+            client.headers["Authorization"] = f"Token {token}"
+
+        yield client
