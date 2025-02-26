@@ -30,4 +30,4 @@ async def get_current_user(
     ),
 ) -> UserDetailsApiResponse:
     current_user_details = await use_case(current_user)
-    return UserDetailsApiResponse.from_domain(current_user_details, jwt_token)
+    return UserDetailsApiResponse.from_user(current_user_details, jwt_token)

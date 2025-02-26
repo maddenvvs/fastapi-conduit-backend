@@ -42,4 +42,4 @@ async def update_current_user(
     ),
 ) -> UserDetailsApiResponse:
     updated_user = await update_user(request.to_domain(current_user))
-    return UserDetailsApiResponse.from_domain(updated_user, jwt_token)
+    return UserDetailsApiResponse.from_user(updated_user, jwt_token)

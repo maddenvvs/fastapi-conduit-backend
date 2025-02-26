@@ -16,7 +16,7 @@ from conduit.domain.use_cases.update_current_user.use_case import (
 
 
 @final
-class LoginUserDetails(BaseModel):
+class LoginUserData(BaseModel):
     email: EmailStr = Field(
         description="Email address used during the registration.",
     )
@@ -29,7 +29,7 @@ class LoginUserDetails(BaseModel):
 
 @final
 class LoginUserApiRequest(BaseModel):
-    user: LoginUserDetails = Field(description="User login details.")
+    user: LoginUserData = Field(description="User login details.")
 
     def to_login_details(self) -> UserLoginDetails:
         user = self.user
@@ -115,7 +115,7 @@ class UpdateCurrentUserApiRequest(BaseModel):
 
 
 @final
-class UserDetails(BaseModel):
+class UserData(BaseModel):
     email: str = Field(
         description="The email address of the logged in user.",
         examples=["user@example.com"],
@@ -140,12 +140,12 @@ class UserDetails(BaseModel):
 
 @final
 class UserDetailsApiResponse(BaseModel):
-    user: UserDetails
+    user: UserData
 
     @classmethod
-    def from_domain(cls, user: User, jwt_token: str) -> Self:
+    def from_user(cls, user: User, jwt_token: str) -> Self:
         return cls(
-            user=UserDetails(
+            user=UserData(
                 username=user.username,
                 email=user.email,
                 bio=user.bio,
@@ -157,7 +157,7 @@ class UserDetailsApiResponse(BaseModel):
     @classmethod
     def from_logged_in_user(cls, user: LoggedInUser) -> Self:
         return cls(
-            user=UserDetails(
+            user=UserData(
                 username=user.username,
                 email=user.email,
                 bio=user.bio,
@@ -169,7 +169,7 @@ class UserDetailsApiResponse(BaseModel):
     @classmethod
     def from_registered_user(cls, user: RegisteredUser) -> Self:
         return cls(
-            user=UserDetails(
+            user=UserData(
                 username=user.username,
                 email=user.email,
                 bio=user.bio,
