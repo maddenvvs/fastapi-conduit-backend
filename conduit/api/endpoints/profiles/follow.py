@@ -34,6 +34,6 @@ async def follow_profile_by_name(
     if followed_profile is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Profile is not found.",
+            detail="Profile not found",
         )
     return ProfileDetailsApiResponse.from_profile(followed_profile)

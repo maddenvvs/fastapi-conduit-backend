@@ -94,11 +94,11 @@ class ProfilesService:
         current_user: User,
     ) -> None:
         if username == current_user.username:
-            raise DomainException("Cannot follow yourself")
+            raise DomainException("Cannot unfollow yourself")
 
         target_user = await self._users_repository.get_by_username_or_none(username)
         if target_user is None:
-            raise DomainException("Cannot follow non-existing user")
+            raise DomainException("Cannot unfollow non-existing user")
 
         if not await self._followers_repository.exists(
             follower_id=current_user.id,

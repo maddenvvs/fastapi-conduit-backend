@@ -33,5 +33,5 @@ class UnfollowProfileUseCase:
                 username=profile.username,
                 bio=profile.bio,
                 image=profile.image,
-                following=True,
+                following=False,
             )

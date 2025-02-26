@@ -6,7 +6,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 from typing_extensions import Self
 
-from conduit.domain.exceptions import DomainValidationException
+from conduit.domain.exceptions import DomainException, DomainValidationException
 from conduit.domain.use_cases.login_user.exceptions import InvalidCredentialsException
 
 
@@ -85,6 +85,17 @@ async def domain_validation_error_handler(
     ).to_json_response()
 
 
+async def domain_error_handler(
+    _: Request,
+    exc: DomainException,
+) -> JSONResponse:
+    detail = exc.args[0] if exc.args else "Invalid request"
+    return JSONResponse(
+        content=dict(detail=detail),
+        status_code=status.HTTP_400_BAD_REQUEST,
+    )
+
+
 async def invalid_credentials_error_handler(
     _: Request,
     exc: InvalidCredentialsException,
@@ -98,3 +109,4 @@ def register_error_handlers(app: FastAPI) -> None:
     app.exception_handler(InvalidCredentialsException)(
         invalid_credentials_error_handler
     )
+    app.exception_handler(DomainException)(domain_error_handler)
