@@ -36,4 +36,4 @@ async def unfollow_profile_by_name(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Profile is not found.",
         )
-    return ProfileDetailsApiResponse.from_domain(followed_profile)
+    return ProfileDetailsApiResponse.from_profile(followed_profile)

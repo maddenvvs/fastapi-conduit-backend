@@ -47,4 +47,4 @@ async def add_comment_to_article(
             detail="Article not found",
         )
 
-    return CommentDetailsApiResponse.from_domain(created_comment)
+    return CommentDetailsApiResponse.from_comment_with_author(created_comment)

@@ -39,4 +39,4 @@ async def get_profile_by_username(
             detail="Profile is not found.",
         )
 
-    return ProfileDetailsApiResponse.from_domain(profile_details)
+    return ProfileDetailsApiResponse.from_profile(profile_details)

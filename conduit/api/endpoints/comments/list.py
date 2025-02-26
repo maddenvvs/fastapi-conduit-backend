@@ -38,4 +38,4 @@ async def list_article_comments(
             detail="Article not found",
         )
 
-    return ListCommentsApiResponse.from_domain(comments)
+    return ListCommentsApiResponse.from_comments(comments)

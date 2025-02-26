@@ -13,7 +13,7 @@ class ListTagsApiResponse(BaseModel):
     tags: list[str]
 
     @classmethod
-    def from_domain(cls, tags: list[Tag]) -> Self:
+    def from_tags(cls, tags: list[Tag]) -> Self:
         return cls(tags=[tag.name for tag in tags])
 
 
@@ -31,4 +31,4 @@ async def get_all_tags(
     list_tags: ListTagsUseCase = Depends(Provide[Container.list_tags_use_case]),
 ) -> ListTagsApiResponse:
     tags = await list_tags()
-    return ListTagsApiResponse.from_domain(tags)
+    return ListTagsApiResponse.from_tags(tags)

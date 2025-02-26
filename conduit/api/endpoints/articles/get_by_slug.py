@@ -41,4 +41,4 @@ async def get_article_by_slug(
             detail="Article not found",
         )
 
-    return ArticleWithAuthorApiResponse.from_domain(article)
+    return ArticleWithAuthorApiResponse.from_article_with_author(article)

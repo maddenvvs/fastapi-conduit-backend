@@ -15,7 +15,7 @@ Username: TypeAlias = Annotated[
 
 
 @final
-class ProfileDetails(BaseModel):
+class ProfileData(BaseModel):
     username: str = Field(
         description="The username of the logged in user.",
         examples=["walkmansit"],
@@ -36,12 +36,12 @@ class ProfileDetails(BaseModel):
 
 @final
 class ProfileDetailsApiResponse(BaseModel):
-    profile: ProfileDetails
+    profile: ProfileData
 
     @classmethod
-    def from_domain(cls, profile: Profile) -> Self:
+    def from_profile(cls, profile: Profile) -> Self:
         return cls(
-            profile=ProfileDetails(
+            profile=ProfileData(
                 username=profile.username,
                 bio=profile.bio,
                 image=profile.image,

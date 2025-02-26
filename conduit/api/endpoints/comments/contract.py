@@ -32,7 +32,7 @@ class CommentAuthor(BaseModel):
 
 
 @final
-class CommentDetails(BaseModel):
+class CommentData(BaseModel):
     id: int
     created_at: DateTime
     updated_at: DateTime
@@ -40,7 +40,7 @@ class CommentDetails(BaseModel):
     author: CommentAuthor
 
     @classmethod
-    def from_domain(cls, comment: CommentWithAuthor) -> Self:
+    def from_comment_with_author(cls, comment: CommentWithAuthor) -> Self:
         return cls(
             id=comment.id,
             created_at=comment.created_at,
@@ -57,21 +57,23 @@ class CommentDetails(BaseModel):
 
 @final
 class CommentDetailsApiResponse(BaseModel):
-    comment: CommentDetails
+    comment: CommentData
 
     @classmethod
-    def from_domain(cls, comment: CommentWithAuthor) -> Self:
+    def from_comment_with_author(cls, comment: CommentWithAuthor) -> Self:
         return cls(
-            comment=CommentDetails.from_domain(comment),
+            comment=CommentData.from_comment_with_author(comment),
         )
 
 
 @final
 class ListCommentsApiResponse(BaseModel):
-    comments: list[CommentDetails]
+    comments: list[CommentData]
 
     @classmethod
-    def from_domain(cls, comments: list[CommentWithAuthor]) -> Self:
+    def from_comments(cls, comments: list[CommentWithAuthor]) -> Self:
         return cls(
-            comments=[CommentDetails.from_domain(comment) for comment in comments],
+            comments=[
+                CommentData.from_comment_with_author(comment) for comment in comments
+            ],
         )
