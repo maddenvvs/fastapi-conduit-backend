@@ -47,57 +47,25 @@ class TestWhenRegisteringWithInvalidRequestFields:
     ) -> RegisterRequest:
         return register_request_factory(**request.param)
 
-    class TestForAnonymousUser:
+    @pytest.fixture
+    async def register_response(
+        self,
+        any_client: AsyncClient,
+        invalid_register_request: RegisterRequest,
+    ) -> Response:
+        response = await any_client.post("/users", json=invalid_register_request)
+        return response
 
-        @pytest.fixture
-        async def anonymous_response(
-            self,
-            anonymous_test_client: AsyncClient,
-            invalid_register_request: RegisterRequest,
-        ) -> Response:
-            response = await anonymous_test_client.post(
-                "/users", json=invalid_register_request
-            )
-            return response
+    @pytest.mark.anyio
+    async def test_returns_status_422(self, register_response: Response) -> None:
+        assert register_response.status_code == 422
 
-        @pytest.mark.anyio
-        async def test_returns_status_422(self, anonymous_response: Response) -> None:
-            assert anonymous_response.status_code == 422
+    @pytest.mark.anyio
+    async def test_has_body_with_erros(self, register_response: Response) -> None:
+        r = register_response.json()
 
-        @pytest.mark.anyio
-        async def test_has_body_with_erros(self, anonymous_response: Response) -> None:
-            r = anonymous_response.json()
-
-            assert "errors" in r
-            assert len(r["errors"]) > 0
-
-    class TestForRegisteredUser:
-
-        @pytest.fixture
-        async def registered_user_response(
-            self,
-            registered_user_client: AsyncClient,
-            invalid_register_request: RegisterRequest,
-        ) -> Response:
-            response = await registered_user_client.post(
-                "/users", json=invalid_register_request
-            )
-            return response
-
-        @pytest.mark.anyio
-        async def test_returns_status_422(
-            self, registered_user_response: Response
-        ) -> None:
-            assert registered_user_response.status_code == 422
-
-        @pytest.mark.anyio
-        async def test_has_body_with_erros(
-            self, registered_user_response: Response
-        ) -> None:
-            r = registered_user_response.json()
-
-            assert "errors" in r
-            assert len(r["errors"]) > 0
+        assert "errors" in r
+        assert len(r["errors"]) > 0
 
 
 class TestWhenRegisteredSuccessully:
@@ -120,10 +88,10 @@ class TestWhenRegisteredSuccessully:
     async def successful_response(
         self,
         request_body: RegisterRequest,
-        anonymous_test_client: AsyncClient,
+        any_client: AsyncClient,
         test_db: Database,
     ) -> AsyncGenerator[Response, None]:
-        response = await anonymous_test_client.post(
+        response = await any_client.post(
             "/users",
             json=request_body,
         )
@@ -164,11 +132,11 @@ class TestWhenUsernameIsTaken:
     async def failed_response(
         self,
         registered_user: UserModel,
-        anonymous_test_client: AsyncClient,
+        any_client: AsyncClient,
         register_request_factory: RequestFactory,
     ) -> Response:
         request = register_request_factory(username=registered_user.username)
-        response = await anonymous_test_client.post("/users", json=request)
+        response = await any_client.post("/users", json=request)
         return response
 
     @pytest.mark.anyio
@@ -188,11 +156,11 @@ class TestWhenEmailIsTaken:
     async def failed_response(
         self,
         registered_user: UserModel,
-        anonymous_test_client: AsyncClient,
+        any_client: AsyncClient,
         register_request_factory: RequestFactory,
     ) -> Response:
         request = register_request_factory(email=registered_user.email)
-        response = await anonymous_test_client.post("/users", json=request)
+        response = await any_client.post("/users", json=request)
         return response
 
     @pytest.mark.anyio

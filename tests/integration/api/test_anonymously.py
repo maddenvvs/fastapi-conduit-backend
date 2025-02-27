@@ -24,7 +24,7 @@ async def test_visiting_protected_endpoints_returns_unauthorized_response(
     method: str,
     url: str,
     test_base_url: str,
-    anonymous_test_client: AsyncClient,
+    any_client: AsyncClient,
 ) -> None:
     # Arrange
     request = Request(
@@ -33,7 +33,7 @@ async def test_visiting_protected_endpoints_returns_unauthorized_response(
     )
 
     # Act
-    response = await anonymous_test_client.send(request)
+    response = await any_client.send(request)
 
     # Assert
     assert response.status_code == 401

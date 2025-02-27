@@ -1,10 +1,10 @@
-from typing import Any, AsyncGenerator, Callable
+from typing import Any, AsyncGenerator
 
 import pytest
 from httpx import AsyncClient, Response
 
-from conduit.infrastructure.persistence.database import Database
 from conduit.infrastructure.persistence.models import UserModel
+from tests.integration.conftest import AddToDb, UserModelFactory
 
 
 class TestWhenVisitingNonExistingProfile:
@@ -41,7 +41,7 @@ class TestWhenVisitingExistingProfile:
     async def test_user(
         self,
         test_username: str,
-        user_model_factory: Callable[..., UserModel],
+        user_model_factory: UserModelFactory,
     ) -> UserModel:
         return user_model_factory(
             username=test_username,
@@ -50,14 +50,11 @@ class TestWhenVisitingExistingProfile:
 
     @pytest.fixture(autouse=True)
     async def create_test_user(
-        self, test_user: UserModel, test_db: Database
-    ) -> AsyncGenerator[None, None]:
-        async with test_db.create_session() as session:
-            session.add(test_user)
-            await session.commit()
-            yield
-            await session.delete(test_user)
-            await session.commit()
+        self,
+        test_user: UserModel,
+        add_to_db: AddToDb,
+    ) -> None:
+        await add_to_db(test_user)
 
     class TestForAnyClient:
 

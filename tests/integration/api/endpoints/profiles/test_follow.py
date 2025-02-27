@@ -3,8 +3,8 @@ from typing import Any, AsyncGenerator, Callable
 import pytest
 from httpx import AsyncClient, Response
 
-from conduit.infrastructure.persistence.database import Database
 from conduit.infrastructure.persistence.models import UserModel
+from tests.integration.conftest import AddToDb
 
 
 class TestWhenFollowNonexistingProfile:
@@ -73,14 +73,11 @@ class TestWhenFollowExistingProfile:
 
     @pytest.fixture(autouse=True)
     async def create_test_user(
-        self, test_user: UserModel, test_db: Database
-    ) -> AsyncGenerator[None, None]:
-        async with test_db.create_session() as session:
-            session.add(test_user)
-            await session.commit()
-            yield
-            await session.delete(test_user)
-            await session.commit()
+        self,
+        test_user: UserModel,
+        add_to_db: AddToDb,
+    ) -> None:
+        await add_to_db(test_user)
 
     @pytest.fixture
     async def follow_response(

@@ -10,8 +10,7 @@ class TestWhenVisitingByRegisteredUser:
     async def registered_user_response(
         self, registered_user_client: AsyncClient
     ) -> Response:
-        response = await registered_user_client.get("/user")
-        return response
+        return await registered_user_client.get("/user")
 
     @pytest.mark.anyio
     async def test_returns_status_200_OK(

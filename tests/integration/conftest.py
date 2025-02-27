@@ -1,16 +1,27 @@
 from datetime import datetime
-from typing import Any, AsyncGenerator, Callable
+from typing import Any, AsyncContextManager, AsyncGenerator, Callable, Protocol
 
 import pytest
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
-from sqlalchemy import delete
+from typing_extensions import TypeAlias
 
 from conduit.app import create_app
 from conduit.containers import Container
 from conduit.infrastructure.persistence.database import Database
-from conduit.infrastructure.persistence.models import UserModel
+from conduit.infrastructure.persistence.models import Base, UserModel
 from conduit.settings import Settings
+
+ApiClientFactory: TypeAlias = Callable[[], AsyncClient]
+UserModelFactory: TypeAlias = Callable[..., UserModel]
+
+
+class AddToDb(Protocol):
+    async def __call__(self, *args: Base) -> None: ...
+
+
+class DatabaseContext(Protocol):
+    def __call__(self, *entities: Base) -> AsyncContextManager[None]: ...
 
 
 @pytest.fixture(scope="session")
@@ -48,13 +59,27 @@ def test_container(test_app: FastAPI) -> Any:
     return test_app.extra["container"]
 
 
+@pytest.fixture
+def test_client_factory(test_app: FastAPI, test_base_url: str) -> ApiClientFactory:
+    def factory() -> AsyncClient:
+        return AsyncClient(
+            transport=ASGITransport(app=test_app),
+            base_url=test_base_url,
+            headers={
+                "Content-Type": "application/json",
+            },
+        )
+
+    return factory
+
+
 @pytest.fixture(scope="session")
 def test_db(test_container: Container) -> Database:
     return test_container.db()
 
 
 @pytest.fixture(scope="session", autouse=True)
-async def test_sqlite_database(
+async def create_db_tables(
     test_db: Database,
 ) -> AsyncGenerator[None, None]:
     await test_db.create_tables()
@@ -63,20 +88,26 @@ async def test_sqlite_database(
 
 
 @pytest.fixture
-async def anonymous_test_client(
-    test_app: FastAPI,
-    test_base_url: str,
-) -> AsyncGenerator[AsyncClient, None]:
-    async with AsyncClient(
-        transport=ASGITransport(app=test_app),
-        base_url=test_base_url,
-        headers={"Content-Type": "application/json"},
-    ) as client:
-        yield client
+async def add_to_db(
+    test_db: Database,
+) -> AsyncGenerator[AddToDb, None]:
+    entities: list[Base] = []
+
+    async def _add_to_db(*args: Base) -> None:
+        for entity in args:
+            entities.append(entity)
+            session.add(entity)
+        await session.commit()
+
+    async with test_db.create_session() as session:
+        yield _add_to_db
+        for entity in entities:
+            await session.delete(entity)
+        await session.commit()
 
 
-@pytest.fixture(scope="session")
-async def user_model_factory() -> Callable[..., UserModel]:
+@pytest.fixture
+async def user_model_factory() -> UserModelFactory:
     def factory(**kwargs: Any) -> UserModel:
         default_kwagrs: dict[str, Any] = dict(
             username="admin",
@@ -93,80 +124,85 @@ async def user_model_factory() -> Callable[..., UserModel]:
     return factory
 
 
-@pytest.fixture(scope="session")
-async def registered_user(user_model_factory: Callable[..., UserModel]) -> UserModel:
-    return user_model_factory()
-
-
-@pytest.fixture(scope="session", autouse=True)
-async def create_test_users(
-    test_sqlite_database: None,
-    test_db: Database,
-    registered_user: UserModel,
-) -> AsyncGenerator[None, None]:
-    async with test_db.create_session() as session:
-        session.add(registered_user)
-        await session.commit()
-        yield
-        await session.execute(delete(UserModel))
-        await session.commit()
+@pytest.fixture
+async def registered_user(
+    user_model_factory: UserModelFactory,
+    add_to_db: AddToDb,
+) -> UserModel:
+    user_model = user_model_factory()
+    await add_to_db(user_model)
+    return user_model
 
 
 @pytest.fixture
 async def registered_user_token(
-    anonymous_test_client: AsyncClient,
+    test_client_factory: ApiClientFactory,
     registered_user: UserModel,
 ) -> Any:
-    response = await anonymous_test_client.post(
-        "/users/login",
-        json=dict(
-            user=dict(
-                email=registered_user.email,
-                password=registered_user.password_hash,
-            )
-        ),
-    )
-    return response.json()["user"]["token"]
+    async with test_client_factory() as client:
+        login_response = await client.post(
+            "/users/login",
+            json=dict(
+                user=dict(
+                    email=registered_user.email,
+                    password=registered_user.password_hash,
+                )
+            ),
+        )
+    return login_response.json()["user"]["token"]
 
 
 @pytest.fixture
 async def registered_user_client(
-    test_app: FastAPI,
-    test_base_url: str,
+    test_client_factory: ApiClientFactory,
     registered_user_token: str,
 ) -> AsyncGenerator[AsyncClient, None]:
-    async with AsyncClient(
-        transport=ASGITransport(app=test_app),
-        base_url=test_base_url,
-        headers={
-            "Content-Type": "application/json",
-            "Authorization": f"Token {registered_user_token}",
-        },
-    ) as client:
+    async with test_client_factory() as client:
+        client.headers["Authorization"] = f"Token {registered_user_token}"
+        yield client
+
+
+@pytest.fixture
+async def anonymous_test_client(
+    test_client_factory: ApiClientFactory,
+) -> AsyncGenerator[AsyncClient, None]:
+    async with test_client_factory() as client:
         yield client
 
 
 @pytest.fixture(
     params=[
         None,
-        dict(email="admin@gmail.com", password="oops_i_did_it_again"),
+        dict(
+            username="test_user",
+            email="test_user@testland.com",
+            password="super_password",
+        ),
+        dict(
+            username="admin_user",
+            email="admin_user@testland.com",
+            password="wow_look_at_the_password",
+        ),
     ]
 )
 async def any_client(
     request: pytest.FixtureRequest,
-    test_app: FastAPI,
-    test_base_url: str,
+    user_model_factory: UserModelFactory,
+    test_client_factory: ApiClientFactory,
+    add_to_db: AddToDb,
 ) -> AsyncGenerator[AsyncClient, None]:
     user_credentials = request.param
-
-    async with AsyncClient(
-        transport=ASGITransport(app=test_app),
-        base_url=test_base_url,
-        headers={
-            "Content-Type": "application/json",
-        },
-    ) as client:
-        if user_credentials is not None:
+    if user_credentials is None:
+        async with test_client_factory() as client:
+            yield client
+    else:
+        user = user_model_factory(
+            username=user_credentials["username"],
+            email=user_credentials["email"],
+            password_hash=user_credentials["password"],
+        )
+        await add_to_db(user)
+        async with test_client_factory() as client:
             response = await client.post(
                 "/users/login",
                 json=dict(
@@ -178,5 +214,4 @@ async def any_client(
             )
             token = response.json()["user"]["token"]
             client.headers["Authorization"] = f"Token {token}"
-
-        yield client
+            yield client
