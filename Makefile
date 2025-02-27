@@ -4,7 +4,7 @@ venv:
 	pip install -r requirements-dev.txt
 
 test:
-	python -m pytest -v ./tests
+	python -m pytest -n auto -v ./tests
 
 dev-server:
 	fastapi dev gameapp/app.py
