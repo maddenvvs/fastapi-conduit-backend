@@ -32,11 +32,22 @@ class ArticlesRepository(abc.ABC):
 
     @abc.abstractmethod
     async def list_by_filters(
-        self, user_id: Optional[UserID], limit: int, offset: int
+        self,
+        user_id: Optional[UserID],
+        limit: int,
+        offset: int,
+        tag: Optional[str],
+        author: Optional[str],
+        favorited: Optional[str],
     ) -> list[BodylessArticleWithAuthor]: ...
 
     @abc.abstractmethod
-    async def count_by_filters(self) -> int: ...
+    async def count_by_filters(
+        self,
+        tag: Optional[str],
+        author: Optional[str],
+        favorited: Optional[str],
+    ) -> int: ...
 
     @abc.abstractmethod
     async def delete_by_id(self, article_id: ArticleID) -> None: ...

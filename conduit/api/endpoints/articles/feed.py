@@ -11,10 +11,7 @@ from conduit.api.endpoints.articles.contract import (
 from conduit.api.security.dependencies import CurrentUser
 from conduit.api.tags import Tag
 from conduit.containers import Container
-from conduit.domain.use_cases.feed_articles.use_case import (
-    FeedArticlesRequest,
-    FeedArticlesUseCase,
-)
+from conduit.domain.use_cases.feed_articles.use_case import FeedArticlesUseCase
 
 router = APIRouter()
 
@@ -36,11 +33,5 @@ async def feed_articles(
     paging: Annotated[PagingParameters, Query()],
     use_case: FeedArticlesUseCase = Depends(Provide[Container.feed_articles_use_case]),
 ) -> ListArticlesApiResponse:
-    articles_info = await use_case(
-        FeedArticlesRequest(
-            limit=paging.limit,
-            offset=paging.offset,
-            user=current_user,
-        )
-    )
+    articles_info = await use_case(paging.to_domain(current_user))
     return ListArticlesApiResponse.from_feed_info(articles_info)

@@ -4,14 +4,14 @@ from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, Query, status
 
 from conduit.api import open_api
-from conduit.api.endpoints.articles.contract import ListArticlesApiResponse
+from conduit.api.endpoints.articles.contract import (
+    ListArticlesApiResponse,
+    ListArticlesFilters,
+)
 from conduit.api.security.dependencies import OptionalCurrentUser
 from conduit.api.tags import Tag
 from conduit.containers import Container
-from conduit.domain.use_cases.list_articles.use_case import (
-    ListArticlesRequest,
-    ListArticlesUseCase,
-)
+from conduit.domain.use_cases.list_articles.use_case import ListArticlesUseCase
 
 router = APIRouter()
 
@@ -30,11 +30,9 @@ router = APIRouter()
 @inject
 async def list_articles(
     optional_user: OptionalCurrentUser,
-    limit: Annotated[int, Query(ge=1, le=50)] = 20,
-    offset: Annotated[int, Query(ge=0)] = 0,
+    filters: Annotated[ListArticlesFilters, Query()],
     use_case: ListArticlesUseCase = Depends(Provide[Container.list_articles_use_case]),
 ) -> ListArticlesApiResponse:
-    articles_info = await use_case(
-        ListArticlesRequest(limit=limit, offset=offset, user=optional_user)
-    )
+    articles_info = await use_case(filters.to_domain(optional_user))
+    print(articles_info)
     return ListArticlesApiResponse.from_articles_info(articles_info)

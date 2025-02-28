@@ -1,6 +1,7 @@
 from typing import Any, Optional
 
-from sqlalchemy import delete, exists, func, insert, literal, select, true, update
+from sqlalchemy import delete, exists, func, insert, select, true, update
+from sqlalchemy.orm import aliased
 from sqlalchemy.sql.functions import count
 
 from conduit.domain.entities.articles import (
@@ -183,6 +184,9 @@ class SQLiteArticlesRepository(ArticlesRepository):
         user_id: Optional[UserID],
         limit: int,
         offset: int,
+        tag: Optional[str],
+        author: Optional[str],
+        favorited: Optional[str],
     ) -> list[BodylessArticleWithAuthor]:
         session = SqlAlchemyUnitOfWork.get_current_session()
 
@@ -205,24 +209,24 @@ class SQLiteArticlesRepository(ArticlesRepository):
                     (FollowerModel.follower_id == user_id)
                     & (FollowerModel.following_id == ArticleModel.author_id)
                 )
-                .correlate(FollowerModel, ArticleModel)
                 .label("following"),
                 # Subquery for favorites count.
-                # select(func.count(FavoriteModel.article_id))
-                # .where(FavoriteModel.article_id == ArticleModel.id)
-                # .scalar_subquery()
-                # .correlate(FavoriteModel, ArticleModel)
-                literal(0).label("favorites_count"),
-                # # Subquery to check if favorited by user with id `user_id`.
-                # exists()
-                # .where(
-                #     (FavoriteModel.user_id == user_id)
-                #     & (FavoriteModel.article_id == ArticleModel.id)
-                # )
-                # .correlate(FavoriteModel, ArticleModel)
-                # .label("favorited"),
-                true().label("favorited"),
-                # # Concatenate tags.
+                select(func.count())
+                .select_from(FavoriteModel)
+                .join(ArticleModel, ArticleModel.id == FavoriteModel.article_id)
+                .where(FavoriteModel.article_id == ArticleModel.id)
+                .scalar_subquery()
+                .label("favorites_count"),
+                # Subquery to check if favorited by user with id `user_id`.
+                select(FavoriteModel.article_id)
+                .where(
+                    (FavoriteModel.user_id == user_id)
+                    & (FavoriteModel.article_id == ArticleModel.id)
+                )
+                .exists()
+                .correlate(FavoriteModel, ArticleModel)
+                .label("favorited"),
+                # Concatenate tags.
                 func.group_concat(TagModel.name, ", ").label("tags"),
             )
             .outerjoin(
@@ -249,15 +253,64 @@ class SQLiteArticlesRepository(ArticlesRepository):
             .order_by(ArticleModel.created_at.desc())
         )
 
+        if tag is not None:
+            ArticleAliased = aliased(ArticleModel)
+            query = query.where(
+                select(TagModel.id)
+                .select_from(TagModel)
+                .join(ArticleTagModel, ArticleTagModel.tag_id == TagModel.id)
+                .join(ArticleAliased, ArticleAliased.id == ArticleTagModel.article_id)
+                .where(ArticleAliased.id == ArticleModel.id, TagModel.name == tag)
+                .exists()
+            )
+        if author is not None:
+            query = query.where(UserModel.username == author)
+        if favorited is not None:
+            query = query.where(
+                FavoriteModel.user_id
+                == select(UserModel.id)
+                .where(UserModel.username == favorited)
+                .scalar_subquery()
+            )
+
         query = query.limit(limit).offset(offset)
         articles = await session.execute(query)
 
         return [_to_bodyless_article(row) for row in articles]
 
-    async def count_by_filters(self) -> int:
+    async def count_by_filters(
+        self,
+        tag: Optional[str],
+        author: Optional[str],
+        favorited: Optional[str],
+    ) -> int:
         session = SqlAlchemyUnitOfWork.get_current_session()
 
         query = select(count(ArticleModel.id))
+
+        if tag is not None:
+            query = query.join(
+                ArticleTagModel, ArticleTagModel.article_id == ArticleModel.id
+            ).where(
+                ArticleTagModel.tag_id
+                == select(TagModel.id).where(TagModel.name == tag).scalar_subquery()
+            )
+
+        if author is not None:
+            query = query.join(UserModel, UserModel.id == ArticleModel.author_id).where(
+                UserModel.username == author
+            )
+
+        if favorited is not None:
+            query = query.join(
+                FavoriteModel, FavoriteModel.article_id == ArticleModel.id
+            ).where(
+                FavoriteModel.user_id
+                == select(UserModel.id)
+                .where(UserModel.username == favorited)
+                .scalar_subquery()
+            )
+
         result = await session.execute(query)
         return result.scalar_one()
 

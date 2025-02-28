@@ -12,6 +12,9 @@ from conduit.domain.unit_of_work import UnitOfWorkFactory
 class ListArticlesRequest:
     limit: int
     offset: int
+    tag: Optional[str]
+    author: Optional[str]
+    favorited: Optional[str]
     user: Optional[User]
 
 
@@ -44,8 +47,15 @@ class ListArticlesUseCase:
                 user_id=user_id,
                 limit=list_articles_request.limit,
                 offset=list_articles_request.offset,
+                tag=list_articles_request.tag,
+                author=list_articles_request.author,
+                favorited=list_articles_request.favorited,
             )
-            articles_count = await self._articles_repository.count_by_filters()
+            articles_count = await self._articles_repository.count_by_filters(
+                tag=list_articles_request.tag,
+                author=list_articles_request.author,
+                favorited=list_articles_request.favorited,
+            )
 
         return ListArticlesResponse(
             articles=articles,

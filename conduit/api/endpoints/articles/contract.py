@@ -11,8 +11,15 @@ from conduit.domain.entities.articles import (
     NewArticleDetails,
     UpdateArticleFields,
 )
-from conduit.domain.use_cases.feed_articles.use_case import FeedArticlesResponse
-from conduit.domain.use_cases.list_articles.use_case import ListArticlesResponse
+from conduit.domain.entities.users import User
+from conduit.domain.use_cases.feed_articles.use_case import (
+    FeedArticlesRequest,
+    FeedArticlesResponse,
+)
+from conduit.domain.use_cases.list_articles.use_case import (
+    ListArticlesRequest,
+    ListArticlesResponse,
+)
 
 ArticleSlug: TypeAlias = Annotated[
     str,
@@ -23,10 +30,35 @@ ArticleSlug: TypeAlias = Annotated[
 ]
 
 
-@final
 class PagingParameters(BaseModel):
     limit: int = Field(default=20, ge=1, le=50)
     offset: int = Field(default=0, ge=0)
+
+    def to_domain(self, current_user: User) -> FeedArticlesRequest:
+        return FeedArticlesRequest(
+            limit=self.limit,
+            offset=self.offset,
+            user=current_user,
+        )
+
+
+@final
+class ListArticlesFilters(BaseModel):
+    limit: int = Field(default=20, ge=1, le=50)
+    offset: int = Field(default=0, ge=0)
+    tag: Optional[str] = Field(None, min_length=1)
+    author: Optional[str] = Field(None, min_length=1)
+    favorited: Optional[str] = Field(None, min_length=1)
+
+    def to_domain(self, optional_user: Optional[User]) -> ListArticlesRequest:
+        return ListArticlesRequest(
+            limit=self.limit,
+            offset=self.offset,
+            tag=self.tag,
+            author=self.author,
+            favorited=self.favorited,
+            user=optional_user,
+        )
 
 
 @final
