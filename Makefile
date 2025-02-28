@@ -26,7 +26,9 @@ types:
 	mypy
 
 format:
-	ruff format
+	ruff format --quiet
 
 lint:
-	ruff check
+	ruff check --quiet
+
+check: format types lint
