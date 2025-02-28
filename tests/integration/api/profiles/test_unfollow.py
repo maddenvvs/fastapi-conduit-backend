@@ -1,4 +1,4 @@
-from typing import Any, AsyncGenerator
+from typing import Any
 
 import pytest
 from httpx import AsyncClient, Response
@@ -8,7 +8,6 @@ from tests.integration.conftest import AddToDb, UserModelFactory
 
 
 class TestWhenUnfollowNonexistingProfile:
-
     @pytest.fixture
     async def unfollow_response(self, registered_user_client: AsyncClient) -> Response:
         return await registered_user_client.delete(
@@ -25,7 +24,6 @@ class TestWhenUnfollowNonexistingProfile:
 
 
 class TestWhenUnfollowYourself:
-
     @pytest.fixture
     async def unfollow_response(
         self,
@@ -46,7 +44,6 @@ class TestWhenUnfollowYourself:
 
 
 class TestWhenUnfollowExistingProfile:
-
     @pytest.fixture(
         params=[
             "joe",
@@ -97,14 +94,13 @@ class TestWhenUnfollowExistingProfile:
         assert unfollow_response.json() == {"detail": "Profile is already unfollowed"}
 
     class TestAndItWasAlreadyFollowed:
-
         @pytest.fixture
         async def unfollow_response(
             self, registered_user_client: AsyncClient, test_username: str
-        ) -> AsyncGenerator[Response, None]:
+        ) -> Response:
             url = f"/profiles/{test_username}/follow"
             await registered_user_client.post(url)
-            yield await registered_user_client.delete(url)
+            return await registered_user_client.delete(url)
 
         @pytest.mark.anyio
         async def test_returns_status_202(self, unfollow_response: Response) -> None:
