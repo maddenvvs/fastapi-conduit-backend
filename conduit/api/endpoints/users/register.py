@@ -30,7 +30,7 @@ async def register_user(
         RegisterUserApiRequest,
         Body(),
     ],
-    register_user: RegisterUserUseCase = Depends(
+    register_user: RegisterUserUseCase = Depends(  # noqa: FAST002
         Provide[Container.register_user_use_case]
     ),
 ) -> UserDetailsApiResponse:

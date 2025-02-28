@@ -25,7 +25,7 @@ router = APIRouter()
 async def follow_profile_by_name(
     username: Username,
     current_user: CurrentUser,
-    follow_profile: FollowProfileUseCase = Depends(
+    follow_profile: FollowProfileUseCase = Depends(  # noqa: FAST002
         Provide[Container.follow_profile_use_case]
     ),
 ) -> ProfileDetailsApiResponse:

@@ -16,7 +16,7 @@ router = APIRouter()
 )
 @inject
 async def get_all_tags(
-    list_tags: ListTagsUseCase = Depends(Provide[Container.list_tags_use_case]),
+    list_tags: ListTagsUseCase = Depends(Provide[Container.list_tags_use_case]),  # noqa: FAST002
 ) -> ListTagsApiResponse:
     tags = await list_tags()
     return ListTagsApiResponse.from_tags(tags)

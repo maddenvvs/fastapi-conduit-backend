@@ -28,7 +28,7 @@ router = APIRouter()
 @inject
 async def login_user(
     request: Annotated[LoginUserApiRequest, Body()],
-    login_user: LoginUserUseCase = Depends(Provide[Container.login_user_use_case]),
+    login_user: LoginUserUseCase = Depends(Provide[Container.login_user_use_case]),  # noqa: FAST002
 ) -> UserDetailsApiResponse:
     logged_in_user = await login_user(request.to_login_details())
     return UserDetailsApiResponse.from_logged_in_user(logged_in_user)

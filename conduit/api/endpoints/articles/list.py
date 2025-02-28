@@ -30,7 +30,7 @@ router = APIRouter()
 async def list_articles(
     optional_user: OptionalCurrentUser,
     filters: Annotated[ListArticlesFilters, Query()],
-    use_case: ListArticlesUseCase = Depends(Provide[Container.list_articles_use_case]),
+    use_case: ListArticlesUseCase = Depends(Provide[Container.list_articles_use_case]),  # noqa: FAST002
 ) -> ListArticlesApiResponse:
     articles_info = await use_case(filters.to_domain(optional_user))
     print(articles_info)

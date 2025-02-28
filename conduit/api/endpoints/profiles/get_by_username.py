@@ -27,7 +27,7 @@ router = APIRouter()
 async def get_profile_by_username(
     username: Username,
     optional_user: OptionalCurrentUser,
-    get_profile_by_name: GetProfileByNameUseCase = Depends(
+    get_profile_by_name: GetProfileByNameUseCase = Depends(  # noqa: FAST002
         Provide[Container.get_profile_by_name_use_case]
     ),
 ) -> ProfileDetailsApiResponse:

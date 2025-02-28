@@ -30,7 +30,7 @@ router = APIRouter()
 async def create_article(
     new_article: Annotated[CreateArticleApiRequest, Body()],
     current_user: CurrentUser,
-    create_article: CreateArticleUseCase = Depends(
+    create_article: CreateArticleUseCase = Depends(  # noqa: FAST002
         Provide[Container.create_article_use_case]
     ),
 ) -> ArticleWithAuthorApiResponse:

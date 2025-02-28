@@ -30,7 +30,7 @@ router = APIRouter()
 async def feed_articles(
     current_user: CurrentUser,
     paging: Annotated[PagingParameters, Query()],
-    use_case: FeedArticlesUseCase = Depends(Provide[Container.feed_articles_use_case]),
+    use_case: FeedArticlesUseCase = Depends(Provide[Container.feed_articles_use_case]),  # noqa: FAST002
 ) -> ListArticlesApiResponse:
     articles_info = await use_case(paging.to_domain(current_user))
     return ListArticlesApiResponse.from_feed_info(articles_info)

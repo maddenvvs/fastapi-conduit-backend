@@ -26,7 +26,7 @@ router = APIRouter()
 async def list_article_comments(
     slug: ArticleSlug,
     current_user: OptionalCurrentUser,
-    list_comments: ListArticleCommentsUseCase = Depends(
+    list_comments: ListArticleCommentsUseCase = Depends(  # noqa: FAST002
         Provide[Container.list_article_comments_use_case]
     ),
 ) -> ListCommentsApiResponse:

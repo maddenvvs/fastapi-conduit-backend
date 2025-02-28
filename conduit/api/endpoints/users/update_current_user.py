@@ -36,7 +36,7 @@ async def update_current_user(
         UpdateCurrentUserApiRequest,
         Body(),
     ],
-    update_user: UpdateCurrentUserUseCase = Depends(
+    update_user: UpdateCurrentUserUseCase = Depends(  # noqa: FAST002
         Provide[Container.update_current_user_use_case]
     ),
 ) -> UserDetailsApiResponse:

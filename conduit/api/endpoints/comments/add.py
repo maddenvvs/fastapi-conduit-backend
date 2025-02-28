@@ -33,7 +33,7 @@ async def add_comment_to_article(
     slug: ArticleSlug,
     comment_request: Annotated[CreateCommentApiRequest, Body()],
     current_user: CurrentUser,
-    add_comment: AddCommentToArticleUseCase = Depends(
+    add_comment: AddCommentToArticleUseCase = Depends(  # noqa: FAST002
         Provide[Container.add_comment_to_article_use_case]
     ),
 ) -> CommentDetailsApiResponse:

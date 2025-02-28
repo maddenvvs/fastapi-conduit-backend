@@ -24,7 +24,7 @@ router = APIRouter()
 async def get_current_user(
     jwt_token: JwtToken,
     current_user: CurrentUser,
-    use_case: GetCurrentUserUseCase = Depends(
+    use_case: GetCurrentUserUseCase = Depends(  # noqa: FAST002
         Provide[Container.get_current_user_use_case]
     ),
 ) -> UserDetailsApiResponse:

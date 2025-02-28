@@ -29,7 +29,7 @@ router = APIRouter()
 async def unfavorite_article(
     slug: ArticleSlug,
     current_user: CurrentUser,
-    unfavorite_article: UnfavoriteArticleUseCase = Depends(
+    unfavorite_article: UnfavoriteArticleUseCase = Depends(  # noqa: FAST002
         Provide[Container.unfavorite_article_use_case]
     ),
 ) -> ArticleWithAuthorApiResponse:

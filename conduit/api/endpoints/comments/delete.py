@@ -28,7 +28,7 @@ async def delete_article_comment(
     slug: ArticleSlug,
     id: ArticleID,
     current_user: CurrentUser,
-    delete_comment: DeleteArticleCommentUseCase = Depends(
+    delete_comment: DeleteArticleCommentUseCase = Depends(  # noqa: FAST002
         Provide[Container.delete_article_comment_use_case]
     ),
 ) -> None:
