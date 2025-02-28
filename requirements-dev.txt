@@ -6,4 +6,5 @@ mypy==1.15.0
 pytest==8.3.4
 pytest-randomly==3.16.0
 pytest-xdist==3.6.1
+ruff==0.9.9
 httpx==0.28.1
