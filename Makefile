@@ -24,3 +24,9 @@ docker_restart:
 
 types:
 	mypy
+
+format:
+	ruff format
+
+lint:
+	ruff check
