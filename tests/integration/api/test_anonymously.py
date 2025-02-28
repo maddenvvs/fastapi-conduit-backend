@@ -4,7 +4,7 @@ from httpx import AsyncClient, Request
 
 @pytest.mark.anyio
 @pytest.mark.parametrize(
-    ["method", "url"],
+    ("method", "url"),
     [
         ("GET", "/user"),
         ("PUT", "/user"),
