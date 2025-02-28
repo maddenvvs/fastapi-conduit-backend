@@ -3,6 +3,7 @@ from typing import final
 from sqlalchemy import select
 from sqlalchemy.dialects.sqlite import insert
 
+from conduit.domain.entities.articles import ArticleID
 from conduit.domain.entities.tags import Tag
 from conduit.domain.repositories.tags import TagsRepository
 from conduit.infrastructure.persistence.models import ArticleTagModel, TagModel
@@ -70,3 +71,18 @@ class SQLiteTagsRepository(TagsRepository):
         await session.execute(link_query)
 
         return tags_to_return
+
+    async def list_by_article_id(self, article_id: ArticleID) -> list[Tag]:
+        session = SqlAlchemyUnitOfWork.get_current_session()
+
+        query = (
+            select(TagModel, ArticleTagModel)
+            .where(
+                (ArticleTagModel.article_id == article_id)
+                & (ArticleTagModel.tag_id == TagModel.id)
+            )
+            .order_by(TagModel.created_at.desc())
+        )
+
+        tags = await session.scalars(query)
+        return [_tag_model_to_tag(tag) for tag in tags]

@@ -32,7 +32,10 @@ async def favorite_article(
         Provide[Container.favorite_article_use_case]
     ),
 ) -> ArticleWithAuthorApiResponse:
-    raise HTTPException(
-        status_code=404,
-        detail="Article is not found",
-    )
+    article = await favorite_article(slug, current_user)
+    if article is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Article not found",
+        )
+    return ArticleWithAuthorApiResponse.from_article_with_author(article)

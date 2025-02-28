@@ -137,6 +137,7 @@ class Container(containers.DeclarativeContainer):
     articles_service = providers.Factory(
         ArticlesService,
         articles_repository=articles_repository,
+        tags_repository=tags_repository,
         profiles_service=profiles_service,
         favorites_repository=favorites_repository,
     )

@@ -16,6 +16,7 @@ router = APIRouter()
 @router.delete(
     path="/articles/{slug}",
     responses={
+        **open_api.unauthorized_error(),
         **open_api.not_found_error("Article"),
     },
     summary="Delete article by its slug",

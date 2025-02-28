@@ -1,18 +1,16 @@
 from conduit.domain.entities.articles import (
     ArticleAuthor,
     ArticleWithAuthor,
-    AuthorID,
     NewArticleDetails,
     NewArticleDetailsWithSlug,
 )
+from conduit.domain.entities.users import User
+from conduit.domain.exceptions import DomainException
 from conduit.domain.repositories.articles import ArticlesRepository
 from conduit.domain.repositories.tags import TagsRepository
 from conduit.domain.services.profiles_service import ProfilesService
 from conduit.domain.services.slug_service import SlugService
 from conduit.domain.unit_of_work import UnitOfWorkFactory
-from conduit.domain.use_cases.create_article.exceptions import (
-    ArticleProfileMissingException,
-)
 
 
 class CreateArticleUseCase:
@@ -33,12 +31,14 @@ class CreateArticleUseCase:
     async def __call__(
         self,
         article_details: NewArticleDetails,
-        author_id: AuthorID,
+        current_user: User,
     ) -> ArticleWithAuthor:
         async with self._uow_factory():
-            profile = await self._profiles_service.get_by_user_id_or_none(author_id)
+            profile = await self._profiles_service.get_by_user_id_or_none(
+                current_user.id
+            )
             if profile is None:
-                raise ArticleProfileMissingException
+                raise DomainException("Profile not found")
 
             slugged_article = NewArticleDetailsWithSlug(
                 title=article_details.title,
@@ -49,7 +49,7 @@ class CreateArticleUseCase:
             )
 
             created_article = await self._articles_repository.add(
-                author_id,
+                current_user.id,
                 slugged_article,
             )
             await self._tags_repository.add_many(
@@ -72,4 +72,6 @@ class CreateArticleUseCase:
                 following=profile.following,
             ),
             tags=article_details.tags,
+            favorited=False,
+            favorites_count=0,
         )

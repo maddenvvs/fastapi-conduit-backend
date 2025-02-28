@@ -1,4 +1,5 @@
-from sqlalchemy import delete, insert
+from sqlalchemy import delete, exists, insert, select
+from sqlalchemy.sql.functions import count
 
 from conduit.domain.entities.articles import ArticleID
 from conduit.domain.entities.users import UserID
@@ -34,3 +35,26 @@ class SQLiteFavoritesRepository(FavoritesRepository):
         )
 
         await session.execute(query)
+
+    async def exists(self, article_id: ArticleID, user_id: ArticleID) -> bool:
+        session = SqlAlchemyUnitOfWork.get_current_session()
+
+        query = (
+            exists()
+            .where(
+                FavoriteModel.article_id == article_id,
+                FavoriteModel.user_id == user_id,
+            )
+            .select()
+        )
+
+        result = await session.execute(query)
+        return result.scalar_one()
+
+    async def count(self, article_id: ArticleID) -> int:
+        session = SqlAlchemyUnitOfWork.get_current_session()
+
+        query = select(count()).where(FavoriteModel.article_id == article_id)
+
+        result = await session.execute(query)
+        return result.scalar_one()

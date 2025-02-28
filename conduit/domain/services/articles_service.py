@@ -1,11 +1,12 @@
-from dataclasses import asdict
 from typing import Optional, final
 
-from conduit.domain.entities.articles import ArticleAuthor, ArticleWithAuthor
+from conduit.domain.entities.articles import Article, ArticleAuthor, ArticleWithAuthor
+from conduit.domain.entities.profiles import Profile
 from conduit.domain.entities.users import User
 from conduit.domain.exceptions import DomainException
 from conduit.domain.repositories.articles import ArticlesRepository
 from conduit.domain.repositories.favorites import FavoritesRepository
+from conduit.domain.repositories.tags import TagsRepository
 from conduit.domain.services.profiles_service import ProfilesService
 
 
@@ -14,10 +15,12 @@ class ArticlesService:
     def __init__(
         self,
         articles_repository: ArticlesRepository,
+        tags_repository: TagsRepository,
         profiles_service: ProfilesService,
         favorites_repository: FavoritesRepository,
     ) -> None:
         self._articles_repository = articles_repository
+        self._tags_repository = tags_repository
         self._profiles_service = profiles_service
         self._favorites_repository = favorites_repository
 
@@ -34,22 +37,7 @@ class ArticlesService:
         if author_profile is None:
             raise DomainException("Article cannot exist without an author")
 
-        return ArticleWithAuthor(
-            id=article.id,
-            slug=article.slug,
-            title=article.title,
-            description=article.description,
-            body=article.description,
-            tags=[],
-            created_at=article.created_at,
-            updated_at=article.updated_at,
-            author=ArticleAuthor(
-                bio=author_profile.bio,
-                following=author_profile.following,
-                username=author_profile.username,
-                image=author_profile.image,
-            ),
-        )
+        return await self._get_article_info(article, author_profile, current_user)
 
     async def favorite_article(
         self,
@@ -69,7 +57,15 @@ class ArticlesService:
         )
 
         return ArticleWithAuthor(
-            **asdict(article),
+            id=article.id,
+            slug=article.slug,
+            title=article.title,
+            description=article.description,
+            body=article.body,
+            tags=article.tags,
+            created_at=article.created_at,
+            updated_at=article.updated_at,
+            author=article.author,
             favorited=True,
             favorites_count=article.favorites_count + 1,
         )
@@ -92,7 +88,15 @@ class ArticlesService:
         )
 
         return ArticleWithAuthor(
-            **asdict(article),
+            id=article.id,
+            slug=article.slug,
+            title=article.title,
+            description=article.description,
+            body=article.body,
+            tags=article.tags,
+            created_at=article.created_at,
+            updated_at=article.updated_at,
+            author=article.author,
             favorited=False,
             favorites_count=article.favorites_count - 1,
         )
@@ -110,3 +114,40 @@ class ArticlesService:
             raise DomainException("You don't own the article")
 
         await self._articles_repository.delete_by_id(article.id)
+
+    async def _get_article_info(
+        self,
+        article: Article,
+        profile: Profile,
+        current_user: Optional[User],
+    ) -> ArticleWithAuthor:
+        tags = await self._tags_repository.list_by_article_id(article.id)
+        tag_names = [tag.name for tag in tags]
+
+        favorites_count = await self._favorites_repository.count(article.id)
+        is_favorited = (
+            await self._favorites_repository.exists(
+                current_user.id,
+                article.id,
+            )
+            if current_user
+            else False
+        )
+        return ArticleWithAuthor(
+            id=article.id,
+            slug=article.slug,
+            title=article.title,
+            description=article.description,
+            body=article.body,
+            tags=tag_names,
+            created_at=article.created_at,
+            updated_at=article.updated_at,
+            favorited=is_favorited,
+            favorites_count=favorites_count,
+            author=ArticleAuthor(
+                username=profile.username,
+                bio=profile.bio,
+                image=profile.image,
+                following=profile.following,
+            ),
+        )

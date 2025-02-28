@@ -5,6 +5,7 @@ import pytest
 from httpx import AsyncClient, Response
 
 from conduit.infrastructure.persistence.models import ArticleModel, UserModel
+from tests.integration.conftest import UserModelFactory
 
 
 class TestWhenThereIsNoArticleWithGivenTag:
@@ -27,14 +28,22 @@ class TestWhenThereIsNoArticleWithGivenTag:
 
 class TestWhenArticleExists:
 
+    @pytest.fixture
+    def article_author(self, user_model_factory: UserModelFactory) -> UserModel:
+        return user_model_factory(
+            username="article_author",
+            email="author@domain.com",
+        )
+
     @pytest.fixture(autouse=True)
     async def setup_article(
         self,
-        registered_user: UserModel,
+        article_author: UserModel,
         add_to_db: Any,
     ) -> None:
+        await add_to_db(article_author)
         article = ArticleModel(
-            author_id=registered_user.id,
+            author_id=article_author.id,
             slug="article-slug",
             title="Article Title",
             description="Article description",
@@ -60,23 +69,23 @@ class TestWhenArticleExists:
     async def test_returns_json_with_article_data(
         self,
         get_article_response: Response,
-        registered_user: UserModel,
+        article_author: UserModel,
     ) -> None:
         assert get_article_response.json() == {
             "article": {
                 "slug": "article-slug",
                 "title": "Article Title",
                 "description": "Article description",
-                "body": "Article description",
+                "body": "Article body",
                 "tagList": [],
                 "createdAt": "2021-11-26T00:00:00Z",
                 "updatedAt": "2022-12-01T00:00:00Z",
                 "favorited": False,
                 "favoritesCount": 0,
                 "author": {
-                    "username": registered_user.username,
-                    "bio": registered_user.bio,
-                    "image": registered_user.image_url,
+                    "username": article_author.username,
+                    "bio": article_author.bio,
+                    "image": article_author.image_url,
                     "following": False,
                 },
             }

@@ -11,3 +11,9 @@ class FavoritesRepository(abc.ABC):
 
     @abc.abstractmethod
     async def delete(self, article_id: ArticleID, user_id: UserID) -> None: ...
+
+    @abc.abstractmethod
+    async def exists(self, article_id: ArticleID, user_id: UserID) -> bool: ...
+
+    @abc.abstractmethod
+    async def count(self, article_id: ArticleID) -> int: ...

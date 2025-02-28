@@ -1,5 +1,5 @@
 import datetime
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Optional, final
 
 from typing_extensions import TypeAlias
@@ -14,7 +14,7 @@ class NewArticleDetails:
     title: str
     description: str
     body: str
-    tags: list[str] = field(default_factory=list)
+    tags: list[str]
 
 
 @final
@@ -24,7 +24,7 @@ class NewArticleDetailsWithSlug:
     slug: str
     description: str
     body: str
-    tags: list[str] = field(default_factory=list)
+    tags: list[str]
 
 
 @final
@@ -32,8 +32,8 @@ class NewArticleDetailsWithSlug:
 class ArticleAuthor:
     username: str
     bio: str
-    image: Optional[str] = field(default=None)
-    following: bool = field(default=False)
+    image: Optional[str]
+    following: bool
 
 
 @final
@@ -48,8 +48,8 @@ class ArticleWithAuthor:
     created_at: datetime.datetime
     updated_at: datetime.datetime
     author: ArticleAuthor
-    favorited: bool = field(default=False)
-    favorites_count: int = field(default=0)
+    favorited: bool
+    favorites_count: int
 
 
 @final
@@ -62,8 +62,8 @@ class BodylessArticleWithAuthor:
     created_at: datetime.datetime
     updated_at: datetime.datetime
     author: ArticleAuthor
-    favorited: bool = field(default=False)
-    favorites_count: int = field(default=0)
+    favorited: bool
+    favorites_count: int
 
 
 @final

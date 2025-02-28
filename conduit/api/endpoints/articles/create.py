@@ -35,5 +35,5 @@ async def create_article(
         Provide[Container.create_article_use_case]
     ),
 ) -> ArticleWithAuthorApiResponse:
-    created_article = await create_article(new_article.to_domain(), current_user.id)
+    created_article = await create_article(new_article.to_domain(), current_user)
     return ArticleWithAuthorApiResponse.from_article_with_author(created_article)
