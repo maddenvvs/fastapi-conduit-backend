@@ -95,7 +95,10 @@ class SQLiteArticlesRepository(ArticlesRepository):
         return _model_to_entity(result.scalar_one())
 
     async def list_by_followings(
-        self, user_id: UserID, limit: int, offset: int
+        self,
+        user_id: UserID,
+        limit: int,
+        offset: int,
     ) -> list[BodylessArticleWithAuthor]:
         session = SqlAlchemyUnitOfWork.get_current_session()
 
@@ -168,8 +171,8 @@ class SQLiteArticlesRepository(ArticlesRepository):
 
         query = select(count(ArticleModel.id)).join(
             FollowerModel,
-            FollowerModel.follower_id == user_id
-            and FollowerModel.following_id == ArticleModel.id,
+            (FollowerModel.follower_id == user_id)
+            & (FollowerModel.following_id == ArticleModel.author_id),
         )
 
         result = await session.execute(query)

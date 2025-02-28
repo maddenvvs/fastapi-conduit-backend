@@ -4,7 +4,10 @@ from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, Query, status
 
 from conduit.api import open_api
-from conduit.api.endpoints.articles.contract import ListArticlesApiResponse
+from conduit.api.endpoints.articles.contract import (
+    ListArticlesApiResponse,
+    PagingParameters,
+)
 from conduit.api.security.dependencies import CurrentUser
 from conduit.api.tags import Tag
 from conduit.containers import Container
@@ -30,14 +33,13 @@ router = APIRouter()
 @inject
 async def feed_articles(
     current_user: CurrentUser,
-    limit: Annotated[int, Query(ge=1, le=50)] = 20,
-    offset: Annotated[int, Query(ge=0)] = 0,
+    paging: Annotated[PagingParameters, Query()],
     use_case: FeedArticlesUseCase = Depends(Provide[Container.feed_articles_use_case]),
 ) -> ListArticlesApiResponse:
     articles_info = await use_case(
         FeedArticlesRequest(
-            limit=limit,
-            offset=offset,
+            limit=paging.limit,
+            offset=paging.offset,
             user=current_user,
         )
     )
