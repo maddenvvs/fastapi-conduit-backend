@@ -1,6 +1,6 @@
 from typing import Optional, final
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, HttpUrl
 from typing_extensions import Self
 
 from conduit.domain.entities.users import (
@@ -75,6 +75,7 @@ class UpdateUserData(BaseModel):
         default=None,
         description="User name used in a profile. Should be unique among other usernames.",
         examples=["walkmansit"],
+        min_length=1,
     )
     email: Optional[EmailStr] = Field(
         default=None,
@@ -84,13 +85,14 @@ class UpdateUserData(BaseModel):
         default=None,
         description="Password to be used during the login.",
         examples=["use_your_own_password"],
+        min_length=1,
     )
     bio: Optional[str] = Field(
         default=None,
         description="The biography information of the registered user (empty by default).",
         examples=[""],
     )
-    image: Optional[str] = Field(
+    image: Optional[HttpUrl] = Field(
         default=None,
         description="The image URL of the registered user (null by default).",
         examples=[None],
@@ -109,7 +111,7 @@ class UpdateCurrentUserApiRequest(BaseModel):
             username=user.username,
             email=user.email,
             password=user.password,
-            image_url=user.image,
+            image_url=str(user.image) if user.image else None,
             bio=user.bio,
         )
 
