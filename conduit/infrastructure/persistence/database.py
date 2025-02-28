@@ -31,7 +31,7 @@ class Database:
         if not os.path.isfile(database) or os.path.getsize(database) < 100:
             return False
 
-        with open(database, "rb") as f:
+        with open(database, "rb") as f:  # noqa: ASYNC230 # It's used for educational purposes.
             header = f.read(100)
 
         return header[:16] == b"SQLite format 3\x00"
