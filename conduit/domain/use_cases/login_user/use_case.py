@@ -4,7 +4,7 @@ from conduit.domain.services.auth_token_service import AuthTokenService
 from conduit.domain.services.password_service import PasswordChecker
 from conduit.domain.unit_of_work import UnitOfWorkFactory
 from conduit.domain.use_cases.login_user.exceptions import InvalidCredentialsException
-from conduit.infrastructure.time import CurrentTime
+from conduit.infrastructure.current_time import CurrentTime
 
 
 class LoginUserUseCase:

@@ -9,9 +9,9 @@ from conduit.domain.entities.users import (
     UserID,
 )
 from conduit.domain.repositories.users import UsersRepository
+from conduit.infrastructure.current_time import CurrentTime
 from conduit.infrastructure.persistence.models import UserModel
 from conduit.infrastructure.persistence.unit_of_work import SqlAlchemyUnitOfWork
-from conduit.infrastructure.time import CurrentTime
 
 
 def _model_to_entity(model: UserModel) -> User:
@@ -33,10 +33,10 @@ class SQLiteUsersRepository(UsersRepository):
     ) -> None:
         self._now = now
 
-    async def get_by_id_or_none(self, id: UserID) -> Optional[User]:
+    async def get_by_id_or_none(self, user_id: UserID) -> Optional[User]:
         session = SqlAlchemyUnitOfWork.get_current_session()
 
-        query = select(UserModel).where(UserModel.id == id)
+        query = select(UserModel).where(UserModel.id == user_id)
         if user := await session.scalar(query):
             return _model_to_entity(user)
         return None

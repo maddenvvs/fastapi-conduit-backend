@@ -15,6 +15,7 @@ from conduit.domain.entities.articles import (
 )
 from conduit.domain.entities.users import UserID
 from conduit.domain.repositories.articles import ArticlesRepository
+from conduit.infrastructure.current_time import CurrentTime
 from conduit.infrastructure.persistence.models import (
     ArticleModel,
     ArticleTagModel,
@@ -24,7 +25,6 @@ from conduit.infrastructure.persistence.models import (
     UserModel,
 )
 from conduit.infrastructure.persistence.unit_of_work import SqlAlchemyUnitOfWork
-from conduit.infrastructure.time import CurrentTime
 
 
 def _model_to_entity(article_model: ArticleModel) -> Article:

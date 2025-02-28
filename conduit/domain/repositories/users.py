@@ -13,7 +13,7 @@ class UsersRepository(abc.ABC):
     @abc.abstractmethod
     async def get_by_id_or_none(
         self,
-        id: UserID,
+        user_id: UserID,
     ) -> Optional[User]: ...
 
     @abc.abstractmethod

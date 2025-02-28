@@ -38,6 +38,7 @@ from conduit.domain.use_cases.update_article.use_case import UpdateArticleUseCas
 from conduit.domain.use_cases.update_current_user.use_case import (
     UpdateCurrentUserUseCase,
 )
+from conduit.infrastructure.current_time import current_time
 from conduit.infrastructure.persistence.database import Database
 from conduit.infrastructure.persistence.repositories.articles import (
     SQLiteArticlesRepository,
@@ -54,7 +55,6 @@ from conduit.infrastructure.persistence.repositories.followers import (
 from conduit.infrastructure.persistence.repositories.tags import SQLiteTagsRepository
 from conduit.infrastructure.persistence.repositories.users import SQLiteUsersRepository
 from conduit.infrastructure.persistence.unit_of_work import SqlAlchemyUnitOfWorkFactory
-from conduit.infrastructure.time import current_time
 from conduit.settings import get_settings
 
 

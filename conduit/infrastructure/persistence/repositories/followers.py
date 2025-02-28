@@ -2,9 +2,9 @@ from sqlalchemy import delete, exists, insert
 
 from conduit.domain.entities.users import UserID
 from conduit.domain.repositories.followers import FollowersRepository
+from conduit.infrastructure.current_time import CurrentTime
 from conduit.infrastructure.persistence.models import FollowerModel
 from conduit.infrastructure.persistence.unit_of_work import SqlAlchemyUnitOfWork
-from conduit.infrastructure.time import CurrentTime
 
 
 class SQLiteFollowersRepository(FollowersRepository):

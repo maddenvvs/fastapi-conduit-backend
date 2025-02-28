@@ -4,7 +4,7 @@ from fastapi import Path
 from pydantic import BaseModel, Field
 from typing_extensions import Self, TypeAlias
 
-from conduit.api.json import DateTime
+from conduit.api.serialization import DateTime
 from conduit.domain.entities.articles import (
     ArticleWithAuthor,
     BodylessArticleWithAuthor,
