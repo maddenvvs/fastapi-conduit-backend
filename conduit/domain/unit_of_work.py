@@ -10,7 +10,6 @@ from typing_extensions import Self
 
 
 class UnitOfWork(abc.ABC):
-
     _current_context_token: Optional[Token[Optional["UnitOfWork"]]] = None
 
     def set_current_context(self) -> None:
@@ -60,6 +59,5 @@ _current_unit_of_work: ContextVar[Optional[UnitOfWork]] = ContextVar(
 
 
 class UnitOfWorkFactory(abc.ABC):
-
     @abc.abstractmethod
     def __call__(self) -> UnitOfWork: ...

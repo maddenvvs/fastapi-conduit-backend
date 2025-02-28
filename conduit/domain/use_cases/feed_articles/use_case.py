@@ -24,7 +24,6 @@ class FeedArticlesResponse:
 
 @final
 class FeedArticlesUseCase:
-
     def __init__(
         self,
         uow_factory: UnitOfWorkFactory,

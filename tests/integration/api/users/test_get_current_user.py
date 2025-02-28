@@ -5,7 +5,6 @@ from conduit.infrastructure.persistence.models import UserModel
 
 
 class TestWhenVisitingByRegisteredUser:
-
     @pytest.fixture
     async def registered_user_response(
         self, registered_user_client: AsyncClient

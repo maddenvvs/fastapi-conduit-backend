@@ -7,7 +7,6 @@ PasswordChecker: TypeAlias = Callable[[str, str], bool]
 
 
 class PasswordService:
-
     def hash_password(self, password: str) -> str:
         return password
 

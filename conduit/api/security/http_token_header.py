@@ -8,7 +8,6 @@ from starlette.exceptions import HTTPException
 
 @final
 class HttpTokenHeader(APIKeyHeader):
-
     def __init__(self, raise_error: bool, *args: Any, **kwargs: Any):
         super().__init__(*args, **kwargs)
         self._raise_error = raise_error

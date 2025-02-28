@@ -10,7 +10,6 @@ from conduit.infrastructure.persistence.database import Database
 
 @final
 class SqlAlchemyUnitOfWork(UnitOfWork):
-
     def __init__(self, db: Database) -> None:
         self._db = db
         self._session: Optional[AsyncSession] = None
@@ -70,7 +69,6 @@ class SqlAlchemyUnitOfWork(UnitOfWork):
 
 @final
 class SqlAlchemyUnitOfWorkFactory(UnitOfWorkFactory):
-
     def __init__(self, db: Database) -> None:
         self._db = db
 

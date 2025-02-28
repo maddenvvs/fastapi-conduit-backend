@@ -10,7 +10,6 @@ from conduit.domain.entities.users import (
 
 
 class UsersRepository(abc.ABC):
-
     @abc.abstractmethod
     async def get_by_id_or_none(
         self,

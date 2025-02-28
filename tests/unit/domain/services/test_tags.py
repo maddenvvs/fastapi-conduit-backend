@@ -26,7 +26,6 @@ def tags_service(
 
 
 class TestSuccessullyGetAllTags:
-
     @pytest.fixture(
         autouse=True,
         params=[
@@ -89,7 +88,6 @@ class TestSuccessullyGetAllTags:
 
 
 class TestRepositoryRaisesException:
-
     class CustomException(Exception):
         pass
 

@@ -8,7 +8,6 @@ from tests.integration.conftest import AddToDb
 
 
 class TestWhenFollowNonexistingProfile:
-
     @pytest.fixture
     async def profile_response(self, registered_user_client: AsyncClient) -> Response:
         return await registered_user_client.post(
@@ -25,7 +24,6 @@ class TestWhenFollowNonexistingProfile:
 
 
 class TestWhenFollowYourself:
-
     @pytest.fixture
     async def follow_response(
         self,
@@ -46,7 +44,6 @@ class TestWhenFollowYourself:
 
 
 class TestWhenFollowExistingProfile:
-
     @pytest.fixture(
         params=[
             "joe",
@@ -96,7 +93,6 @@ class TestWhenFollowExistingProfile:
         assert follow_response.json()["profile"]["following"] is True
 
     class TestAndItWasAlreadyFollowed:
-
         @pytest.fixture
         async def follow_response(
             self, registered_user_client: AsyncClient, test_username: str

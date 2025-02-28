@@ -9,7 +9,6 @@ from tests.integration.conftest import UserModelFactory
 
 
 class TestWhenThereIsNoArticleWithGivenTag:
-
     @pytest.fixture
     async def get_article_response(self, any_client: AsyncClient) -> Response:
         return await any_client.get("/articles/non-existing-article")
@@ -27,7 +26,6 @@ class TestWhenThereIsNoArticleWithGivenTag:
 
 
 class TestWhenArticleExists:
-
     @pytest.fixture
     def article_author(self, user_model_factory: UserModelFactory) -> UserModel:
         return user_model_factory(

@@ -10,7 +10,6 @@ from tests.integration.conftest import AddToDb
 
 
 class TestSuccessfullyListTags:
-
     @pytest.fixture(
         params=[
             [],
@@ -41,7 +40,6 @@ class TestSuccessfullyListTags:
         await add_to_db(*test_tags)
 
     class TestForAnyClient:
-
         @pytest.fixture
         async def tags_response(self, any_client: AsyncClient) -> Response:
             return await any_client.get("/tags")

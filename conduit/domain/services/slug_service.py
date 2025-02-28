@@ -8,7 +8,6 @@ Slugify: TypeAlias = Callable[[str], str]
 
 
 class SlugService:
-
     def slugify_string(self, string: str) -> str:
         slugged_string = slugify.slugify(string, lowercase=True)
         unique_code = secrets.token_urlsafe(6)

@@ -60,7 +60,6 @@ from conduit.settings import get_settings
 
 @final
 class Container(containers.DeclarativeContainer):
-
     __self__: providers.Self["Container"] = providers.Self()
 
     wiring_config = containers.WiringConfiguration(packages=[".api"])

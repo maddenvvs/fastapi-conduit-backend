@@ -27,7 +27,6 @@ def _model_to_entity(model: UserModel) -> User:
 
 @final
 class SQLiteUsersRepository(UsersRepository):
-
     def __init__(
         self,
         now: CurrentTime,

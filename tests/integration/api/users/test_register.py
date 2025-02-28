@@ -31,7 +31,6 @@ def register_request_factory() -> RequestFactory:
 
 
 class TestWhenRegisteringWithInvalidRequestFields:
-
     @pytest.fixture(
         params=[
             {"username": ""},
@@ -69,7 +68,6 @@ class TestWhenRegisteringWithInvalidRequestFields:
 
 
 class TestWhenRegisteredSuccessully:
-
     @pytest.fixture(
         params=[
             dict(username="ivan", password="clear", email="a@a.com"),
@@ -127,7 +125,6 @@ class TestWhenRegisteredSuccessully:
 
 
 class TestWhenUsernameIsTaken:
-
     @pytest.fixture
     async def failed_response(
         self,
@@ -151,7 +148,6 @@ class TestWhenUsernameIsTaken:
 
 
 class TestWhenEmailIsTaken:
-
     @pytest.fixture
     async def failed_response(
         self,

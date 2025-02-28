@@ -8,7 +8,6 @@ from tests.integration.conftest import AddToDb, UserModelFactory
 
 
 class TestWhenVisitingNonExistingProfile:
-
     @pytest.fixture
     async def profile_response(self, any_client: AsyncClient) -> Response:
         return await any_client.get("/profiles/non-existing-username")
@@ -23,7 +22,6 @@ class TestWhenVisitingNonExistingProfile:
 
 
 class TestWhenVisitingExistingProfile:
-
     @pytest.fixture(
         params=[
             "joe",
@@ -57,7 +55,6 @@ class TestWhenVisitingExistingProfile:
         await add_to_db(test_user)
 
     class TestForAnyClient:
-
         @pytest.fixture
         async def profile_response(
             self, any_client: AsyncClient, test_username: str
@@ -84,7 +81,6 @@ class TestWhenVisitingExistingProfile:
             }
 
     class TestFollowedByCurrentUser:
-
         @pytest.fixture(autouse=True)
         async def follow_profile(
             self, test_username: str, registered_user_client: AsyncClient

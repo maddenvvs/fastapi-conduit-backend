@@ -5,7 +5,6 @@ from tests.integration.conftest import AddToDb, UserModelFactory
 
 
 class TestWhenLoginWithEmptyPassword:
-
     @pytest.fixture
     async def login_response(self, any_client: AsyncClient) -> Response:
         response = await any_client.post(
@@ -35,7 +34,6 @@ class TestWhenLoginWithEmptyPassword:
 
 
 class TestWhenLoginWithInvalidEmail:
-
     @pytest.fixture(
         params=[
             "",
@@ -116,7 +114,6 @@ class TestWhenLoginToNonexistingUser:
 
 
 class TestWhenLoginToExistingUser:
-
     @pytest.fixture(autouse=True)
     async def create_valid_user(
         self,
@@ -131,7 +128,6 @@ class TestWhenLoginToExistingUser:
         await add_to_db(user)
 
     class TestWithValidCredentials:
-
         @pytest.fixture
         async def login_response(self, any_client: AsyncClient) -> Response:
             response = await any_client.post(
@@ -156,7 +152,6 @@ class TestWhenLoginToExistingUser:
             assert len(json_response["user"]["token"]) > 0
 
     class TestWithInvalidPassword:
-
         @pytest.fixture
         async def login_response(self, any_client: AsyncClient) -> Response:
             response = await any_client.post(

@@ -8,7 +8,6 @@ from conduit.domain.unit_of_work import UnitOfWorkFactory
 
 @final
 class FollowProfileUseCase:
-
     def __init__(
         self,
         uow_factory: UnitOfWorkFactory,

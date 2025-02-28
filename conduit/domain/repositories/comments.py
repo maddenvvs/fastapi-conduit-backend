@@ -5,7 +5,6 @@ from conduit.domain.entities.comments import Comment, CommentID, NewComment
 
 
 class CommentsRepository(abc.ABC):
-
     @abc.abstractmethod
     async def get(self, comment_id: CommentID) -> Comment: ...
 

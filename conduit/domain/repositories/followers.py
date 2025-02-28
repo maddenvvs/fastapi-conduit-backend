@@ -4,7 +4,6 @@ from conduit.domain.entities.users import UserID
 
 
 class FollowersRepository(abc.ABC):
-
     @abc.abstractmethod
     async def exists(self, follower_id: UserID, following_id: UserID) -> bool: ...
 

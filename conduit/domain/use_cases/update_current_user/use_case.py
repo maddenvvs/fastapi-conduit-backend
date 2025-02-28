@@ -20,7 +20,6 @@ class UpdateCurrentUserRequest:
 
 @final
 class UpdateCurrentUserUseCase:
-
     def __init__(
         self,
         uow_factory: UnitOfWorkFactory,

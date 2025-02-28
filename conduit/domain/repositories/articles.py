@@ -13,7 +13,6 @@ from conduit.domain.entities.users import UserID
 
 
 class ArticlesRepository(abc.ABC):
-
     @abc.abstractmethod
     async def get_by_slug_or_none(self, slug: str) -> Optional[Article]: ...
 

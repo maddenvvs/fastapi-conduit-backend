@@ -5,7 +5,6 @@ from httpx import AsyncClient, Response
 
 
 class TestWhenUpdateWithInvalidFields:
-
     @pytest.fixture(
         params=[
             dict(email=""),

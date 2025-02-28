@@ -32,7 +32,6 @@ class ValidationErrorApiResponse(BaseModel):
 
         error: dict[str, Any]
         for error in errors:
-
             # Error structure to parse (https://docs.pydantic.dev/latest/errors/errors/)
             # {
             #   'type': 'value_error',

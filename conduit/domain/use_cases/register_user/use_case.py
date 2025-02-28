@@ -18,7 +18,6 @@ from conduit.domain.use_cases.register_user.exceptions import (
 
 @final
 class RegisterUserUseCase:
-
     def __init__(
         self,
         uow_factory: UnitOfWorkFactory,

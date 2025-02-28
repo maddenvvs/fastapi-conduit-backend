@@ -19,7 +19,6 @@ def _to_profile(user: User, following: bool) -> Profile:
 
 @final
 class ProfilesService:
-
     def __init__(
         self,
         users_repository: UsersRepository,

@@ -23,7 +23,6 @@ def _to_domain_comment(comment: CommentModel) -> Comment:
 
 @final
 class SQLiteCommentsRepository(CommentsRepository):
-
     def __init__(self, now: CurrentTime) -> None:
         self._now = now
 

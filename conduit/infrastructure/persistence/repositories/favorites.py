@@ -10,7 +10,6 @@ from conduit.infrastructure.time import CurrentTime
 
 
 class SQLiteFavoritesRepository(FavoritesRepository):
-
     def __init__(self, now: CurrentTime) -> None:
         self._now = now
 

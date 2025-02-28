@@ -39,7 +39,6 @@ def test_parse_valid_token_produces_correct_token_payload(
 
 
 class TestParseInvalidToken:
-
     @pytest.fixture(
         params=[
             "invalid.token.value",
