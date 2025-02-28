@@ -8,7 +8,7 @@ class EmailAlreadyTakenException(DomainValidationException):
     def __init__(self, *args: object) -> None:
         super().__init__(
             "email",
-            f"Email is taken",
+            "Email is taken",
             *args,
         )
 
@@ -21,6 +21,6 @@ class UserNameAlreadyTakenException(DomainValidationException):
     ) -> None:
         super().__init__(
             "username",
-            f"Username is taken",
+            "Username is taken",
             *args,
         )
