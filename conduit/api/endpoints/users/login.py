@@ -17,7 +17,6 @@ router = APIRouter()
 
 @router.post(
     path="/users/login",
-    response_model=UserDetailsApiResponse,
     responses={
         **open_api.unauthorized_error_no_body(),
         **open_api.validation_error(),

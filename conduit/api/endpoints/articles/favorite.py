@@ -16,7 +16,6 @@ router = APIRouter()
 
 @router.post(
     path="/articles/{slug}/favorite",
-    response_model=ArticleWithAuthorApiResponse,
     responses={
         **open_api.unauthorized_error(),
         **open_api.not_found_error("Article"),

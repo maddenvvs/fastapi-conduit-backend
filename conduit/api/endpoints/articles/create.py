@@ -18,7 +18,6 @@ router = APIRouter()
 
 @router.post(
     path="/articles",
-    response_model=ArticleWithAuthorApiResponse,
     responses={
         **open_api.unauthorized_error(),
         **open_api.validation_error(),

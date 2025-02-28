@@ -21,7 +21,6 @@ router = APIRouter()
 
 @router.get(
     path="/health",
-    response_model=HealthCheckApiResponse,
     tags=[Tag.Health],
 )
 async def health_check() -> HealthCheckApiResponse:

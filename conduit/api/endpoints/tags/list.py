@@ -11,7 +11,6 @@ router = APIRouter()
 
 @router.get(
     path="/tags",
-    response_model=ListTagsApiResponse,
     summary="List all tags",
     tags=[tags.Tag.Tags],
 )

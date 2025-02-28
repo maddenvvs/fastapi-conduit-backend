@@ -18,7 +18,6 @@ router = APIRouter()
 
 @router.get(
     path="/articles/feed",
-    response_model=ListArticlesApiResponse,
     responses={
         **open_api.unauthorized_error(),
         **open_api.validation_error(),

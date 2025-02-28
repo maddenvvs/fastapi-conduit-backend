@@ -15,7 +15,6 @@ router = APIRouter()
 
 @router.get(
     path="/profiles/{username}",
-    response_model=ProfileDetailsApiResponse,
     responses={
         **open_api.validation_error(),
         **open_api.not_found_error("Profile"),

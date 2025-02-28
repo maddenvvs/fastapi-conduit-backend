@@ -13,7 +13,6 @@ router = APIRouter()
 
 @router.get(
     path="/user",
-    response_model=UserDetailsApiResponse,
     responses={
         **open_api.unauthorized_error(),
     },

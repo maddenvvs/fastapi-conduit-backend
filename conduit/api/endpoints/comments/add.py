@@ -19,7 +19,6 @@ router = APIRouter()
 
 @router.post(
     path="/articles/{slug}/comments",
-    response_model=CommentDetailsApiResponse,
     responses={
         **open_api.unauthorized_error(),
         **open_api.not_found_error("Article"),

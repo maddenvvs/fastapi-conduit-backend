@@ -14,7 +14,6 @@ router = APIRouter()
 
 @router.get(
     path="/articles/{slug}/comments",
-    response_model=ListCommentsApiResponse,
     responses={
         **open_api.not_found_error("Article"),
         **open_api.validation_error(),

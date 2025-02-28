@@ -18,7 +18,6 @@ router = APIRouter()
 
 @router.get(
     path="/articles/{slug}",
-    response_model=ArticleWithAuthorApiResponse,
     responses={
         **open_api.unauthorized_error(),
         **open_api.not_found_error("Article"),

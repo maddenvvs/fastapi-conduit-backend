@@ -17,7 +17,6 @@ router = APIRouter()
 
 @router.post(
     path="/users",
-    response_model=UserDetailsApiResponse,
     responses={
         **open_api.validation_error(),
     },

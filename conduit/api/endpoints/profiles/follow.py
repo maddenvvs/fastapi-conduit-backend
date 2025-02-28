@@ -13,7 +13,6 @@ router = APIRouter()
 
 @router.post(
     path="/profiles/{username}/follow",
-    response_model=ProfileDetailsApiResponse,
     responses={
         **open_api.validation_error(),
         **open_api.not_found_error("Profile"),
