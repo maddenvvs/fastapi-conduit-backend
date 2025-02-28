@@ -1,5 +1,5 @@
 import datetime
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional, final
 
 from typing_extensions import TypeAlias
@@ -25,6 +25,15 @@ class NewArticleDetailsWithSlug:
     description: str
     body: str
     tags: list[str]
+
+
+@final
+@dataclass
+class UpdateArticleFields:
+    title: Optional[str]
+    description: Optional[str]
+    body: Optional[str]
+    slug: Optional[str] = field(default=None)
 
 
 @final

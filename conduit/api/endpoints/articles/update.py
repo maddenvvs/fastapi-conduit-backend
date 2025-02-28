@@ -1,25 +1,20 @@
-from typing import Annotated, Optional, final
+from typing import Annotated
 
-from dependency_injector.wiring import inject
-from fastapi import APIRouter, Body, HTTPException
-from pydantic import BaseModel, Field
+from dependency_injector.wiring import Provide, inject
+from fastapi import APIRouter, Body, Depends, HTTPException
 
 from conduit.api import open_api
 from conduit.api.endpoints.articles.contract import (
     ArticleSlug,
     ArticleWithAuthorApiResponse,
+    UpdateArticleApiRequest,
 )
 from conduit.api.security.dependencies import CurrentUser
 from conduit.api.tags import Tag
+from conduit.containers import Container
+from conduit.domain.use_cases.update_article.use_case import UpdateArticleUseCase
 
 router = APIRouter()
-
-
-@final
-class UpdateArticleApiRequest(BaseModel):
-    title: Optional[str] = Field(None)
-    description: Optional[str] = Field(None)
-    body: Optional[str] = Field(None)
 
 
 @router.put(
@@ -38,5 +33,11 @@ async def update_article(
     slug: ArticleSlug,
     request: Annotated[UpdateArticleApiRequest, Body()],
     current_user: CurrentUser,
+    update_article: UpdateArticleUseCase = Depends(
+        Provide[Container.update_article_use_case]
+    ),
 ) -> ArticleWithAuthorApiResponse:
-    raise HTTPException(status_code=500, detail="Not implemented")
+    article = await update_article(slug, request.to_domain(), current_user)
+    if article is None:
+        raise HTTPException(status_code=404, detail="Article not found")
+    return ArticleWithAuthorApiResponse.from_article_with_author(article)

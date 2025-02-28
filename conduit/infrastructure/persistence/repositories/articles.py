@@ -1,6 +1,6 @@
 from typing import Any, Optional
 
-from sqlalchemy import delete, exists, func, insert, literal, select, true
+from sqlalchemy import delete, exists, func, insert, literal, select, true, update
 from sqlalchemy.sql.functions import count
 
 from conduit.domain.entities.articles import (
@@ -10,6 +10,7 @@ from conduit.domain.entities.articles import (
     AuthorID,
     BodylessArticleWithAuthor,
     NewArticleDetailsWithSlug,
+    UpdateArticleFields,
 )
 from conduit.domain.entities.users import UserID
 from conduit.domain.repositories.articles import ArticlesRepository
@@ -261,3 +262,31 @@ class SQLiteArticlesRepository(ArticlesRepository):
         session = SqlAlchemyUnitOfWork.get_current_session()
         query = delete(ArticleModel).where(ArticleModel.id == article_id)
         await session.execute(query)
+
+    async def update_by_slug(
+        self, slug: str, update_fields: UpdateArticleFields
+    ) -> Article:
+        session = SqlAlchemyUnitOfWork.get_current_session()
+        current_time = self._now()
+
+        query = (
+            update(ArticleModel)
+            .where(ArticleModel.slug == slug)
+            .values(
+                updated_at=current_time,
+            )
+            .returning(ArticleModel)
+        )
+
+        if update_fields.title is not None:
+            query = query.values(
+                title=update_fields.title,
+                slug=update_fields.slug,
+            )
+        if update_fields.description is not None:
+            query = query.values(description=update_fields.description)
+        if update_fields.body is not None:
+            query = query.values(body=update_fields.body)
+
+        result = await session.execute(query)
+        return _model_to_entity(result.scalar_one())

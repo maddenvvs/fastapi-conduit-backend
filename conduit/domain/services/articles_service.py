@@ -1,6 +1,11 @@
 from typing import Optional, final
 
-from conduit.domain.entities.articles import Article, ArticleAuthor, ArticleWithAuthor
+from conduit.domain.entities.articles import (
+    Article,
+    ArticleAuthor,
+    ArticleWithAuthor,
+    UpdateArticleFields,
+)
 from conduit.domain.entities.profiles import Profile
 from conduit.domain.entities.users import User
 from conduit.domain.exceptions import DomainException
@@ -8,6 +13,7 @@ from conduit.domain.repositories.articles import ArticlesRepository
 from conduit.domain.repositories.favorites import FavoritesRepository
 from conduit.domain.repositories.tags import TagsRepository
 from conduit.domain.services.profiles_service import ProfilesService
+from conduit.domain.services.slug_service import SlugService
 
 
 @final
@@ -18,11 +24,13 @@ class ArticlesService:
         tags_repository: TagsRepository,
         profiles_service: ProfilesService,
         favorites_repository: FavoritesRepository,
+        slug_service: SlugService,
     ) -> None:
         self._articles_repository = articles_repository
         self._tags_repository = tags_repository
         self._profiles_service = profiles_service
         self._favorites_repository = favorites_repository
+        self._slug_service = slug_service
 
     async def get_article_by_slug(
         self, slug: str, current_user: Optional[User]
@@ -32,7 +40,34 @@ class ArticlesService:
             return None
 
         author_profile = await self._profiles_service.get_by_user_id_or_none(
-            article.author_id
+            article.author_id,
+            current_user,
+        )
+        if author_profile is None:
+            raise DomainException("Article cannot exist without an author")
+
+        return await self._get_article_info(article, author_profile, current_user)
+
+    async def update_article(
+        self,
+        slug: str,
+        update_fields: UpdateArticleFields,
+        current_user: User,
+    ) -> Optional[ArticleWithAuthor]:
+        article = await self._articles_repository.get_by_slug_or_none(slug)
+        if article is None:
+            return None
+
+        if article.author_id != current_user.id:
+            raise DomainException("You can't edit an article you don't own")
+
+        if update_fields.title:
+            update_fields.slug = self._slug_service.slugify_string(update_fields.title)
+
+        article = await self._articles_repository.update_by_slug(slug, update_fields)
+        author_profile = await self._profiles_service.get_by_user_id_or_none(
+            article.author_id,
+            current_user,
         )
         if author_profile is None:
             raise DomainException("Article cannot exist without an author")

@@ -9,6 +9,7 @@ from conduit.domain.entities.articles import (
     ArticleWithAuthor,
     BodylessArticleWithAuthor,
     NewArticleDetails,
+    UpdateArticleFields,
 )
 from conduit.domain.use_cases.feed_articles.use_case import FeedArticlesResponse
 from conduit.domain.use_cases.list_articles.use_case import ListArticlesResponse
@@ -20,6 +21,20 @@ ArticleSlug: TypeAlias = Annotated[
         min_length=1,
     ),
 ]
+
+
+@final
+class UpdateArticleApiRequest(BaseModel):
+    title: Optional[str] = Field(None, min_length=1)
+    description: Optional[str] = Field(None, min_length=1)
+    body: Optional[str] = Field(None, min_length=1)
+
+    def to_domain(self) -> UpdateArticleFields:
+        return UpdateArticleFields(
+            title=self.title,
+            description=self.description,
+            body=self.body,
+        )
 
 
 @final

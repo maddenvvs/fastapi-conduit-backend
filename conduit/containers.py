@@ -34,6 +34,7 @@ from conduit.domain.use_cases.unfavorite_article.use_case import (
     UnfavoriteArticleUseCase,
 )
 from conduit.domain.use_cases.unfollow_profile.use_case import UnfollowProfileUseCase
+from conduit.domain.use_cases.update_article.use_case import UpdateArticleUseCase
 from conduit.domain.use_cases.update_current_user.use_case import (
     UpdateCurrentUserUseCase,
 )
@@ -140,6 +141,7 @@ class Container(containers.DeclarativeContainer):
         tags_repository=tags_repository,
         profiles_service=profiles_service,
         favorites_repository=favorites_repository,
+        slug_service=slug_service,
     )
 
     comments_service = providers.Factory(
@@ -244,6 +246,12 @@ class Container(containers.DeclarativeContainer):
 
     delete_article_by_slug_use_case = providers.Factory(
         DeleteArticleBySlugUseCase,
+        uow_factory=uow_factory,
+        articles_service=articles_service,
+    )
+
+    update_article_use_case = providers.Factory(
+        UpdateArticleUseCase,
         uow_factory=uow_factory,
         articles_service=articles_service,
     )

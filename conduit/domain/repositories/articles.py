@@ -7,6 +7,7 @@ from conduit.domain.entities.articles import (
     AuthorID,
     BodylessArticleWithAuthor,
     NewArticleDetailsWithSlug,
+    UpdateArticleFields,
 )
 from conduit.domain.entities.users import UserID
 
@@ -39,3 +40,10 @@ class ArticlesRepository(abc.ABC):
 
     @abc.abstractmethod
     async def delete_by_id(self, article_id: ArticleID) -> None: ...
+
+    @abc.abstractmethod
+    async def update_by_slug(
+        self,
+        slug: str,
+        update_fields: UpdateArticleFields,
+    ) -> Article: ...
