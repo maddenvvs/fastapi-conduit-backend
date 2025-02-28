@@ -52,6 +52,9 @@ class Database:
         if seed:
             await self.seed_database()
 
+    async def dispose(self) -> None:
+        await self._engine.dispose()
+
     @contextlib.asynccontextmanager
     async def session(self) -> AsyncIterator[AsyncSession]:
         async with self._session() as session:
