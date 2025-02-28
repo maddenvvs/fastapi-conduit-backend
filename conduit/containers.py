@@ -185,10 +185,7 @@ class Container(containers.DeclarativeContainer):
     create_article_use_case = providers.Factory(
         CreateArticleUseCase,
         uow_factory=uow_factory,
-        profiles_service=profiles_service,
-        slug_service=slug_service,
-        tags_repository=tags_repository,
-        articles_repository=articles_repository,
+        articles_service=articles_service,
     )
 
     list_articles_use_case = providers.Factory(

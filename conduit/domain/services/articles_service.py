@@ -4,6 +4,8 @@ from conduit.domain.entities.articles import (
     Article,
     ArticleAuthor,
     ArticleWithAuthor,
+    NewArticleDetails,
+    NewArticleDetailsWithSlug,
     UpdateArticleFields,
 )
 from conduit.domain.entities.profiles import Profile
@@ -47,6 +49,51 @@ class ArticlesService:
             raise DomainException("Article cannot exist without an author")
 
         return await self._get_article_info(article, author_profile, current_user)
+
+    async def create_article(
+        self,
+        article_details: NewArticleDetails,
+        current_user: User,
+    ) -> ArticleWithAuthor:
+        profile = await self._profiles_service.get_by_user_id_or_none(current_user.id)
+        if profile is None:
+            raise DomainException("Profile not found")
+
+        slugged_article = NewArticleDetailsWithSlug(
+            title=article_details.title,
+            description=article_details.description,
+            body=article_details.body,
+            slug=self._slug_service.slugify_string(article_details.title),
+            tags=article_details.tags,
+        )
+
+        created_article = await self._articles_repository.add(
+            current_user.id,
+            slugged_article,
+        )
+        await self._tags_repository.add_many(
+            created_article.id,
+            article_details.tags,
+        )
+
+        return ArticleWithAuthor(
+            id=created_article.id,
+            slug=created_article.slug,
+            description=created_article.description,
+            body=created_article.body,
+            title=created_article.title,
+            created_at=created_article.created_at,
+            updated_at=created_article.updated_at,
+            author=ArticleAuthor(
+                username=profile.username,
+                bio=profile.bio,
+                image=profile.image,
+                following=profile.following,
+            ),
+            tags=article_details.tags,
+            favorited=False,
+            favorites_count=0,
+        )
 
     async def update_article(
         self,
