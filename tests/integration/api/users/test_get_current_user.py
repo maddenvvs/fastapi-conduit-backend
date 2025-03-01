@@ -12,7 +12,7 @@ class TestWhenVisitingByRegisteredUser:
         return await registered_user_client.get("/user")
 
     @pytest.mark.anyio
-    async def test_returns_status_200_OK(
+    async def test_returns_status_200_ok(
         self, registered_user_response: Response
     ) -> None:
         assert registered_user_response.status_code == 200

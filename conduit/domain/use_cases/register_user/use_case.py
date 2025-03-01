@@ -11,8 +11,8 @@ from conduit.domain.services.auth_token_service import AuthTokenService
 from conduit.domain.services.password_service import PasswordHasher
 from conduit.domain.unit_of_work import UnitOfWorkFactory
 from conduit.domain.use_cases.register_user.exceptions import (
-    EmailAlreadyTakenException,
-    UserNameAlreadyTakenException,
+    EmailAlreadyTakenError,
+    UserNameAlreadyTakenError,
 )
 
 
@@ -47,12 +47,12 @@ class RegisterUserUseCase:
             if await self._users_repository.get_by_email_or_none(
                 email=register_user_details.email
             ):
-                raise EmailAlreadyTakenException
+                raise EmailAlreadyTakenError
 
             if await self._users_repository.get_by_username_or_none(
                 username=register_user_details.username
             ):
-                raise UserNameAlreadyTakenException
+                raise UserNameAlreadyTakenError
 
             hashed_password = self._password_hasher(register_user_details.password)
             return await self._users_repository.add(

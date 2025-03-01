@@ -88,13 +88,13 @@ class TestSuccessullyGetAllTags:
 
 
 class TestRepositoryRaisesException:
-    class CustomException(Exception):
+    class CustomError(Exception):
         pass
 
     @pytest.fixture(autouse=True)
     def failed_repository(self, tags_repository: Any) -> None:
         tags_repository.get_all_tags.side_effect = (
-            TestRepositoryRaisesException.CustomException("Something went wrong")
+            TestRepositoryRaisesException.CustomError("Something went wrong")
         )
 
     @pytest.mark.anyio
@@ -102,7 +102,7 @@ class TestRepositoryRaisesException:
         self,
         tags_service: TagsService,
     ) -> None:
-        with pytest.raises(TestRepositoryRaisesException.CustomException):
+        with pytest.raises(TestRepositoryRaisesException.CustomError):
             await tags_service.get_all_tags()
 
     @pytest.mark.anyio
@@ -111,7 +111,7 @@ class TestRepositoryRaisesException:
         tags_repository: mock.AsyncMock,
         tags_service: TagsService,
     ) -> None:
-        with pytest.raises(TestRepositoryRaisesException.CustomException):
+        with pytest.raises(TestRepositoryRaisesException.CustomError):
             await tags_service.get_all_tags()
 
         tags_repository.get_all_tags.assert_awaited_once()
@@ -122,7 +122,7 @@ class TestRepositoryRaisesException:
         tags_service: TagsService,
         tags_service_logger: mock.Mock,
     ) -> None:
-        with pytest.raises(TestRepositoryRaisesException.CustomException):
+        with pytest.raises(TestRepositoryRaisesException.CustomError):
             await tags_service.get_all_tags()
 
         tags_service_logger.info.assert_any_call("Retrieving tags")
@@ -133,7 +133,7 @@ class TestRepositoryRaisesException:
         tags_service: TagsService,
         tags_service_logger: mock.AsyncMock,
     ) -> None:
-        with pytest.raises(TestRepositoryRaisesException.CustomException):
+        with pytest.raises(TestRepositoryRaisesException.CustomError):
             await tags_service.get_all_tags()
 
         tags_service_logger.error.assert_called_once_with(

@@ -8,7 +8,7 @@ import pytest
 from conduit.domain.entities.users import User
 from conduit.domain.services.auth_token_service import (
     AuthTokenService,
-    IncorrectJwtTokenException,
+    IncorrectJwtTokenError,
 )
 
 
@@ -54,7 +54,7 @@ class TestParseInvalidToken:
         auth_token_service: AuthTokenService,
         invalid_token: str,
     ) -> None:
-        with pytest.raises(IncorrectJwtTokenException):
+        with pytest.raises(IncorrectJwtTokenError):
             auth_token_service.parse_jwt_token(invalid_token)
 
     def test_parse_token_logs_error_message(
@@ -64,7 +64,7 @@ class TestParseInvalidToken:
     ) -> None:
         invalid_token = "invalid.token.value"
 
-        with pytest.raises(IncorrectJwtTokenException):
+        with pytest.raises(IncorrectJwtTokenError):
             auth_token_service.parse_jwt_token(invalid_token)
 
         auth_token_service_logger.error.assert_called_once_with(

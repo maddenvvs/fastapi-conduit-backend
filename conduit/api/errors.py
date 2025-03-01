@@ -6,8 +6,8 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 from typing_extensions import Self
 
-from conduit.domain.exceptions import DomainException, DomainValidationException
-from conduit.domain.use_cases.login_user.exceptions import InvalidCredentialsException
+from conduit.domain.exceptions import DomainError, DomainValidationError
+from conduit.domain.use_cases.login_user.exceptions import InvalidCredentialsError
 
 
 @final
@@ -23,7 +23,7 @@ class ValidationErrorApiResponse(BaseModel):
         )
 
     @classmethod
-    def from_domain_validation_exception(cls, exc: DomainValidationException) -> Self:
+    def from_domain_validation_exception(cls, exc: DomainValidationError) -> Self:
         return cls(errors={exc.field: [exc.reason]})
 
     @staticmethod
@@ -53,7 +53,7 @@ class ValidationErrorApiResponse(BaseModel):
 
             error_message = reason or message or "Invalid request"
 
-            if errors_dict.get(field_name, None) is None:
+            if errors_dict.get(field_name) is None:
                 errors_dict[field_name] = []
 
             errors_dict[field_name].append(error_message)
@@ -77,7 +77,7 @@ async def request_validation_error_handler(
 
 async def domain_validation_error_handler(
     _: Request,
-    exc: DomainValidationException,
+    exc: DomainValidationError,
 ) -> JSONResponse:
     return ValidationErrorApiResponse.from_domain_validation_exception(
         exc
@@ -86,7 +86,7 @@ async def domain_validation_error_handler(
 
 async def domain_error_handler(
     _: Request,
-    exc: DomainException,
+    exc: DomainError,
 ) -> JSONResponse:
     detail = exc.args[0] if exc.args else "Invalid request"
     return JSONResponse(
@@ -97,15 +97,13 @@ async def domain_error_handler(
 
 async def invalid_credentials_error_handler(
     _: Request,
-    exc: InvalidCredentialsException,
+    exc: InvalidCredentialsError,
 ) -> JSONResponse:
     return JSONResponse(content=None, status_code=status.HTTP_401_UNAUTHORIZED)
 
 
 def register_error_handlers(app: FastAPI) -> None:
     app.exception_handler(RequestValidationError)(request_validation_error_handler)
-    app.exception_handler(DomainValidationException)(domain_validation_error_handler)
-    app.exception_handler(InvalidCredentialsException)(
-        invalid_credentials_error_handler
-    )
-    app.exception_handler(DomainException)(domain_error_handler)
+    app.exception_handler(DomainValidationError)(domain_validation_error_handler)
+    app.exception_handler(InvalidCredentialsError)(invalid_credentials_error_handler)
+    app.exception_handler(DomainError)(domain_error_handler)

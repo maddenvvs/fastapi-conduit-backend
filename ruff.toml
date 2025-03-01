@@ -8,6 +8,9 @@ select = [
     "F",
     "FAST",
     "I",
+    "N",
+    "PERF",
     "PT",
     "RSE",
+    "SIM",
 ]

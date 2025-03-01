@@ -1,8 +1,8 @@
-class DomainException(Exception):
+class DomainError(Exception):
     """Base domain exception."""
 
 
-class DomainValidationException(DomainException):
+class DomainValidationError(DomainError):
     """Base validation exception."""
 
     def __init__(

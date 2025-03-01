@@ -1,8 +1,8 @@
 from typing import final
 
-from conduit.domain.exceptions import DomainException
+from conduit.domain.exceptions import DomainError
 
 
 @final
-class InvalidCredentialsException(DomainException):
+class InvalidCredentialsError(DomainError):
     pass

@@ -9,7 +9,7 @@ from conduit.domain.entities.comments import (
 )
 from conduit.domain.entities.profiles import Profile, ProfileID
 from conduit.domain.entities.users import User
-from conduit.domain.exceptions import DomainException
+from conduit.domain.exceptions import DomainError
 from conduit.domain.repositories.comments import CommentsRepository
 from conduit.domain.services.articles_service import ArticlesService
 from conduit.domain.services.profiles_service import ProfilesService
@@ -106,7 +106,7 @@ class CommentsService:
 
         comment = await self._comments_repository.get(comment_id)
         if comment.author_id != current_user.id:
-            raise DomainException("Can't delete comments not created by you")
+            raise DomainError("Can't delete comments not created by you")
 
         await self._comments_repository.delete(comment_id)
 

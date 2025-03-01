@@ -38,15 +38,17 @@ class UpdateCurrentUserUseCase:
                 update_request.username
                 and update_request.username != current_user.username
             ):
-                if await self._users_repository.get_by_username_or_none(
+                user = await self._users_repository.get_by_username_or_none(
                     update_request.username
-                ):
+                )
+                if user is not None:
                     raise Exception("Already exists")
 
             if update_request.email and update_request.email != current_user.email:
-                if await self._users_repository.get_by_email_or_none(
+                user = await self._users_repository.get_by_email_or_none(
                     update_request.email
-                ):
+                )
+                if user is not None:
                     raise Exception("Already exists")
 
             password_hash: Optional[str] = None

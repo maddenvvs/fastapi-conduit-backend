@@ -105,7 +105,7 @@ class TestWhenRegisteredSuccessully:
             await session.commit()
 
     @pytest.mark.anyio
-    async def test_returns_200_OK(self, successful_response: Response) -> None:
+    async def test_returns_200_ok(self, successful_response: Response) -> None:
         assert successful_response.status_code == 201
 
     @pytest.mark.anyio

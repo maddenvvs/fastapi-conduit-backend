@@ -60,7 +60,7 @@ class TestWhenArticleExists:
         return response
 
     @pytest.mark.anyio
-    async def test_returns_200_OK(self, get_article_response: Response) -> None:
+    async def test_returns_200_ok(self, get_article_response: Response) -> None:
         assert get_article_response.status_code == 200
 
     @pytest.mark.anyio

@@ -62,7 +62,7 @@ class TestWhenVisitingExistingProfile:
             return await any_client.get(f"/profiles/{test_username}")
 
         @pytest.mark.anyio
-        async def test_returns_200_OK(self, profile_response: Response) -> None:
+        async def test_returns_200_ok(self, profile_response: Response) -> None:
             assert profile_response.status_code == 200
 
         @pytest.mark.anyio

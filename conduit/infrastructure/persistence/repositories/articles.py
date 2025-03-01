@@ -26,6 +26,8 @@ from conduit.infrastructure.persistence.models import (
 )
 from conduit.infrastructure.persistence.unit_of_work import SqlAlchemyUnitOfWork
 
+ArticleAliased = aliased(ArticleModel)
+
 
 def _model_to_entity(article_model: ArticleModel) -> Article:
     return Article(
@@ -254,7 +256,6 @@ class SQLiteArticlesRepository(ArticlesRepository):
         )
 
         if tag is not None:
-            ArticleAliased = aliased(ArticleModel)
             query = query.where(
                 select(TagModel.id)
                 .select_from(TagModel)

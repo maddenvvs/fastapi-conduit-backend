@@ -45,7 +45,7 @@ class TestSuccessfullyListTags:
             return await any_client.get("/tags")
 
         @pytest.mark.anyio
-        async def test_returns_status_OK(self, tags_response: Response) -> None:
+        async def test_returns_status_200_ok(self, tags_response: Response) -> None:
             assert tags_response.status_code == status.HTTP_200_OK
 
         @pytest.mark.anyio

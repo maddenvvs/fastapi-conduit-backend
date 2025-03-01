@@ -3,7 +3,7 @@ from conduit.domain.repositories.users import UsersRepository
 from conduit.domain.services.auth_token_service import AuthTokenService
 from conduit.domain.services.password_service import PasswordChecker
 from conduit.domain.unit_of_work import UnitOfWorkFactory
-from conduit.domain.use_cases.login_user.exceptions import InvalidCredentialsException
+from conduit.domain.use_cases.login_user.exceptions import InvalidCredentialsError
 from conduit.infrastructure.current_time import CurrentTime
 
 
@@ -29,10 +29,10 @@ class LoginUserUseCase:
             )
 
         if user is None:
-            raise InvalidCredentialsException("There is no user with provided email")
+            raise InvalidCredentialsError("There is no user with provided email")
 
         if not self._password_checker(login_details.password, user.password_hash):
-            raise InvalidCredentialsException("Incorrect password")
+            raise InvalidCredentialsError("Incorrect password")
 
         token = self._token_service.generate_jwt_token(user, self._now())
         return user.to_logged_in_user(token)

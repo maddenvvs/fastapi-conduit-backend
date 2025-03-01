@@ -142,7 +142,7 @@ class TestWhenLoginToExistingUser:
             return response
 
         @pytest.mark.anyio
-        async def test_returns_status_200_OK(self, login_response: Response) -> None:
+        async def test_returns_status_200_ok(self, login_response: Response) -> None:
             assert login_response.status_code == 200
 
         @pytest.mark.anyio

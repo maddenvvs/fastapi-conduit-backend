@@ -16,7 +16,7 @@ class TokenPayload:
     username: str
 
 
-class IncorrectJwtTokenException(Exception):
+class IncorrectJwtTokenError(Exception):
     pass
 
 
@@ -58,7 +58,7 @@ class AuthTokenService:
             payload = jwt.decode(token, self._secret_key, algorithms=[self._algorithm])  # type: ignore[unused-ignore]
         except jwt.InvalidTokenError as err:
             self._logger.error("Invalid JWT token", extra=dict(token=token, error=err))
-            raise IncorrectJwtTokenException
+            raise IncorrectJwtTokenError
 
         return TokenPayload(
             user_id=payload["user_id"],

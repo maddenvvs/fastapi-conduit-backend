@@ -10,7 +10,7 @@ from conduit.domain.entities.articles import (
 )
 from conduit.domain.entities.profiles import Profile
 from conduit.domain.entities.users import User
-from conduit.domain.exceptions import DomainException
+from conduit.domain.exceptions import DomainError
 from conduit.domain.repositories.articles import ArticlesRepository
 from conduit.domain.repositories.favorites import FavoritesRepository
 from conduit.domain.repositories.tags import TagsRepository
@@ -46,7 +46,7 @@ class ArticlesService:
             current_user,
         )
         if author_profile is None:
-            raise DomainException("Article cannot exist without an author")
+            raise DomainError("Article cannot exist without an author")
 
         return await self._get_article_info(article, author_profile, current_user)
 
@@ -57,7 +57,7 @@ class ArticlesService:
     ) -> ArticleWithAuthor:
         profile = await self._profiles_service.get_by_user_id_or_none(current_user.id)
         if profile is None:
-            raise DomainException("Profile not found")
+            raise DomainError("Profile not found")
 
         slugged_article = NewArticleDetailsWithSlug(
             title=article_details.title,
@@ -106,7 +106,7 @@ class ArticlesService:
             return None
 
         if article.author_id != current_user.id:
-            raise DomainException("You can't edit an article you don't own")
+            raise DomainError("You can't edit an article you don't own")
 
         if update_fields.title:
             update_fields.slug = self._slug_service.slugify_string(update_fields.title)
@@ -117,7 +117,7 @@ class ArticlesService:
             current_user,
         )
         if author_profile is None:
-            raise DomainException("Article cannot exist without an author")
+            raise DomainError("Article cannot exist without an author")
 
         return await self._get_article_info(article, author_profile, current_user)
 
@@ -131,7 +131,7 @@ class ArticlesService:
             return None
 
         if article.favorited:
-            raise DomainException("Article is already favorited")
+            raise DomainError("Article is already favorited")
 
         await self._favorites_repository.add(
             article_id=article.id,
@@ -162,7 +162,7 @@ class ArticlesService:
             return None
 
         if not article.favorited:
-            raise DomainException("Article is already unfavorited")
+            raise DomainError("Article is already unfavorited")
 
         await self._favorites_repository.delete(
             article_id=article.id,
@@ -190,10 +190,10 @@ class ArticlesService:
     ) -> None:
         article = await self._articles_repository.get_by_slug_or_none(slug)
         if article is None:
-            raise DomainException("Article not found")
+            raise DomainError("Article not found")
 
         if article.author_id != current_user.id:
-            raise DomainException("You don't own the article")
+            raise DomainError("You don't own the article")
 
         await self._articles_repository.delete_by_id(article.id)
 
