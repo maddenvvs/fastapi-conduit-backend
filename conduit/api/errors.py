@@ -33,13 +33,15 @@ class ValidationErrorApiResponse(BaseModel):
         error: dict[str, Any]
         for error in errors:
             # Error structure to parse (https://docs.pydantic.dev/latest/errors/errors/)
-            # {
-            #   'type': 'value_error',
-            #   'loc': ('body', 'user', 'email'),
-            #   'msg': 'value is not a valid email address: An email address must have an @-sign.',
-            #   'input': 'userxample.com',
-            #   'ctx': {'reason': 'An email address must have an @-sign.'}
-            # }
+            """
+            {
+                'type': 'value_error',
+                'loc': ('body', 'user', 'email'),
+                'msg': 'value is not a valid email address: An email address must have an @-sign.',
+                'input': 'userxample.com',
+                'ctx': {'reason': 'An email address must have an @-sign.'}
+            }
+            """
 
             field_path: Optional[tuple[str, ...]] = error.get("loc", None)
             if field_path is None or len(field_path) == 0:
@@ -67,7 +69,7 @@ class ValidationErrorApiResponse(BaseModel):
 
 
 async def request_validation_error_handler(
-    _: Request,
+    _request: Request,
     exc: RequestValidationError,
 ) -> JSONResponse:
     return ValidationErrorApiResponse.from_request_validation_error(
@@ -76,7 +78,7 @@ async def request_validation_error_handler(
 
 
 async def domain_validation_error_handler(
-    _: Request,
+    _request: Request,
     exc: DomainValidationError,
 ) -> JSONResponse:
     return ValidationErrorApiResponse.from_domain_validation_exception(
@@ -85,7 +87,7 @@ async def domain_validation_error_handler(
 
 
 async def domain_error_handler(
-    _: Request,
+    _request: Request,
     exc: DomainError,
 ) -> JSONResponse:
     detail = exc.args[0] if exc.args else "Invalid request"
@@ -96,8 +98,8 @@ async def domain_error_handler(
 
 
 async def invalid_credentials_error_handler(
-    _: Request,
-    exc: InvalidCredentialsError,
+    _request: Request,
+    _exc: InvalidCredentialsError,
 ) -> JSONResponse:
     return JSONResponse(content=None, status_code=status.HTTP_401_UNAUTHORIZED)
 

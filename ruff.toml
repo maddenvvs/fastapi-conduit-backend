@@ -1,10 +1,10 @@
 [lint]
 select = [
     "A",
+    "ARG",
     "ASYNC",
-    "E4",
-    "E7",
-    "E9",
+    "E",
+    "ERA",
     "F",
     "FAST",
     "I",
@@ -13,4 +13,7 @@ select = [
     "PT",
     "RSE",
     "SIM",
+]
+ignore = [
+    "E501", # Disable per https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
 ]
