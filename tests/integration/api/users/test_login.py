@@ -20,13 +20,15 @@ class TestWhenLoginWithEmptyPassword:
 
     @pytest.mark.anyio
     async def test_returns_status_422_invalid_request(
-        self, login_response: Response,
+        self,
+        login_response: Response,
     ) -> None:
         assert login_response.status_code == 422
 
     @pytest.mark.anyio
     async def test_returns_json_with_error_reason(
-        self, login_response: Response,
+        self,
+        login_response: Response,
     ) -> None:
         assert login_response.json() == {
             "errors": {"password": ["String should have at least 1 character"]},
@@ -62,13 +64,15 @@ class TestWhenLoginWithInvalidEmail:
 
     @pytest.mark.anyio
     async def test_returns_status_422_invalid_request(
-        self, login_response: Response,
+        self,
+        login_response: Response,
     ) -> None:
         assert login_response.status_code == 422
 
     @pytest.mark.anyio
     async def test_returns_json_with_error_reason(
-        self, login_response: Response,
+        self,
+        login_response: Response,
     ) -> None:
         json_response = login_response.json()
 
@@ -104,7 +108,8 @@ class TestWhenLoginToNonexistingUser:
 
     @pytest.mark.anyio
     async def test_returns_status_401_unauthorized(
-        self, login_response: Response,
+        self,
+        login_response: Response,
     ) -> None:
         assert login_response.status_code == 401
 
@@ -167,7 +172,8 @@ class TestWhenLoginToExistingUser:
 
         @pytest.mark.anyio
         async def test_returns_status_401_unauthorized(
-            self, login_response: Response,
+            self,
+            login_response: Response,
         ) -> None:
             assert login_response.status_code == 401
 

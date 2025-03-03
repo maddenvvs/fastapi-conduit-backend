@@ -31,12 +31,14 @@ class RegisterUserUseCase:
         self._password_hasher = password_hasher
 
     async def __call__(
-        self, register_user_details: RegisterUserDetails,
+        self,
+        register_user_details: RegisterUserDetails,
     ) -> RegisteredUser:
         return await self._register_user(register_user_details)
 
     async def _register_user(
-        self, register_user_details: RegisterUserDetails,
+        self,
+        register_user_details: RegisterUserDetails,
     ) -> RegisteredUser:
         created_user = await self._create_user(register_user_details)
         jwt_token = self._auth_token_service.generate_jwt_token(created_user)

@@ -96,7 +96,9 @@ class TestWhenUnfollowExistingProfile:
     class TestAndItWasAlreadyFollowed:
         @pytest.fixture
         async def unfollow_response(
-            self, registered_user_client: AsyncClient, test_username: str,
+            self,
+            registered_user_client: AsyncClient,
+            test_username: str,
         ) -> Response:
             url = f"/profiles/{test_username}/follow"
             await registered_user_client.post(url)
@@ -108,6 +110,7 @@ class TestWhenUnfollowExistingProfile:
 
         @pytest.mark.anyio
         async def test_returns_following_false(
-            self, unfollow_response: Response,
+            self,
+            unfollow_response: Response,
         ) -> None:
             assert unfollow_response.json()["profile"]["following"] is False

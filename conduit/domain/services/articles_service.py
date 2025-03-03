@@ -35,7 +35,9 @@ class ArticlesService:
         self._slug_service = slug_service
 
     async def get_article_by_slug(
-        self, slug: str, current_user: Optional[User],
+        self,
+        slug: str,
+        current_user: Optional[User],
     ) -> Optional[ArticleWithAuthor]:
         article = await self._articles_repository.get_by_slug_or_none(slug)
         if article is None:

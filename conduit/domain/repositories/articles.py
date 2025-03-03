@@ -18,12 +18,17 @@ class ArticlesRepository(abc.ABC):
 
     @abc.abstractmethod
     async def add(
-        self, author_id: AuthorID, article_details: NewArticleDetailsWithSlug,
+        self,
+        author_id: AuthorID,
+        article_details: NewArticleDetailsWithSlug,
     ) -> Article: ...
 
     @abc.abstractmethod
     async def list_by_followings(
-        self, user_id: UserID, limit: int, offset: int,
+        self,
+        user_id: UserID,
+        limit: int,
+        offset: int,
     ) -> list[BodylessArticleWithAuthor]: ...
 
     @abc.abstractmethod

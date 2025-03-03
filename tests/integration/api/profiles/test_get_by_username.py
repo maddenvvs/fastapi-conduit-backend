@@ -58,7 +58,9 @@ class TestWhenVisitingExistingProfile:
     class TestForAnyClient:
         @pytest.fixture
         async def profile_response(
-            self, any_client: AsyncClient, test_username: str,
+            self,
+            any_client: AsyncClient,
+            test_username: str,
         ) -> Response:
             return await any_client.get(f"/profiles/{test_username}")
 
@@ -84,7 +86,9 @@ class TestWhenVisitingExistingProfile:
     class TestFollowedByCurrentUser:
         @pytest.fixture(autouse=True)
         async def follow_profile(
-            self, test_username: str, registered_user_client: AsyncClient,
+            self,
+            test_username: str,
+            registered_user_client: AsyncClient,
         ) -> AsyncGenerator[None, None]:
             await registered_user_client.post(f"/profiles/{test_username}/follow")
             yield

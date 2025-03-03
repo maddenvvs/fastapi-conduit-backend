@@ -7,13 +7,15 @@ from conduit.infrastructure.persistence.models import UserModel
 class TestWhenVisitingByRegisteredUser:
     @pytest.fixture
     async def registered_user_response(
-        self, registered_user_client: AsyncClient,
+        self,
+        registered_user_client: AsyncClient,
     ) -> Response:
         return await registered_user_client.get("/user")
 
     @pytest.mark.anyio
     async def test_returns_status_200_ok(
-        self, registered_user_response: Response,
+        self,
+        registered_user_response: Response,
     ) -> None:
         assert registered_user_response.status_code == 200
 

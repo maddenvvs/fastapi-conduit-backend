@@ -291,7 +291,8 @@ class SQLiteArticlesRepository(ArticlesRepository):
 
         if tag is not None:
             query = query.join(
-                ArticleTagModel, ArticleTagModel.article_id == ArticleModel.id,
+                ArticleTagModel,
+                ArticleTagModel.article_id == ArticleModel.id,
             ).where(
                 ArticleTagModel.tag_id
                 == select(TagModel.id).where(TagModel.name == tag).scalar_subquery(),
@@ -304,7 +305,8 @@ class SQLiteArticlesRepository(ArticlesRepository):
 
         if favorited is not None:
             query = query.join(
-                FavoriteModel, FavoriteModel.article_id == ArticleModel.id,
+                FavoriteModel,
+                FavoriteModel.article_id == ArticleModel.id,
             ).where(
                 FavoriteModel.user_id
                 == select(UserModel.id)
@@ -321,7 +323,9 @@ class SQLiteArticlesRepository(ArticlesRepository):
         await session.execute(query)
 
     async def update_by_slug(
-        self, slug: str, update_fields: UpdateArticleFields,
+        self,
+        slug: str,
+        update_fields: UpdateArticleFields,
     ) -> Article:
         session = SqlAlchemyUnitOfWork.get_current_session()
         current_time = self._now()

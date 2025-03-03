@@ -38,7 +38,9 @@ async def add_comment_to_article(
     ),
 ) -> CommentDetailsApiResponse:
     created_comment = await add_comment(
-        slug, comment_request.comment.body, current_user,
+        slug,
+        comment_request.comment.body,
+        current_user,
     )
     if created_comment is None:
         raise HTTPException(

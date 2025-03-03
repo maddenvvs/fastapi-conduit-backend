@@ -20,7 +20,9 @@ class TestWhenUpdateWithInvalidFields:
 
     @pytest.fixture
     async def update_response(
-        self, invalid_fields: dict[str, Any], registered_user_client: AsyncClient,
+        self,
+        invalid_fields: dict[str, Any],
+        registered_user_client: AsyncClient,
     ) -> Response:
         return await registered_user_client.put("/user", json={"user": invalid_fields})
 
