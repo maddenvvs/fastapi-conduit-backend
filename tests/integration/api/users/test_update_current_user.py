@@ -7,12 +7,12 @@ from httpx import AsyncClient, Response
 class TestWhenUpdateWithInvalidFields:
     @pytest.fixture(
         params=[
-            dict(email=""),
-            dict(password=""),
-            dict(username=""),
-            dict(image=""),
-            dict(image="qwdw"),
-            dict(image="ftp://asdt:2301/images/cat.jpeg"),
+            {"email": ""},
+            {"password": ""},
+            {"username": ""},
+            {"image": ""},
+            {"image": "qwdw"},
+            {"image": "ftp://asdt:2301/images/cat.jpeg"},
         ],
     )
     def invalid_fields(self, request: pytest.FixtureRequest) -> Any:

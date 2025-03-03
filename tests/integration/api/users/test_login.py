@@ -9,12 +9,12 @@ class TestWhenLoginWithEmptyPassword:
     async def login_response(self, any_client: AsyncClient) -> Response:
         response = await any_client.post(
             url="/users/login",
-            json=dict(
-                user=dict(
-                    email="a@a.com",
-                    password="",
-                ),
-            ),
+            json={
+                "user": {
+                    "email": "a@a.com",
+                    "password": "",
+                },
+            },
         )
         return response
 
@@ -53,12 +53,12 @@ class TestWhenLoginWithInvalidEmail:
     ) -> Response:
         response = await any_client.post(
             url="/users/login",
-            json=dict(
-                user=dict(
-                    email=request.param,
-                    password="password",
-                ),
-            ),
+            json={
+                "user": {
+                    "email": request.param,
+                    "password": "password",
+                },
+            },
         )
         return response
 
@@ -84,9 +84,9 @@ class TestWhenLoginWithInvalidEmail:
 class TestWhenLoginToNonexistingUser:
     @pytest.fixture(
         params=[
-            dict(email="a@a.com", password="123"),
-            dict(email="bob@company.io", password="password"),
-            dict(email="alice@jets.co.uk", password="!paswd!d2ds"),
+            {"email": "a@a.com", "password": "123"},
+            {"email": "bob@company.io", "password": "password"},
+            {"email": "alice@jets.co.uk", "password": "!paswd!d2ds"},
         ],
     )
     async def login_response(
@@ -97,12 +97,12 @@ class TestWhenLoginToNonexistingUser:
         param = request.param
         response = await any_client.post(
             url="/users/login",
-            json=dict(
-                user=dict(
-                    email=param["email"],
-                    password=param["password"],
-                ),
-            ),
+            json={
+                "user": {
+                    "email": param["email"],
+                    "password": param["password"],
+                },
+            },
         )
         return response
 
@@ -137,12 +137,12 @@ class TestWhenLoginToExistingUser:
         async def login_response(self, any_client: AsyncClient) -> Response:
             response = await any_client.post(
                 url="/users/login",
-                json=dict(
-                    user=dict(
-                        email="walkmansit@gmail.com",
-                        password="very_strong_password",
-                    ),
-                ),
+                json={
+                    "user": {
+                        "email": "walkmansit@gmail.com",
+                        "password": "very_strong_password",
+                    },
+                },
             )
             return response
 
@@ -161,12 +161,12 @@ class TestWhenLoginToExistingUser:
         async def login_response(self, any_client: AsyncClient) -> Response:
             response = await any_client.post(
                 url="/users/login",
-                json=dict(
-                    user=dict(
-                        email="walkmansit@gmail.com",
-                        password="invalid_password",
-                    ),
-                ),
+                json={
+                    "user": {
+                        "email": "walkmansit@gmail.com",
+                        "password": "invalid_password",
+                    },
+                },
             )
             return response
 

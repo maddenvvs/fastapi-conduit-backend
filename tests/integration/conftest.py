@@ -1,11 +1,11 @@
 from collections.abc import AsyncGenerator
-from datetime import datetime
-from typing import Any, AsyncContextManager, Callable, Protocol
+from datetime import datetime, timezone
+from typing import Any, Callable, Protocol
 
 import pytest
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
-from typing_extensions import TypeAlias
+from typing_extensions import AsyncContextManager, TypeAlias
 
 from conduit.app import create_app
 from conduit.containers import Container
@@ -40,14 +40,13 @@ def test_sqlite_database_url(tmp_path_factory: pytest.TempPathFactory) -> str:
 def test_settings(
     test_sqlite_database_url: str,
 ) -> Settings:
-    settings = Settings(
+    return Settings(
         _env_file=None,  # type: ignore
         database_url=test_sqlite_database_url,
         debug=True,
-        jwt_secret_key="secret_key_example_for_test_purposes",
+        jwt_secret_key="secret_key_example_for_test_purposes",  # noqa: S106
         jwt_token_expiration_minutes=60 * 24,
     )
-    return settings
 
 
 @pytest.fixture(scope="session")
@@ -110,15 +109,15 @@ async def add_to_db(
 @pytest.fixture
 async def user_model_factory() -> UserModelFactory:
     def factory(**kwargs: Any) -> UserModel:
-        default_kwagrs: dict[str, Any] = dict(
-            username="admin",
-            email="admin@gmail.com",
-            password_hash="oops_i_did_it_again",
-            bio="Admin user.",
-            image_url=None,
-            created_at=datetime(year=2020, month=1, day=1),
-            updated_at=datetime(year=2020, month=1, day=1),
-        )
+        default_kwagrs: dict[str, Any] = {
+            "username": "admin",
+            "email": "admin@gmail.com",
+            "password_hash": "oops_i_did_it_again",
+            "bio": "Admin user.",
+            "image_url": None,
+            "created_at": datetime(year=2020, month=1, day=1, tzinfo=timezone.utc),
+            "updated_at": datetime(year=2020, month=1, day=1, tzinfo=timezone.utc),
+        }
         user_model_args = {**default_kwagrs, **kwargs}
         return UserModel(**user_model_args)
 
@@ -143,12 +142,12 @@ async def registered_user_token(
     async with test_client_factory() as client:
         login_response = await client.post(
             "/users/login",
-            json=dict(
-                user=dict(
-                    email=registered_user.email,
-                    password=registered_user.password_hash,
-                ),
-            ),
+            json={
+                "user": {
+                    "email": registered_user.email,
+                    "password": registered_user.password_hash,
+                },
+            },
         )
     return login_response.json()["user"]["token"]
 
@@ -174,16 +173,16 @@ async def anonymous_test_client(
 @pytest.fixture(
     params=[
         None,
-        dict(
-            username="test_user",
-            email="test_user@testland.com",
-            password="super_password",
-        ),
-        dict(
-            username="admin_user",
-            email="admin_user@testland.com",
-            password="wow_look_at_the_password",
-        ),
+        {
+            "username": "test_user",
+            "email": "test_user@testland.com",
+            "password": "super_password",
+        },
+        {
+            "username": "admin_user",
+            "email": "admin_user@testland.com",
+            "password": "wow_look_at_the_password",
+        },
     ],
 )
 async def any_client(
@@ -206,12 +205,12 @@ async def any_client(
         async with test_client_factory() as client:
             response = await client.post(
                 "/users/login",
-                json=dict(
-                    user=dict(
-                        email=user_credentials["email"],
-                        password=user_credentials["password"],
-                    ),
-                ),
+                json={
+                    "user": {
+                        "email": user_credentials["email"],
+                        "password": user_credentials["password"],
+                    },
+                },
             )
             token = response.json()["user"]["token"]
             client.headers["Authorization"] = f"Token {token}"

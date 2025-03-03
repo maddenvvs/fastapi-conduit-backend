@@ -20,7 +20,7 @@ def auth_token_service_logger() -> Any:
 @pytest.fixture
 def auth_token_service(auth_token_service_logger: logging.Logger) -> AuthTokenService:
     return AuthTokenService(
-        secret_key="very_long_secret_key_to_use_for_test",
+        secret_key="very_long_secret_key_to_use_for_test",  # noqa: S106
         algorithm="HS256",
         token_expiration_minutes=30,
         logger=auth_token_service_logger,
@@ -30,7 +30,7 @@ def auth_token_service(auth_token_service_logger: logging.Logger) -> AuthTokenSe
 def test_parse_valid_token_produces_correct_token_payload(
     auth_token_service: AuthTokenService,
 ) -> None:
-    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMjMsInVzZXJuYW1lIjoiSm9obiBEb2UifQ.gvogduV7_BTMZH7LZ-c7atu1bUKEdHc743ggO3N_Bmc"
+    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMjMsInVzZXJuYW1lIjoiSm9obiBEb2UifQ.gvogduV7_BTMZH7LZ-c7atu1bUKEdHc743ggO3N_Bmc"  # noqa: S105
 
     token_data = auth_token_service.parse_jwt_token(token)
 
@@ -62,17 +62,17 @@ class TestParseInvalidToken:
         auth_token_service: AuthTokenService,
         auth_token_service_logger: mock.Mock,
     ) -> None:
-        invalid_token = "invalid.token.value"
+        invalid_token = "invalid.token.value"  # noqa: S105
 
         with pytest.raises(IncorrectJwtTokenError):
             auth_token_service.parse_jwt_token(invalid_token)
 
         auth_token_service_logger.error.assert_called_once_with(
             "Invalid JWT token",
-            extra=dict(
-                token=invalid_token,
-                error=mock.ANY,
-            ),
+            extra={
+                "token": invalid_token,
+                "error": mock.ANY,
+            },
         )
 
 
@@ -87,7 +87,16 @@ def test_generate_token_produces_non_empty_token(
         image=None,
         password_hash="",
     )
-    current_time = datetime.datetime(2000, 1, 1, 0, 0, 0, 0)
+    current_time = datetime.datetime(
+        2000,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        tzinfo=datetime.timezone.utc,
+    )
 
     token_data = auth_token_service.generate_jwt_token(
         user=user,

@@ -19,16 +19,16 @@ class Settings(BaseSettings):
 
     @property
     def fastapi(self) -> dict[str, Any]:
-        return dict(
-            debug=self.debug,
-        )
+        return {
+            "debug": self.debug,
+        }
 
     @property
     def sqlalchemy_engine(self) -> dict[str, Any]:
-        return dict(
-            url=self.database_url,
-            echo=self.debug,
-        )
+        return {
+            "url": self.database_url,
+            "echo": self.debug,
+        }
 
 
 @functools.cache

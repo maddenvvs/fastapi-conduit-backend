@@ -14,30 +14,30 @@ class Tag(Enum):
 
 
 OPEN_API_TAGS_METADATA: Final = [
-    dict(
-        name=Tag.Articles,
-        description="Here you can *CRUD* articles. Supporting two types of feeds (global and personal).",
-    ),
-    dict(
-        name=Tag.Comments,
-        description="Here you can *CRD* comments.",
-    ),
-    dict(
-        name=Tag.Users,
-        description="Operations with users. The **login** logic is also here.",
-    ),
-    dict(
-        name=Tag.Profiles,
-        description="Operations with profiles.",
-    ),
-    dict(
-        name=Tag.Tags,
-        description="Lists all available tags.",
-    ),
-    dict(
-        name=Tag.Health,
-        description="Infrastructural endpoints required for maintenance.",
-    ),
+    {
+        "name": Tag.Articles,
+        "description": "Here you can *CRUD* articles. Supporting two types of feeds (global and personal).",
+    },
+    {
+        "name": Tag.Comments,
+        "description": "Here you can *CRD* comments.",
+    },
+    {
+        "name": Tag.Users,
+        "description": "Operations with users. The **login** logic is also here.",
+    },
+    {
+        "name": Tag.Profiles,
+        "description": "Operations with profiles.",
+    },
+    {
+        "name": Tag.Tags,
+        "description": "Lists all available tags.",
+    },
+    {
+        "name": Tag.Health,
+        "description": "Infrastructural endpoints required for maintenance.",
+    },
 ]
 
 

@@ -39,10 +39,10 @@ class SQLiteTagsRepository(TagsRepository):
             insert(TagModel)
             .values(
                 [
-                    dict(
-                        name=tag,
-                        created_at=current_time,
-                    )
+                    {
+                        "name": tag,
+                        "created_at": current_time,
+                    }
                     for tag in tags
                 ],
             )
@@ -58,11 +58,11 @@ class SQLiteTagsRepository(TagsRepository):
             insert(ArticleTagModel)
             .values(
                 [
-                    dict(
-                        article_id=article_id,
-                        tag_id=tag.id,
-                        created_at=current_time,
-                    )
+                    {
+                        "article_id": article_id,
+                        "tag_id": tag.id,
+                        "created_at": current_time,
+                    }
                     for tag in tags_to_return
                 ],
             )

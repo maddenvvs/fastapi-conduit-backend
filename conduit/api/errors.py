@@ -93,7 +93,7 @@ async def domain_error_handler(
 ) -> JSONResponse:
     detail = exc.args[0] if exc.args else "Invalid request"
     return JSONResponse(
-        content=dict(detail=detail),
+        content={"detail": detail},
         status_code=status.HTTP_400_BAD_REQUEST,
     )
 

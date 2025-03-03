@@ -16,11 +16,11 @@ RequestFactory: TypeAlias = Callable[..., RegisterRequest]
 @pytest.fixture
 def register_request_factory() -> RequestFactory:
     def factory(**kwargs: Any) -> dict[str, Any]:
-        default_values = dict(
-            username="walkmansit",
-            email="walkmansit@gmail.com",
-            password="1qazxsw23edc",
-        )
+        default_values = {
+            "username": "walkmansit",
+            "email": "walkmansit@gmail.com",
+            "password": "1qazxsw23edc",
+        }
         return {
             "user": {
                 **default_values,
@@ -71,9 +71,13 @@ class TestWhenRegisteringWithInvalidRequestFields:
 class TestWhenRegisteredSuccessully:
     @pytest.fixture(
         params=[
-            dict(username="ivan", password="clear", email="a@a.com"),
-            dict(username="ivan", password="very_strong_one", email="a@aabc.com"),
-            dict(username="gobyna", password="uncertain", email="booking@aabc.com"),
+            {"username": "ivan", "password": "clear", "email": "a@a.com"},
+            {"username": "ivan", "password": "very_strong_one", "email": "a@aabc.com"},
+            {
+                "username": "gobyna",
+                "password": "uncertain",
+                "email": "booking@aabc.com",
+            },
         ],
     )
     async def request_body(
