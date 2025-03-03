@@ -50,7 +50,8 @@ select = [
 ]
 ignore = [
     "E501", # Disable per https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
-    "S101", # Allow asserts globally (should be unabled for tests only).
+    "S101", # Allow asserts globally (should be allowed for tests only).
+    "PLR2004", # Disable magic constants globally (should be disabled for tests only).
 ]
 
 [lint.flake8-bugbear]

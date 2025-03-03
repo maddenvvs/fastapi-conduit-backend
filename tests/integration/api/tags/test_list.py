@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any
 
 import pytest
@@ -26,7 +26,7 @@ class TestSuccessfullyListTags:
         return [
             TagModel(
                 name=name,
-                created_at=datetime(year=2022, month=2, day=18),
+                created_at=datetime(year=2022, month=2, day=18, tzinfo=timezone.utc),
             )
             for name in test_tag_names
         ]

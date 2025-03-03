@@ -67,7 +67,7 @@ class TestParseInvalidToken:
         with pytest.raises(IncorrectJwtTokenError):
             auth_token_service.parse_jwt_token(invalid_token)
 
-        auth_token_service_logger.error.assert_called_once_with(
+        auth_token_service_logger.exception.assert_called_once_with(
             "Invalid JWT token",
             extra={
                 "token": invalid_token,

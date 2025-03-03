@@ -59,7 +59,7 @@ class SqlAlchemyUnitOfWork(UnitOfWork):
     def get_current_unit_of_work() -> "SqlAlchemyUnitOfWork":
         context = UnitOfWork.get_current_context()
         if not isinstance(context, SqlAlchemyUnitOfWork):
-            raise RuntimeError("Context session is not of type 'SqlAlchemyUnitOfWork'")
+            raise TypeError("Context session is not of type 'SqlAlchemyUnitOfWork'")
         return context
 
     @staticmethod

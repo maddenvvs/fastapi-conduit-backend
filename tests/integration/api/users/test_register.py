@@ -53,8 +53,7 @@ class TestWhenRegisteringWithInvalidRequestFields:
         any_client: AsyncClient,
         invalid_register_request: RegisterRequest,
     ) -> Response:
-        response = await any_client.post("/users", json=invalid_register_request)
-        return response
+        return await any_client.post("/users", json=invalid_register_request)
 
     @pytest.mark.anyio
     async def test_returns_status_422(self, register_response: Response) -> None:
@@ -138,8 +137,7 @@ class TestWhenUsernameIsTaken:
         register_request_factory: RequestFactory,
     ) -> Response:
         request = register_request_factory(username=registered_user.username)
-        response = await any_client.post("/users", json=request)
-        return response
+        return await any_client.post("/users", json=request)
 
     @pytest.mark.anyio
     async def test_returns_422_status(self, failed_response: Response) -> None:
@@ -162,8 +160,7 @@ class TestWhenEmailIsTaken:
         register_request_factory: RequestFactory,
     ) -> Response:
         request = register_request_factory(email=registered_user.email)
-        response = await any_client.post("/users", json=request)
-        return response
+        return await any_client.post("/users", json=request)
 
     @pytest.mark.anyio
     async def test_returns_422_status(self, failed_response: Response) -> None:

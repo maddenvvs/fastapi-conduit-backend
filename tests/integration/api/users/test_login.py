@@ -7,7 +7,7 @@ from tests.integration.conftest import AddToDb, UserModelFactory
 class TestWhenLoginWithEmptyPassword:
     @pytest.fixture
     async def login_response(self, any_client: AsyncClient) -> Response:
-        response = await any_client.post(
+        return await any_client.post(
             url="/users/login",
             json={
                 "user": {
@@ -16,7 +16,6 @@ class TestWhenLoginWithEmptyPassword:
                 },
             },
         )
-        return response
 
     @pytest.mark.anyio
     async def test_returns_status_422_invalid_request(
@@ -51,7 +50,7 @@ class TestWhenLoginWithInvalidEmail:
         request: pytest.FixtureRequest,
         any_client: AsyncClient,
     ) -> Response:
-        response = await any_client.post(
+        return await any_client.post(
             url="/users/login",
             json={
                 "user": {
@@ -60,7 +59,6 @@ class TestWhenLoginWithInvalidEmail:
                 },
             },
         )
-        return response
 
     @pytest.mark.anyio
     async def test_returns_status_422_invalid_request(
@@ -95,7 +93,7 @@ class TestWhenLoginToNonexistingUser:
         any_client: AsyncClient,
     ) -> Response:
         param = request.param
-        response = await any_client.post(
+        return await any_client.post(
             url="/users/login",
             json={
                 "user": {
@@ -104,7 +102,6 @@ class TestWhenLoginToNonexistingUser:
                 },
             },
         )
-        return response
 
     @pytest.mark.anyio
     async def test_returns_status_401_unauthorized(
@@ -128,14 +125,14 @@ class TestWhenLoginToExistingUser:
         user = user_model_factory(
             username="walkmansit",
             email="walkmansit@gmail.com",
-            password_hash="very_strong_password",
+            password_hash="very_strong_password",  # noqa: S106
         )
         await add_to_db(user)
 
     class TestWithValidCredentials:
         @pytest.fixture
         async def login_response(self, any_client: AsyncClient) -> Response:
-            response = await any_client.post(
+            return await any_client.post(
                 url="/users/login",
                 json={
                     "user": {
@@ -144,7 +141,6 @@ class TestWhenLoginToExistingUser:
                     },
                 },
             )
-            return response
 
         @pytest.mark.anyio
         async def test_returns_status_200_ok(self, login_response: Response) -> None:
@@ -159,7 +155,7 @@ class TestWhenLoginToExistingUser:
     class TestWithInvalidPassword:
         @pytest.fixture
         async def login_response(self, any_client: AsyncClient) -> Response:
-            response = await any_client.post(
+            return await any_client.post(
                 url="/users/login",
                 json={
                     "user": {
@@ -168,7 +164,6 @@ class TestWhenLoginToExistingUser:
                     },
                 },
             )
-            return response
 
         @pytest.mark.anyio
         async def test_returns_status_401_unauthorized(

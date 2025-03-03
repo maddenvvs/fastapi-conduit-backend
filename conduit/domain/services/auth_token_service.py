@@ -57,8 +57,9 @@ class AuthTokenService:
         try:
             payload = jwt.decode(token, self._secret_key, algorithms=[self._algorithm])  # type: ignore[unused-ignore]
         except jwt.InvalidTokenError as err:
-            self._logger.error(
-                "Invalid JWT token", extra={"token": token, "error": err}
+            self._logger.exception(
+                "Invalid JWT token",
+                extra={"token": token, "error": err},
             )
             raise IncorrectJwtTokenError
 

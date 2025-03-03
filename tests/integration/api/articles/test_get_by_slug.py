@@ -46,8 +46,18 @@ class TestWhenArticleExists:
             title="Article Title",
             description="Article description",
             body="Article body",
-            created_at=datetime.datetime(year=2021, month=11, day=26),
-            updated_at=datetime.datetime(year=2022, month=12, day=1),
+            created_at=datetime.datetime(
+                year=2021,
+                month=11,
+                day=26,
+                tzinfo=datetime.timezone.utc,
+            ),
+            updated_at=datetime.datetime(
+                year=2022,
+                month=12,
+                day=1,
+                tzinfo=datetime.timezone.utc,
+            ),
         )
         await add_to_db(article)
 
@@ -56,8 +66,7 @@ class TestWhenArticleExists:
         self,
         any_client: AsyncClient,
     ) -> Response:
-        response = await any_client.get("/articles/article-slug")
-        return response
+        return await any_client.get("/articles/article-slug")
 
     @pytest.mark.anyio
     async def test_returns_200_ok(self, get_article_response: Response) -> None:
