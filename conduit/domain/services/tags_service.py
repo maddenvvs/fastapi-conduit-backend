@@ -27,7 +27,7 @@ class TagsService:
         try:
             tags = await self._tags_repository.get_all_tags()
         except Exception as ex:
-            self._logger.error("Error retrieving tags", extra={"error": ex})
+            self._logger.exception("Error retrieving tags", extra={"error": ex})
             raise
 
         duration_ms = (time.perf_counter_ns() - start_time) / NS_IN_ONE_MS

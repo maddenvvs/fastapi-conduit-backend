@@ -63,9 +63,7 @@ class UpdateCurrentUserUseCase:
                 image_url=update_request.image_url,
             )
 
-            updated_user = await self._users_repository.update(
+            return await self._users_repository.update(
                 user_id=current_user.id,
                 update_details=update_details,
             )
-
-        return updated_user

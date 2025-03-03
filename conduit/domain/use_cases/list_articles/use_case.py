@@ -3,7 +3,7 @@ from typing import Optional, final
 
 from conduit.domain.entities.articles import BodylessArticleWithAuthor
 from conduit.domain.entities.users import User
-from conduit.domain.repositories.articles import ArticlesRepository
+from conduit.domain.repositories.articles import ArticlesRepository, ListFilters
 from conduit.domain.unit_of_work import UnitOfWorkFactory
 
 
@@ -43,13 +43,16 @@ class ListArticlesUseCase:
         user_id = user.id if user else None
 
         async with self._uow_factory():
+            filters = ListFilters(
+                tag=list_articles_request.tag,
+                author=list_articles_request.author,
+                favorited=list_articles_request.favorited,
+            )
             articles = await self._articles_repository.list_by_filters(
                 user_id=user_id,
                 limit=list_articles_request.limit,
                 offset=list_articles_request.offset,
-                tag=list_articles_request.tag,
-                author=list_articles_request.author,
-                favorited=list_articles_request.favorited,
+                filters=filters,
             )
             articles_count = await self._articles_repository.count_by_filters(
                 tag=list_articles_request.tag,

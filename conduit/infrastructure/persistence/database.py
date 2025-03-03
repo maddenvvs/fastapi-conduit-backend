@@ -1,7 +1,7 @@
 import contextlib
 import datetime
-import os
 from collections.abc import AsyncIterator
+from pathlib import Path
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
@@ -28,10 +28,11 @@ class Database:
         if database == ":memory:":
             return False
 
-        if not os.path.isfile(database) or os.path.getsize(database) < 100:
+        database_file = Path(database)
+        if not database_file.is_file() or database_file.stat().st_size < 100:
             return False
 
-        with open(database, "rb") as f:  # noqa: ASYNC230 # It's used for educational purposes.
+        with database_file.open("rb") as f:  # noqa: ASYNC230
             header = f.read(100)
 
         return header[:16] == b"SQLite format 3\x00"
@@ -83,7 +84,7 @@ class Database:
             "javascript",
             "typescript",
             "politics",
-            "сюрприз с пробелами",
+            "сюрприз с пробелами",  # noqa: RUF001
             "😎 leetcode",
         ]
         async with self._session.begin() as session:

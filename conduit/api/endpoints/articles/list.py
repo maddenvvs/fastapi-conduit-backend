@@ -33,5 +33,4 @@ async def list_articles(
     use_case: ListArticlesUseCase = Depends(Provide[Container.list_articles_use_case]),  # noqa: FAST002
 ) -> ListArticlesApiResponse:
     articles_info = await use_case(filters.to_domain(optional_user))
-    print(articles_info)
     return ListArticlesApiResponse.from_articles_info(articles_info)

@@ -136,7 +136,7 @@ class TestRepositoryRaisesException:
         with pytest.raises(TestRepositoryRaisesException.CustomError):
             await tags_service.get_all_tags()
 
-        tags_service_logger.error.assert_called_once_with(
+        tags_service_logger.exception.assert_called_once_with(
             "Error retrieving tags",
             extra=mock.ANY,
         )

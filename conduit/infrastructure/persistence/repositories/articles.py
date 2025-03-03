@@ -14,7 +14,7 @@ from conduit.domain.entities.articles import (
     UpdateArticleFields,
 )
 from conduit.domain.entities.users import UserID
-from conduit.domain.repositories.articles import ArticlesRepository
+from conduit.domain.repositories.articles import ArticlesRepository, ListFilters
 from conduit.infrastructure.current_time import CurrentTime
 from conduit.infrastructure.persistence.models import (
     ArticleModel,
@@ -186,12 +186,13 @@ class SQLiteArticlesRepository(ArticlesRepository):
         user_id: Optional[UserID],
         limit: int,
         offset: int,
-        tag: Optional[str],
-        author: Optional[str],
-        favorited: Optional[str],
+        filters: ListFilters,
     ) -> list[BodylessArticleWithAuthor]:
         session = SqlAlchemyUnitOfWork.get_current_session()
 
+        tag = filters.tag
+        author = filters.author
+        favorited = filters.favorited
         query = (
             select(
                 ArticleModel.id.label("id"),

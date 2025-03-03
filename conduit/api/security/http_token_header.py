@@ -25,11 +25,11 @@ class HttpTokenHeader(APIKeyHeader):
 
         try:
             token_prefix, token = api_key.split(" ")
-        except ValueError:
+        except ValueError as exc:
             raise HTTPException(
                 status_code=http_status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid token schema.",
-            )
+            ) from exc
 
         if token_prefix.lower() != "token":
             raise HTTPException(

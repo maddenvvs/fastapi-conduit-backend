@@ -1,5 +1,6 @@
 import abc
-from typing import Optional
+from dataclasses import dataclass
+from typing import Optional, final
 
 from conduit.domain.entities.articles import (
     Article,
@@ -10,6 +11,14 @@ from conduit.domain.entities.articles import (
     UpdateArticleFields,
 )
 from conduit.domain.entities.users import UserID
+
+
+@final
+@dataclass(frozen=True)
+class ListFilters:
+    tag: Optional[str]
+    author: Optional[str]
+    favorited: Optional[str]
 
 
 class ArticlesRepository(abc.ABC):
@@ -40,9 +49,7 @@ class ArticlesRepository(abc.ABC):
         user_id: Optional[UserID],
         limit: int,
         offset: int,
-        tag: Optional[str],
-        author: Optional[str],
-        favorited: Optional[str],
+        filters: ListFilters,
     ) -> list[BodylessArticleWithAuthor]: ...
 
     @abc.abstractmethod
