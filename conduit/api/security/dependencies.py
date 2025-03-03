@@ -34,7 +34,7 @@ OptionalJwtToken = Annotated[str, Depends(optional_token_security)]
 async def get_current_user_or_none(
     jwt_token: OptionalJwtToken,
     auth_token_service: AuthTokenService = Depends(
-        Provide[Container.auth_token_service]
+        Provide[Container.auth_token_service],
     ),
     uow_factory: UnitOfWorkFactory = Depends(Provide[Container.uow_factory]),
     users_repository: UsersRepository = Depends(Provide[Container.users_repository]),
@@ -50,7 +50,7 @@ async def get_current_user_or_none(
 async def get_current_user(
     jwt_token: JwtToken,
     auth_token_service: AuthTokenService = Depends(
-        Provide[Container.auth_token_service]
+        Provide[Container.auth_token_service],
     ),
     uow_factory: UnitOfWorkFactory = Depends(Provide[Container.uow_factory]),
     users_repository: UsersRepository = Depends(Provide[Container.users_repository]),

@@ -153,7 +153,7 @@ class UserDetailsApiResponse(BaseModel):
                 bio=user.bio,
                 image=user.image,
                 token=jwt_token,
-            )
+            ),
         )
 
     @classmethod
@@ -165,7 +165,7 @@ class UserDetailsApiResponse(BaseModel):
                 bio=user.bio,
                 image=user.image,
                 token=user.token,
-            )
+            ),
         )
 
     @classmethod
@@ -177,5 +177,5 @@ class UserDetailsApiResponse(BaseModel):
                 bio=user.bio,
                 image=user.image,
                 token=user.token,
-            )
+            ),
         )

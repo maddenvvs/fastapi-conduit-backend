@@ -47,5 +47,5 @@ class ProfileDetailsApiResponse(BaseModel):
                 bio=profile.bio,
                 image=profile.image,
                 following=profile.following,
-            )
+            ),
         )

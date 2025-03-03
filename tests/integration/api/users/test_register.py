@@ -24,7 +24,7 @@ def register_request_factory() -> RequestFactory:
             "user": {
                 **default_values,
                 **kwargs,
-            }
+            },
         }
 
     return factory
@@ -37,7 +37,7 @@ class TestWhenRegisteringWithInvalidRequestFields:
             {"password": ""},
             {"email": ""},
             {"email": "@.cm"},
-        ]
+        ],
     )
     def invalid_register_request(
         self,
@@ -73,7 +73,7 @@ class TestWhenRegisteredSuccessully:
             dict(username="ivan", password="clear", email="a@a.com"),
             dict(username="ivan", password="very_strong_one", email="a@aabc.com"),
             dict(username="gobyna", password="uncertain", email="booking@aabc.com"),
-        ]
+        ],
     )
     async def request_body(
         self,
@@ -99,8 +99,8 @@ class TestWhenRegisteredSuccessully:
         async with test_db.create_session() as session:
             await session.execute(
                 delete(UserModel).where(
-                    UserModel.email == request_body["user"]["email"]
-                )
+                    UserModel.email == request_body["user"]["email"],
+                ),
             )
             await session.commit()
 
@@ -142,7 +142,8 @@ class TestWhenUsernameIsTaken:
 
     @pytest.mark.anyio
     async def test_returns_body_with_clarification(
-        self, failed_response: Response
+        self,
+        failed_response: Response,
     ) -> None:
         assert failed_response.json() == {"errors": {"username": ["Username is taken"]}}
 
@@ -165,6 +166,7 @@ class TestWhenEmailIsTaken:
 
     @pytest.mark.anyio
     async def test_returns_body_with_clarification(
-        self, failed_response: Response
+        self,
+        failed_response: Response,
     ) -> None:
         assert failed_response.json() == {"errors": {"email": ["Email is taken"]}}

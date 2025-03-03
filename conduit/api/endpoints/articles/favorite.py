@@ -28,7 +28,7 @@ async def favorite_article(
     slug: ArticleSlug,
     current_user: CurrentUser,
     favorite_article: FavoriteArticleUseCase = Depends(  # noqa: FAST002
-        Provide[Container.favorite_article_use_case]
+        Provide[Container.favorite_article_use_case],
     ),
 ) -> ArticleWithAuthorApiResponse:
     article = await favorite_article(slug, current_user)

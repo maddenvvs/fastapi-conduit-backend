@@ -40,7 +40,7 @@ class FeedArticlesUseCase:
                 offset=feed_request.offset,
             )
             articles_count = await self._articles_repository.count_by_followings(
-                feed_request.user.id
+                feed_request.user.id,
             )
 
         return FeedArticlesResponse(

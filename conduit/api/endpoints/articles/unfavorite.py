@@ -30,7 +30,7 @@ async def unfavorite_article(
     slug: ArticleSlug,
     current_user: CurrentUser,
     unfavorite_article: UnfavoriteArticleUseCase = Depends(  # noqa: FAST002
-        Provide[Container.unfavorite_article_use_case]
+        Provide[Container.unfavorite_article_use_case],
     ),
 ) -> ArticleWithAuthorApiResponse:
     article = await unfavorite_article(slug, current_user)

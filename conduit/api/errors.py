@@ -73,7 +73,7 @@ async def request_validation_error_handler(
     exc: RequestValidationError,
 ) -> JSONResponse:
     return ValidationErrorApiResponse.from_request_validation_error(
-        exc
+        exc,
     ).to_json_response()
 
 
@@ -82,7 +82,7 @@ async def domain_validation_error_handler(
     exc: DomainValidationError,
 ) -> JSONResponse:
     return ValidationErrorApiResponse.from_domain_validation_exception(
-        exc
+        exc,
     ).to_json_response()
 
 

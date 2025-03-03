@@ -25,7 +25,7 @@ class LoginUserUseCase:
     async def __call__(self, login_details: UserLoginDetails) -> LoggedInUser:
         async with self._uow_factory():
             user = await self._users_repository.get_by_email_or_none(
-                login_details.email
+                login_details.email,
             )
 
         if user is None:

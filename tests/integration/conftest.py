@@ -146,7 +146,7 @@ async def registered_user_token(
                 user=dict(
                     email=registered_user.email,
                     password=registered_user.password_hash,
-                )
+                ),
             ),
         )
     return login_response.json()["user"]["token"]
@@ -183,7 +183,7 @@ async def anonymous_test_client(
             email="admin_user@testland.com",
             password="wow_look_at_the_password",
         ),
-    ]
+    ],
 )
 async def any_client(
     request: pytest.FixtureRequest,
@@ -209,7 +209,7 @@ async def any_client(
                     user=dict(
                         email=user_credentials["email"],
                         password=user_credentials["password"],
-                    )
+                    ),
                 ),
             )
             token = response.json()["user"]["token"]

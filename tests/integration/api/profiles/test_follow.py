@@ -11,7 +11,7 @@ class TestWhenFollowNonexistingProfile:
     @pytest.fixture
     async def profile_response(self, registered_user_client: AsyncClient) -> Response:
         return await registered_user_client.post(
-            "/profiles/non-existing-username/follow"
+            "/profiles/non-existing-username/follow",
         )
 
     @pytest.mark.anyio
@@ -31,7 +31,7 @@ class TestWhenFollowYourself:
         registered_user: UserModel,
     ) -> Response:
         return await registered_user_client.post(
-            f"/profiles/{registered_user.username}/follow"
+            f"/profiles/{registered_user.username}/follow",
         )
 
     @pytest.mark.anyio
@@ -52,7 +52,7 @@ class TestWhenFollowExistingProfile:
             "monica",
             "phoebe",
             "ross",
-        ]
+        ],
     )
     async def test_username(self, request: pytest.FixtureRequest) -> Any:
         return request.param
@@ -78,7 +78,7 @@ class TestWhenFollowExistingProfile:
 
     @pytest.fixture
     async def follow_response(
-        self, registered_user_client: AsyncClient, test_username: str
+        self, registered_user_client: AsyncClient, test_username: str,
     ) -> AsyncGenerator[Response, None]:
         url = f"/profiles/{test_username}/follow"
         yield await registered_user_client.post(url)
@@ -95,7 +95,7 @@ class TestWhenFollowExistingProfile:
     class TestAndItWasAlreadyFollowed:
         @pytest.fixture
         async def follow_response(
-            self, registered_user_client: AsyncClient, test_username: str
+            self, registered_user_client: AsyncClient, test_username: str,
         ) -> AsyncGenerator[Response, None]:
             url = f"/profiles/{test_username}/follow"
             await registered_user_client.post(url)
@@ -108,6 +108,6 @@ class TestWhenFollowExistingProfile:
 
         @pytest.mark.anyio
         async def test_returns_detailed_message(
-            self, follow_response: Response
+            self, follow_response: Response,
         ) -> None:
             assert follow_response.json() == {"detail": "Profile is already followed"}

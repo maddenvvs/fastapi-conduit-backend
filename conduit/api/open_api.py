@@ -24,9 +24,9 @@ def validation_error() -> OpenApiResponseDefinition:
                             "field_2": [
                                 "value cannot be empty",
                             ],
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
     }
@@ -58,8 +58,8 @@ def unauthorized_error() -> OpenApiResponseDefinition:
                 "application/json": {
                     "example": {
                         "detail": "Missing authorization credentials",
-                    }
-                }
+                    },
+                },
             },
         },
     }
@@ -76,8 +76,8 @@ def not_found_error(entity_name: str) -> OpenApiResponseDefinition:
                 "application/json": {
                     "example": {
                         "detail": detail_message,
-                    }
-                }
+                    },
+                },
             },
         },
     }

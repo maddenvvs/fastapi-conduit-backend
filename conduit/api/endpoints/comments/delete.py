@@ -30,7 +30,7 @@ async def delete_article_comment(
     comment_id: Annotated[int, Path()],
     current_user: CurrentUser,
     delete_comment: DeleteArticleCommentUseCase = Depends(  # noqa: FAST002
-        Provide[Container.delete_article_comment_use_case]
+        Provide[Container.delete_article_comment_use_case],
     ),
 ) -> None:
     is_deleted = await delete_comment(slug, comment_id, current_user)

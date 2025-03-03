@@ -27,7 +27,7 @@ async def delete_article(
     slug: ArticleSlug,
     current_user: CurrentUser,
     delete_article: DeleteArticleBySlugUseCase = Depends(  # noqa: FAST002
-        Provide[Container.delete_article_by_slug_use_case]
+        Provide[Container.delete_article_by_slug_use_case],
     ),
 ) -> None:
     await delete_article(slug, current_user)

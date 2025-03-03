@@ -28,7 +28,7 @@ async def get_profile_by_username(
     username: Username,
     optional_user: OptionalCurrentUser,
     get_profile_by_name: GetProfileByNameUseCase = Depends(  # noqa: FAST002
-        Provide[Container.get_profile_by_name_use_case]
+        Provide[Container.get_profile_by_name_use_case],
     ),
 ) -> ProfileDetailsApiResponse:
     profile_details = await get_profile_by_name(username, optional_user)

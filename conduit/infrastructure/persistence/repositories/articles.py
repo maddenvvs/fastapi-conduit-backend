@@ -129,7 +129,7 @@ class SQLiteArticlesRepository(ArticlesRepository):
                 exists()
                 .where(
                     (FavoriteModel.user_id == user_id)
-                    & (FavoriteModel.article_id == ArticleModel.id)
+                    & (FavoriteModel.article_id == ArticleModel.id),
                 )
                 .label("favorited"),
                 # Concatenate tags.
@@ -145,8 +145,8 @@ class SQLiteArticlesRepository(ArticlesRepository):
                 UserModel.id.in_(
                     select(FollowerModel.following_id)
                     .where(FollowerModel.follower_id == user_id)
-                    .scalar_subquery()
-                )
+                    .scalar_subquery(),
+                ),
             )
             .group_by(
                 ArticleModel.id,
@@ -209,7 +209,7 @@ class SQLiteArticlesRepository(ArticlesRepository):
                 exists()
                 .where(
                     (FollowerModel.follower_id == user_id)
-                    & (FollowerModel.following_id == ArticleModel.author_id)
+                    & (FollowerModel.following_id == ArticleModel.author_id),
                 )
                 .label("following"),
                 # Subquery for favorites count.
@@ -223,7 +223,7 @@ class SQLiteArticlesRepository(ArticlesRepository):
                 select(FavoriteModel.article_id)
                 .where(
                     (FavoriteModel.user_id == user_id)
-                    & (FavoriteModel.article_id == ArticleModel.id)
+                    & (FavoriteModel.article_id == ArticleModel.id),
                 )
                 .exists()
                 .correlate(FavoriteModel, ArticleModel)
@@ -262,7 +262,7 @@ class SQLiteArticlesRepository(ArticlesRepository):
                 .join(ArticleTagModel, ArticleTagModel.tag_id == TagModel.id)
                 .join(ArticleAliased, ArticleAliased.id == ArticleTagModel.article_id)
                 .where(ArticleAliased.id == ArticleModel.id, TagModel.name == tag)
-                .exists()
+                .exists(),
             )
         if author is not None:
             query = query.where(UserModel.username == author)
@@ -271,7 +271,7 @@ class SQLiteArticlesRepository(ArticlesRepository):
                 FavoriteModel.user_id
                 == select(UserModel.id)
                 .where(UserModel.username == favorited)
-                .scalar_subquery()
+                .scalar_subquery(),
             )
 
         query = query.limit(limit).offset(offset)
@@ -291,25 +291,25 @@ class SQLiteArticlesRepository(ArticlesRepository):
 
         if tag is not None:
             query = query.join(
-                ArticleTagModel, ArticleTagModel.article_id == ArticleModel.id
+                ArticleTagModel, ArticleTagModel.article_id == ArticleModel.id,
             ).where(
                 ArticleTagModel.tag_id
-                == select(TagModel.id).where(TagModel.name == tag).scalar_subquery()
+                == select(TagModel.id).where(TagModel.name == tag).scalar_subquery(),
             )
 
         if author is not None:
             query = query.join(UserModel, UserModel.id == ArticleModel.author_id).where(
-                UserModel.username == author
+                UserModel.username == author,
             )
 
         if favorited is not None:
             query = query.join(
-                FavoriteModel, FavoriteModel.article_id == ArticleModel.id
+                FavoriteModel, FavoriteModel.article_id == ArticleModel.id,
             ).where(
                 FavoriteModel.user_id
                 == select(UserModel.id)
                 .where(UserModel.username == favorited)
-                .scalar_subquery()
+                .scalar_subquery(),
             )
 
         result = await session.execute(query)
@@ -321,7 +321,7 @@ class SQLiteArticlesRepository(ArticlesRepository):
         await session.execute(query)
 
     async def update_by_slug(
-        self, slug: str, update_fields: UpdateArticleFields
+        self, slug: str, update_fields: UpdateArticleFields,
     ) -> Article:
         session = SqlAlchemyUnitOfWork.get_current_session()
         current_time = self._now()

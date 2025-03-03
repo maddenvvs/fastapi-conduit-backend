@@ -162,7 +162,7 @@ class ArticleWithAuthorApiResponse(BaseModel):
                     image=author.image,
                     following=author.following,
                 ),
-            )
+            ),
         )
 
 

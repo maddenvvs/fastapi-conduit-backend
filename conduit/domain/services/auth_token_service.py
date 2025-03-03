@@ -44,7 +44,7 @@ class AuthTokenService:
             current_time = datetime.datetime.now(datetime.timezone.utc)
 
         expire = current_time + datetime.timedelta(
-            minutes=self._token_expiration_minutes
+            minutes=self._token_expiration_minutes,
         )
         payload: dict[str, Any] = {
             "user_id": user.id,

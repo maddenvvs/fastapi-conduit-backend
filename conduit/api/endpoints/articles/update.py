@@ -33,7 +33,7 @@ async def update_article(
     request: Annotated[UpdateArticleApiRequest, Body()],
     current_user: CurrentUser,
     update_article: UpdateArticleUseCase = Depends(  # noqa: FAST002
-        Provide[Container.update_article_use_case]
+        Provide[Container.update_article_use_case],
     ),
 ) -> ArticleWithAuthorApiResponse:
     article = await update_article(slug, request.to_domain(), current_user)

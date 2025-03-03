@@ -34,11 +34,11 @@ async def add_comment_to_article(
     comment_request: Annotated[CreateCommentApiRequest, Body()],
     current_user: CurrentUser,
     add_comment: AddCommentToArticleUseCase = Depends(  # noqa: FAST002
-        Provide[Container.add_comment_to_article_use_case]
+        Provide[Container.add_comment_to_article_use_case],
     ),
 ) -> CommentDetailsApiResponse:
     created_comment = await add_comment(
-        slug, comment_request.comment.body, current_user
+        slug, comment_request.comment.body, current_user,
     )
     if created_comment is None:
         raise HTTPException(

@@ -13,14 +13,14 @@ class TestWhenUpdateWithInvalidFields:
             dict(image=""),
             dict(image="qwdw"),
             dict(image="ftp://asdt:2301/images/cat.jpeg"),
-        ]
+        ],
     )
     def invalid_fields(self, request: pytest.FixtureRequest) -> Any:
         return request.param
 
     @pytest.fixture
     async def update_response(
-        self, invalid_fields: dict[str, Any], registered_user_client: AsyncClient
+        self, invalid_fields: dict[str, Any], registered_user_client: AsyncClient,
     ) -> Response:
         return await registered_user_client.put("/user", json={"user": invalid_fields})
 

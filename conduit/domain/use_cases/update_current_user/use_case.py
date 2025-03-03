@@ -39,14 +39,14 @@ class UpdateCurrentUserUseCase:
                 and update_request.username != current_user.username
             ):
                 user = await self._users_repository.get_by_username_or_none(
-                    update_request.username
+                    update_request.username,
                 )
                 if user is not None:
                     raise Exception("Already exists")
 
             if update_request.email and update_request.email != current_user.email:
                 user = await self._users_repository.get_by_email_or_none(
-                    update_request.email
+                    update_request.email,
                 )
                 if user is not None:
                     raise Exception("Already exists")

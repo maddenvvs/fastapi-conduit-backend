@@ -44,7 +44,7 @@ class SQLiteTagsRepository(TagsRepository):
                         created_at=current_time,
                     )
                     for tag in tags
-                ]
+                ],
             )
             .on_conflict_do_nothing()
         )
@@ -64,7 +64,7 @@ class SQLiteTagsRepository(TagsRepository):
                         created_at=current_time,
                     )
                     for tag in tags_to_return
-                ]
+                ],
             )
             .on_conflict_do_nothing()
         )
@@ -79,7 +79,7 @@ class SQLiteTagsRepository(TagsRepository):
             select(TagModel, ArticleTagModel)
             .where(
                 (ArticleTagModel.article_id == article_id)
-                & (ArticleTagModel.tag_id == TagModel.id)
+                & (ArticleTagModel.tag_id == TagModel.id),
             )
             .order_by(TagModel.created_at.desc())
         )

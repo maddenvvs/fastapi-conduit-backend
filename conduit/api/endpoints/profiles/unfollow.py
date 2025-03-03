@@ -26,7 +26,7 @@ async def unfollow_profile_by_name(
     username: Username,
     current_user: CurrentUser,
     unfollow_profile: UnfollowProfileUseCase = Depends(  # noqa: FAST002
-        Provide[Container.unfollow_profile_use_case]
+        Provide[Container.unfollow_profile_use_case],
     ),
 ) -> ProfileDetailsApiResponse:
     followed_profile = await unfollow_profile(username, current_user)

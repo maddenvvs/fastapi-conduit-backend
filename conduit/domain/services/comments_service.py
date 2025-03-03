@@ -57,7 +57,7 @@ class CommentsService:
                 article_id=article.id,
                 author_id=current_user.id,
                 body=comment_body,
-            )
+            ),
         )
 
         author = current_user

@@ -31,12 +31,12 @@ class RegisterUserUseCase:
         self._password_hasher = password_hasher
 
     async def __call__(
-        self, register_user_details: RegisterUserDetails
+        self, register_user_details: RegisterUserDetails,
     ) -> RegisteredUser:
         return await self._register_user(register_user_details)
 
     async def _register_user(
-        self, register_user_details: RegisterUserDetails
+        self, register_user_details: RegisterUserDetails,
     ) -> RegisteredUser:
         created_user = await self._create_user(register_user_details)
         jwt_token = self._auth_token_service.generate_jwt_token(created_user)
@@ -45,12 +45,12 @@ class RegisterUserUseCase:
     async def _create_user(self, register_user_details: RegisterUserDetails) -> User:
         async with self._uow_factory():
             if await self._users_repository.get_by_email_or_none(
-                email=register_user_details.email
+                email=register_user_details.email,
             ):
                 raise EmailAlreadyTakenError
 
             if await self._users_repository.get_by_username_or_none(
-                username=register_user_details.username
+                username=register_user_details.username,
             ):
                 raise UserNameAlreadyTakenError
 
@@ -60,5 +60,5 @@ class RegisterUserUseCase:
                     email=register_user_details.email,
                     username=register_user_details.username,
                     password_hash=hashed_password,
-                )
+                ),
             )

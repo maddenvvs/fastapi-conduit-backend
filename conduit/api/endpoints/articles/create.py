@@ -31,7 +31,7 @@ async def create_article(
     new_article: Annotated[CreateArticleApiRequest, Body()],
     current_user: CurrentUser,
     create_article: CreateArticleUseCase = Depends(  # noqa: FAST002
-        Provide[Container.create_article_use_case]
+        Provide[Container.create_article_use_case],
     ),
 ) -> ArticleWithAuthorApiResponse:
     created_article = await create_article(new_article.to_domain(), current_user)

@@ -86,5 +86,5 @@ class TestWhenArticleExists:
                     "image": article_author.image_url,
                     "following": False,
                 },
-            }
+            },
         }

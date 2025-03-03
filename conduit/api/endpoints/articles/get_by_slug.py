@@ -30,7 +30,7 @@ async def get_article_by_slug(
     slug: ArticleSlug,
     optional_user: OptionalCurrentUser,
     get_article_by_slug: GetArticleBySlugUseCase = Depends(  # noqa: FAST002
-        Provide[Container.get_article_by_slug_use_case]
+        Provide[Container.get_article_by_slug_use_case],
     ),
 ) -> ArticleWithAuthorApiResponse:
     article = await get_article_by_slug(slug, optional_user)

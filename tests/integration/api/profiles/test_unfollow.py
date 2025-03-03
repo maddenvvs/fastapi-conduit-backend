@@ -11,7 +11,7 @@ class TestWhenUnfollowNonexistingProfile:
     @pytest.fixture
     async def unfollow_response(self, registered_user_client: AsyncClient) -> Response:
         return await registered_user_client.delete(
-            "/profiles/non-existing-username/follow"
+            "/profiles/non-existing-username/follow",
         )
 
     @pytest.mark.anyio
@@ -31,7 +31,7 @@ class TestWhenUnfollowYourself:
         registered_user: UserModel,
     ) -> Response:
         return await registered_user_client.delete(
-            f"/profiles/{registered_user.username}/follow"
+            f"/profiles/{registered_user.username}/follow",
         )
 
     @pytest.mark.anyio
@@ -52,7 +52,7 @@ class TestWhenUnfollowExistingProfile:
             "monica",
             "phoebe",
             "ross",
-        ]
+        ],
     )
     async def test_username(self, request: pytest.FixtureRequest) -> Any:
         return request.param
@@ -96,7 +96,7 @@ class TestWhenUnfollowExistingProfile:
     class TestAndItWasAlreadyFollowed:
         @pytest.fixture
         async def unfollow_response(
-            self, registered_user_client: AsyncClient, test_username: str
+            self, registered_user_client: AsyncClient, test_username: str,
         ) -> Response:
             url = f"/profiles/{test_username}/follow"
             await registered_user_client.post(url)
@@ -108,6 +108,6 @@ class TestWhenUnfollowExistingProfile:
 
         @pytest.mark.anyio
         async def test_returns_following_false(
-            self, unfollow_response: Response
+            self, unfollow_response: Response,
         ) -> None:
             assert unfollow_response.json()["profile"]["following"] is False

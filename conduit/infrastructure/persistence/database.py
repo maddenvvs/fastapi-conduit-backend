@@ -95,5 +95,5 @@ class Database:
                         created_at=current_time,
                     )
                     for i, name in enumerate(available_tags, start=1)
-                )
+                ),
             )

@@ -16,7 +16,7 @@ class TestSuccessfullyListTags:
             ["tag_a", "tag_b", "tag_c"],
             ["programming", "requirejs"],
             ["z", "x", "y"],
-        ]
+        ],
     )
     async def test_tag_names(self, request: pytest.FixtureRequest) -> Any:
         return request.param

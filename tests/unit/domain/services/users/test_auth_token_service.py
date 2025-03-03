@@ -44,7 +44,7 @@ class TestParseInvalidToken:
             "invalid.token.value",
             "",
             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTIzIiwidXNlcm5hbWUiOiJKb2huIERvZSJ9.ZXjZuq_OM3VOYhLbjbpgldlBsTnyGQdgHvshyokLmH",
-        ]
+        ],
     )
     def invalid_token(self, request: pytest.FixtureRequest) -> Any:
         return request.param
