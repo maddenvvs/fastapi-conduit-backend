@@ -1,7 +1,7 @@
 import contextlib
 import datetime
 import os
-from typing import AsyncIterator
+from collections.abc import AsyncIterator
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 

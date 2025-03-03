@@ -1,6 +1,7 @@
 import datetime
+from typing import Callable
 
-from typing_extensions import Callable, TypeAlias
+from typing_extensions import TypeAlias
 
 CurrentTime: TypeAlias = Callable[[], datetime.datetime]
 

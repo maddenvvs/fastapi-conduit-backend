@@ -1,5 +1,6 @@
+from collections.abc import AsyncGenerator
 from datetime import datetime
-from typing import Any, AsyncContextManager, AsyncGenerator, Callable, Protocol
+from typing import Any, AsyncContextManager, Callable, Protocol
 
 import pytest
 from fastapi import FastAPI

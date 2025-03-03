@@ -1,7 +1,7 @@
 import datetime
 import logging
-import unittest.mock as mock
 from typing import Any
+from unittest import mock
 
 import pytest
 

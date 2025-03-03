@@ -1,11 +1,11 @@
 import contextlib
-from typing import AsyncIterator, cast
+from collections.abc import AsyncIterator
+from typing import cast
 
 from fastapi import FastAPI
 
 import conduit.api.endpoints.routes as api_endpoints
-import conduit.api.errors as errors
-from conduit.api import tags
+from conduit.api import errors, tags
 from conduit.containers import Container
 
 

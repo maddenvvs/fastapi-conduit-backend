@@ -1,4 +1,5 @@
-from typing import Any, AsyncGenerator, Callable
+from collections.abc import AsyncGenerator
+from typing import Any, Callable
 
 import pytest
 from httpx import AsyncClient, Response

@@ -1,4 +1,5 @@
-from typing import Any, Optional, Sequence, final
+from collections.abc import Sequence
+from typing import Any, Optional, final
 
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
