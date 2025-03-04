@@ -1,4 +1,15 @@
 services:
+  conduit-gateway:
+    build:
+      context: ./backend/api-gateway
+    container_name: conduit-gateway
+    ports:
+      - "8080:80"
+    networks:
+      - conduit-network
+    depends_on:
+      - conduit-api
+
   conduit-api:
     build:
       context: ./backend/domain
@@ -7,9 +18,15 @@ services:
     env_file:
       - .env.docker
     ports:
-      - "8080:8080"
+      - "8081:8080"
     volumes:
       - db-data:/app/database
+    networks:
+      - conduit-network
+
+networks:
+  conduit-network:
+    name: conduit-network
 
 volumes:
   db-data:
