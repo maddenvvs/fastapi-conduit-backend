@@ -7,7 +7,7 @@ test:
 	python -m pytest -n auto --strict-markers ./tests
 
 dev-server:
-	fastapi dev gameapp/app.py
+	fastapi dev conduit/app.py
 
 types:
 	mypy
