@@ -19,10 +19,8 @@ async def app_lifespan(app: FastAPI) -> AsyncIterator[None]:
     await database.dispose()
 
 
-def create_app() -> FastAPI:
+def create_app(container: Container) -> FastAPI:
     """Creates the FastAPI application."""
-
-    container = Container()
 
     settings = container.app_settings()
     app = FastAPI(
@@ -45,4 +43,9 @@ def create_app() -> FastAPI:
     return app
 
 
-app = create_app()
+def build_app() -> FastAPI:
+    container = Container()
+    return create_app(container)
+
+
+app = build_app()

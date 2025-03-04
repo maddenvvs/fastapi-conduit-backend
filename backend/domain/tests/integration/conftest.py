@@ -1,4 +1,4 @@
-from collections.abc import AsyncGenerator
+from collections.abc import AsyncGenerator, Generator
 from datetime import datetime, timezone
 from typing import Any, Callable, Protocol
 
@@ -40,23 +40,26 @@ def test_sqlite_database_url(tmp_path_factory: pytest.TempPathFactory) -> str:
 def test_settings(
     test_sqlite_database_url: str,
 ) -> Settings:
-    return Settings(
-        _env_file=None,  # type: ignore
-        database_url=test_sqlite_database_url,
-        debug=True,
-        jwt_secret_key="secret_key_example_for_test_purposes",  # noqa: S106
-        jwt_token_expiration_minutes=60 * 24,
+    return Settings.model_validate(
+        {
+            "database_url": test_sqlite_database_url,
+            "debug": True,
+            "jwt_secret_key": "secret_key_example_for_test_purposes",
+            "jwt_token_expiration_minutes": 60 * 24,
+        },
     )
 
 
 @pytest.fixture(scope="session")
-def test_app(test_settings: Settings) -> FastAPI:
-    return create_app()
+def test_container(test_settings: Any) -> Generator[Container, None, None]:
+    container = Container()
+    with container.app_settings.override(test_settings):
+        yield container
 
 
 @pytest.fixture(scope="session")
-def test_container(test_app: FastAPI) -> Any:
-    return test_app.extra["container"]
+def test_app(test_container: Container) -> FastAPI:
+    return create_app(test_container)
 
 
 @pytest.fixture
