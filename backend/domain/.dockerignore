@@ -15,7 +15,6 @@ logs
 .env.example
 .pre-commit-config.yaml
 .python-version
-docker-compose.yaml
 Dockerfile
 tests
 database
