@@ -16,16 +16,6 @@ from conduit.infrastructure.common.persistence.unit_of_work import SqlAlchemyUni
 from conduit.infrastructure.users.services.password_service import PasswordHasher
 
 
-def _model_to_entity(model: UserModel) -> User:
-    return User(
-        id=model.id,
-        email=model.email,
-        username=model.username,
-        bio=model.bio,
-        image_url=model.image_url,
-    )
-
-
 @final
 class SQLiteUsersRepository(UsersRepository):
     def __init__(
@@ -40,24 +30,24 @@ class SQLiteUsersRepository(UsersRepository):
         session = SqlAlchemyUnitOfWork.get_current_session()
 
         query = select(UserModel).where(UserModel.id == user_id)
-        if user := await session.scalar(query):
-            return Some(_model_to_entity(user))
+        if user_model := await session.scalar(query):
+            return Some(user_model.to_user())
         return Nothing
 
     async def get_by_email(self, email: str) -> Maybe[User]:
         session = SqlAlchemyUnitOfWork.get_current_session()
 
         query = select(UserModel).where(UserModel.email == email)
-        if user := await session.scalar(query):
-            return Some(_model_to_entity(user))
+        if user_model := await session.scalar(query):
+            return Some(user_model.to_user())
         return Nothing
 
     async def get_by_username(self, username: str) -> Maybe[User]:
         session = SqlAlchemyUnitOfWork.get_current_session()
 
         query = select(UserModel).where(UserModel.username == username)
-        if user := await session.scalar(query):
-            return Some(_model_to_entity(user))
+        if user_model := await session.scalar(query):
+            return Some(user_model.to_user())
         return Nothing
 
     async def create(self, new_user: NewUser) -> User:
@@ -77,8 +67,8 @@ class SQLiteUsersRepository(UsersRepository):
             .returning(UserModel)
         )
         result = await session.execute(query)
-        user = result.scalar_one()
-        return _model_to_entity(user)
+        user_model = result.scalar_one()
+        return user_model.to_user()
 
     async def update(self, updated_user: UpdatedUser) -> User:
         session = SqlAlchemyUnitOfWork.get_current_session()
@@ -108,5 +98,5 @@ class SQLiteUsersRepository(UsersRepository):
             query = query.values(image_url=updated_user.image_url)
 
         result = await session.execute(query)
-        user = result.scalar_one()
-        return _model_to_entity(user)
+        user_model = result.scalar_one()
+        return user_model.to_user()

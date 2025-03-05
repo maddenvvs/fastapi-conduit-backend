@@ -3,6 +3,7 @@ from typing import Optional, final
 from pydantic import BaseModel, EmailStr, Field, HttpUrl
 from typing_extensions import Self
 
+from conduit.application.users.use_cases.login_user.command import LoginUserCommand
 from conduit.application.users.use_cases.register_user.command import (
     RegisterUserCommand,
 )
@@ -127,4 +128,28 @@ class UpdateCurrentUserApiRequest(BaseModel):
             password=user.password,
             image_url=str(user.image) if user.image else None,
             bio=user.bio,
+        )
+
+
+@final
+class LoginUserData(BaseModel):
+    email: EmailStr = Field(
+        description="Email address used during the registration.",
+    )
+    password: str = Field(
+        description="Password provided during the registration.",
+        examples=["use_your_own_password"],
+        min_length=1,
+    )
+
+
+@final
+class LoginUserApiRequest(BaseModel):
+    user: LoginUserData = Field(description="User login details.")
+
+    def to_command(self) -> LoginUserCommand:
+        user = self.user
+        return LoginUserCommand(
+            email=user.email,
+            password=user.password,
         )

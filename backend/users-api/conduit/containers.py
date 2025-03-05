@@ -6,6 +6,7 @@ from conduit.api.security.auth_token_service import AuthTokenService
 from conduit.application.users.use_cases.get_current_user.use_case import (
     GetCurrentUserUseCase,
 )
+from conduit.application.users.use_cases.login_user.use_case import LoginUserUseCase
 from conduit.application.users.use_cases.register_user.use_case import (
     RegisterUserUseCase,
 )
@@ -20,6 +21,7 @@ from conduit.infrastructure.common.persistence.unit_of_work import (
 from conduit.infrastructure.users.repositories.users_repository import (
     SQLiteUsersRepository,
 )
+from conduit.infrastructure.users.services.login_service import SQLiteLoginService
 from conduit.infrastructure.users.services.password_service import PasswordService
 from conduit.settings import get_settings
 
@@ -61,6 +63,11 @@ class Container(containers.DeclarativeContainer):
         token_expiration_minutes=app_settings.provided.jwt_token_expiration_minutes,
     )
 
+    login_service = providers.Factory(
+        SQLiteLoginService,
+        password_hasher=password_service.provided.hash_password,
+    )
+
     # Use cases
 
     get_current_user_use_case = providers.Factory(
@@ -77,4 +84,10 @@ class Container(containers.DeclarativeContainer):
         UpdateCurrentUserUseCase,
         uow_factory=uow_factory,
         users_repository=users_repository,
+    )
+
+    login_user_use_case = providers.Factory(
+        LoginUserUseCase,
+        uow_factory=uow_factory,
+        login_service=login_service,
     )

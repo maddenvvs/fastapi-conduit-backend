@@ -16,6 +16,12 @@ class EmailTakenError(ApplicationError):
 
 
 @final
+class InvalidCredentialsError(ApplicationError):
+    def __init__(self, *args: object) -> None:
+        super().__init__("Invalid credentials", *args)
+
+
+@final
 class UsernameTakenError(ApplicationError):
     def __init__(self, *args: object) -> None:
         super().__init__("Username is already in use", *args)
@@ -30,3 +36,7 @@ class Errors:
     @staticmethod
     def username_is_taken() -> UsernameTakenError:
         return UsernameTakenError()
+
+    @staticmethod
+    def invalid_credentials() -> InvalidCredentialsError:
+        return InvalidCredentialsError()
