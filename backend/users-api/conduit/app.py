@@ -4,7 +4,7 @@ from typing import cast
 
 from fastapi import FastAPI
 
-import conduit.api.endpoints.routes as api_endpoints
+import conduit.api.routes as api_endpoints
 from conduit.api import errors, tags
 from conduit.containers import Container
 
@@ -14,7 +14,7 @@ async def app_lifespan(app: FastAPI) -> AsyncIterator[None]:
     container = cast(Container, app.extra["container"])
     database = container.db()
 
-    await database.create_database(seed=True)
+    await database.create_database()
     yield
     await database.dispose()
 

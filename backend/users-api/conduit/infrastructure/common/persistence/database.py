@@ -44,13 +44,11 @@ class Database:
         async with self._engine.begin() as conn:
             await conn.run_sync(Base.metadata.drop_all)
 
-    async def create_database(self, seed: bool = False) -> None:
+    async def create_database(self) -> None:
         if await self.database_exists():
             return
 
         await self.create_tables()
-        if seed:
-            await self.seed_database()
 
     async def dispose(self) -> None:
         await self._engine.dispose()

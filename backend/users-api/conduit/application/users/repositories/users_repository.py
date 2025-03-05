@@ -1,27 +1,25 @@
 import abc
-from typing import Optional
 
-from conduit.domain.entities.users import (
-    User,
-    UserID,
-)
+from returns.maybe import Maybe
+
+from conduit.domain.users.user import User, UserId
 
 
 class UsersRepository(abc.ABC):
     @abc.abstractmethod
     async def get_by_id(
         self,
-        user_id: UserID,
-    ) -> Optional[User]: ...
+        user_id: UserId,
+    ) -> Maybe[User]: ...
 
     @abc.abstractmethod
     async def get_by_email(
         self,
         email: str,
-    ) -> Optional[User]: ...
+    ) -> Maybe[User]: ...
 
     @abc.abstractmethod
     async def get_by_username(
         self,
         username: str,
-    ) -> Optional[User]: ...
+    ) -> Maybe[User]: ...
