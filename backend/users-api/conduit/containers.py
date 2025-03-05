@@ -6,6 +6,9 @@ from conduit.api.security.auth_token_service import AuthTokenService
 from conduit.application.users.use_cases.get_current_user.use_case import (
     GetCurrentUserUseCase,
 )
+from conduit.application.users.use_cases.register_user.use_case import (
+    RegisterUserUseCase,
+)
 from conduit.infrastructure.common.current_time import current_time
 from conduit.infrastructure.common.persistence.database import Database
 from conduit.infrastructure.common.persistence.unit_of_work import (
@@ -14,6 +17,7 @@ from conduit.infrastructure.common.persistence.unit_of_work import (
 from conduit.infrastructure.users.repositories.users_repository import (
     SQLiteUsersRepository,
 )
+from conduit.infrastructure.users.services.password_service import PasswordService
 from conduit.settings import get_settings
 
 
@@ -35,11 +39,14 @@ class Container(containers.DeclarativeContainer):
 
     now = providers.Object(current_time)
 
+    password_service = providers.Singleton(PasswordService)
+
     # Repositories
 
     users_repository = providers.Factory(
         SQLiteUsersRepository,
         now=now,
+        password_hasher=password_service.provided.hash_password,
     )
 
     # Services
@@ -55,4 +62,10 @@ class Container(containers.DeclarativeContainer):
 
     get_current_user_use_case = providers.Factory(
         GetCurrentUserUseCase,
+    )
+
+    register_user_use_case = providers.Factory(
+        RegisterUserUseCase,
+        uow_factory=uow_factory,
+        users_repository=users_repository,
     )
