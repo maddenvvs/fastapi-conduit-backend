@@ -9,6 +9,9 @@ from conduit.application.users.use_cases.get_current_user.use_case import (
 from conduit.application.users.use_cases.register_user.use_case import (
     RegisterUserUseCase,
 )
+from conduit.application.users.use_cases.update_current_user.use_case import (
+    UpdateCurrentUserUseCase,
+)
 from conduit.infrastructure.common.current_time import current_time
 from conduit.infrastructure.common.persistence.database import Database
 from conduit.infrastructure.common.persistence.unit_of_work import (
@@ -66,6 +69,12 @@ class Container(containers.DeclarativeContainer):
 
     register_user_use_case = providers.Factory(
         RegisterUserUseCase,
+        uow_factory=uow_factory,
+        users_repository=users_repository,
+    )
+
+    update_current_user_use_case = providers.Factory(
+        UpdateCurrentUserUseCase,
         uow_factory=uow_factory,
         users_repository=users_repository,
     )

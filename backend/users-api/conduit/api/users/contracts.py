@@ -1,10 +1,13 @@
 from typing import Optional, final
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, HttpUrl
 from typing_extensions import Self
 
 from conduit.application.users.use_cases.register_user.command import (
     RegisterUserCommand,
+)
+from conduit.application.users.use_cases.update_current_user.command import (
+    UpdateCurrentUserCommand,
 )
 from conduit.domain.users.user import User
 
@@ -77,4 +80,51 @@ class RegisterUserApiRequest(BaseModel):
             username=user.username,
             email=user.email,
             password=user.password,
+        )
+
+
+@final
+class UpdateUserData(BaseModel):
+    username: Optional[str] = Field(
+        default=None,
+        description="User name used in a profile. Should be unique among other usernames.",
+        examples=["walkmansit"],
+        min_length=1,
+    )
+    email: Optional[EmailStr] = Field(
+        default=None,
+        description="Email address. Should be unique among other emails.",
+    )
+    password: Optional[str] = Field(
+        default=None,
+        description="Password to be used during the login.",
+        examples=["use_your_own_password"],
+        min_length=1,
+    )
+    bio: Optional[str] = Field(
+        default=None,
+        description="The biography information of the registered user (empty by default).",
+        examples=[""],
+    )
+    image: Optional[HttpUrl] = Field(
+        default=None,
+        description="The image URL of the registered user (null by default).",
+        examples=[None],
+    )
+
+
+@final
+class UpdateCurrentUserApiRequest(BaseModel):
+    user: UpdateUserData = Field(description="User information to update.")
+
+    def to_command(self, current_user: User) -> UpdateCurrentUserCommand:
+        user = self.user
+
+        return UpdateCurrentUserCommand(
+            current_user=current_user,
+            username=user.username,
+            email=user.email,
+            password=user.password,
+            image_url=str(user.image) if user.image else None,
+            bio=user.bio,
         )

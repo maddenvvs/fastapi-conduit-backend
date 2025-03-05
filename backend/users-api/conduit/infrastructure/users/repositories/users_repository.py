@@ -1,10 +1,11 @@
 from typing import final
 
 from returns.maybe import Maybe, Nothing, Some
-from sqlalchemy import insert, select
+from sqlalchemy import insert, select, update
 
 from conduit.application.users.repositories.users_repository import UsersRepository
 from conduit.domain.users.new_user import NewUser
+from conduit.domain.users.updated_user import UpdatedUser
 from conduit.domain.users.user import (
     User,
     UserId,
@@ -75,6 +76,37 @@ class SQLiteUsersRepository(UsersRepository):
             )
             .returning(UserModel)
         )
+        result = await session.execute(query)
+        user = result.scalar_one()
+        return _model_to_entity(user)
+
+    async def update(self, updated_user: UpdatedUser) -> User:
+        session = SqlAlchemyUnitOfWork.get_current_session()
+
+        current_time = self._now()
+        query = (
+            update(UserModel)
+            .where(UserModel.id == updated_user.id)
+            .values(updated_at=current_time)
+            .returning(UserModel)
+        )
+
+        if updated_user.username is not None:
+            query = query.values(username=updated_user.username)
+
+        if updated_user.email is not None:
+            query = query.values(email=updated_user.email)
+
+        if updated_user.password is not None:
+            password_hash = self._password_hasher(updated_user.password)
+            query = query.values(password_hash=password_hash)
+
+        if updated_user.bio is not None:
+            query = query.values(bio=updated_user.bio)
+
+        if updated_user.image_url is not None:
+            query = query.values(image_url=updated_user.image_url)
+
         result = await session.execute(query)
         user = result.scalar_one()
         return _model_to_entity(user)
