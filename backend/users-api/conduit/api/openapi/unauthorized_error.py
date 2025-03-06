@@ -1,6 +1,6 @@
 from fastapi import status
 
-from conduit.api.errors import HttpExceptionApiResponse
+from conduit.api.errors.responses.http_exception import HttpExceptionApiResponse
 from conduit.api.openapi.response_definition import OpenApiResponseDefinition
 
 

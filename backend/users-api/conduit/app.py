@@ -5,7 +5,7 @@ from typing import cast
 from fastapi import FastAPI
 
 import conduit.api.routes as api_endpoints
-from conduit.api import errors
+from conduit.api.errors import handlers
 from conduit.api.openapi import tags
 from conduit.containers import Container
 
@@ -39,7 +39,7 @@ def create_app(container: Container) -> FastAPI:
 
     app.include_router(api_endpoints.router)
 
-    errors.register_error_handlers(app)
+    handlers.register_error_handlers(app)
 
     return app
 

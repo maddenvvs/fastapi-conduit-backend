@@ -1,6 +1,6 @@
 from fastapi import status
 
-from conduit.api.errors import ValidationErrorApiResponse
+from conduit.api.errors.responses.validation_error import ValidationErrorApiResponse
 from conduit.api.openapi.response_definition import OpenApiResponseDefinition
 
 
