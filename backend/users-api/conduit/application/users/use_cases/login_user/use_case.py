@@ -29,4 +29,7 @@ class LoginUserUseCase:
                 login_details.email,
                 login_details.password,
             )
-            return maybe_to_result(user).alt(lambda _: Errors.invalid_credentials())
+            return maybe_to_result(user).alt(self._map_service_error)
+
+    def _map_service_error(self, _: None) -> ApplicationError:
+        return Errors.invalid_credentials()
