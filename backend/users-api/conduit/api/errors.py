@@ -12,6 +12,14 @@ from typing_extensions import Self
 
 
 @final
+class HttpExceptionApiResponse(BaseModel):
+    detail: str = Field(
+        description="Detailed error message.",
+        examples=["Missing authorization credentials"],
+    )
+
+
+@final
 class ValidationErrorApiResponse(BaseModel):
     errors: dict[str, list[str]] = Field(
         description="Field validation error details for each field.",

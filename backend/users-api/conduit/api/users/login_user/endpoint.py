@@ -4,7 +4,8 @@ from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Body, Depends, HTTPException, status
 from returns.functions import raise_exception
 
-from conduit.api import open_api
+from conduit.api.openapi.unauthorized_error import unauthorized_error_no_body
+from conduit.api.openapi.validation_error import validation_error
 from conduit.api.security.auth_token_service import AuthTokenService
 from conduit.api.tags import Tag
 from conduit.api.users.contracts import LoginUserApiRequest, UserDetailsApiResponse
@@ -30,8 +31,8 @@ def _convert_error(exc: Exception) -> HTTPException:
 @router.post(
     path="/users/login",
     responses={
-        **open_api.unauthorized_error_no_body(),
-        **open_api.validation_error(),
+        **unauthorized_error_no_body(),
+        **validation_error(),
     },
     status_code=status.HTTP_200_OK,
     summary="Log in a user",

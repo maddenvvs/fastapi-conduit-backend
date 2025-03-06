@@ -1,7 +1,7 @@
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, status
 
-from conduit.api import open_api
+from conduit.api.openapi.unauthorized_error import unauthorized_error
 from conduit.api.security.dependencies import CurrentUser, JwtToken
 from conduit.api.tags import Tag
 from conduit.api.users.contracts import UserDetailsApiResponse
@@ -16,7 +16,7 @@ router = APIRouter()
 @router.get(
     path="/user",
     responses={
-        **open_api.unauthorized_error(),
+        **unauthorized_error(),
     },
     status_code=status.HTTP_200_OK,
     summary="Get current user details",
