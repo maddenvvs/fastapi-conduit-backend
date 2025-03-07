@@ -4,6 +4,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 from conduit.domain.users.user import User
 from conduit.domain.users.user_id import UserId
+from conduit.domain.users.username import Username
 
 
 class Base(DeclarativeBase):
@@ -26,7 +27,7 @@ class UserModel(Base):
         return User(
             id=UserId(self.id),
             email=self.email,
-            username=self.username,
+            username=Username(self.username),
             bio=self.bio,
             image_url=self.image_url,
         )

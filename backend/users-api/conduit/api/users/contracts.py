@@ -1,4 +1,4 @@
-from typing import Optional, final
+from typing import Final, Optional, final
 
 from pydantic import BaseModel, EmailStr, Field, HttpUrl
 from typing_extensions import Self
@@ -11,6 +11,14 @@ from conduit.application.users.use_cases.update_current_user.command import (
     UpdateCurrentUserCommand,
 )
 from conduit.domain.users.user import User
+from conduit.domain.users.username import MAX_USERNAME_LENGTH
+
+UsernameField: Final = Field(
+    description="User name used in a profile. Should be unique among other usernames.",
+    examples=["walkmansit"],
+    min_length=1,
+    max_length=MAX_USERNAME_LENGTH,
+)
 
 
 @final
@@ -19,10 +27,7 @@ class UserData(BaseModel):
         description="The email address of the logged in user.",
         examples=["user@example.com"],
     )
-    username: str = Field(
-        description="The username of the logged in user.",
-        examples=["walkmansit"],
-    )
+    username: str = UsernameField
     bio: str = Field(
         description="The biography information of the logged in user.",
         examples=["Full-time Open Source contributor."],
@@ -56,11 +61,7 @@ class UserDetailsApiResponse(BaseModel):
 
 @final
 class RegisterUserData(BaseModel):
-    username: str = Field(
-        description="User name used in a profile. Should be unique among other usernames.",
-        examples=["walkmansit"],
-        min_length=1,
-    )
+    username: str = UsernameField
     email: EmailStr = Field(
         description="Email address. Should be unique among other emails.",
     )
@@ -86,12 +87,7 @@ class RegisterUserApiRequest(BaseModel):
 
 @final
 class UpdateUserData(BaseModel):
-    username: Optional[str] = Field(
-        default=None,
-        description="User name used in a profile. Should be unique among other usernames.",
-        examples=["walkmansit"],
-        min_length=1,
-    )
+    username: Optional[str] = UsernameField
     email: Optional[EmailStr] = Field(
         default=None,
         description="Email address. Should be unique among other emails.",
