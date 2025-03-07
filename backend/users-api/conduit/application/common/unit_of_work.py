@@ -1,7 +1,7 @@
 import abc
 from contextvars import ContextVar, Token
 from types import TracebackType
-from typing import Optional
+from typing import Optional, final
 
 from typing_extensions import Self
 
@@ -9,18 +9,36 @@ from typing_extensions import Self
 # https://dev.to/luscasleo/using-pythons-contextvars-api-1iec
 
 
+@final
+class ContextTokenAlreadyExistsError(RuntimeError):
+    def __init__(self, *args: object) -> None:
+        super().__init__("Already have a current context token", *args)
+
+
+@final
+class NoCurrentContextTokenError(RuntimeError):
+    def __init__(self, *args: object) -> None:
+        super().__init__("No current context token", *args)
+
+
+@final
+class NoContextSessionError(RuntimeError):
+    def __init__(self, *args: object) -> None:
+        super().__init__("No context session", *args)
+
+
 class UnitOfWork(abc.ABC):
     _current_context_token: Optional[Token[Optional["UnitOfWork"]]] = None
 
     def set_current_context(self) -> None:
         if self._current_context_token is not None:
-            raise RuntimeError("Already have a current context token")
+            raise ContextTokenAlreadyExistsError
 
         self._current_context_token = _current_unit_of_work.set(self)
 
     def remove_current_context(self) -> None:
         if self._current_context_token is None:
-            raise RuntimeError("No current context token")
+            raise NoCurrentContextTokenError
 
         _current_unit_of_work.reset(self._current_context_token)
 
@@ -28,7 +46,7 @@ class UnitOfWork(abc.ABC):
     def get_current_context() -> "UnitOfWork":
         context = _current_unit_of_work.get()
         if context is None:
-            raise RuntimeError("No context session")
+            raise NoContextSessionError
         return context
 
     @abc.abstractmethod

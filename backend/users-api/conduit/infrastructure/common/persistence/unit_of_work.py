@@ -9,6 +9,17 @@ from conduit.infrastructure.common.persistence.database import Database
 
 
 @final
+class NoSqlAlchemySessionError(RuntimeError):
+    pass
+
+
+@final
+class WrongUnitOfWorkTypeError(TypeError):
+    def __init__(self, *args: object) -> None:
+        super().__init__("Context session is not of type 'SqlAlchemyUnitOfWork'", *args)
+
+
+@final
 class SqlAlchemyUnitOfWork(UnitOfWork):
     def __init__(self, db: Database) -> None:
         self._db = db
@@ -17,7 +28,7 @@ class SqlAlchemyUnitOfWork(UnitOfWork):
     @property
     def session(self) -> AsyncSession:
         if self._session is None:
-            raise RuntimeError("No session")
+            raise NoSqlAlchemySessionError
 
         return self._session
 
@@ -59,7 +70,7 @@ class SqlAlchemyUnitOfWork(UnitOfWork):
     def get_current_unit_of_work() -> "SqlAlchemyUnitOfWork":
         context = UnitOfWork.get_current_context()
         if not isinstance(context, SqlAlchemyUnitOfWork):
-            raise TypeError("Context session is not of type 'SqlAlchemyUnitOfWork'")
+            raise WrongUnitOfWorkTypeError
         return context
 
     @staticmethod
