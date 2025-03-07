@@ -87,5 +87,5 @@ def test_user_id_cannot_be_non_integer(
     user_id_factory: UserIdFactory,
     invalid_id_value: Any,
 ) -> None:
-    with pytest.raises(ValueError, match="Invalid user id"):
+    with pytest.raises(ValueError, match="Invalid user id type"):
         user_id_factory(invalid_id_value)

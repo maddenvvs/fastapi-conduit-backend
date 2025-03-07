@@ -102,7 +102,7 @@ def test_username_cannot_be_non_str(
     username_factory: UsernameFactory,
     invalid_username_value: Any,
 ) -> None:
-    with pytest.raises(ValueError, match="Invalid username"):
+    with pytest.raises(ValueError, match="Invalid username type"):
         username_factory(invalid_username_value)
 
 

@@ -13,7 +13,7 @@ class Username(str):
 
     def __new__(cls, value: Any) -> Self:
         if type(value) is not str:
-            raise Errors.invalid_username(value)
+            raise Errors.invalid_username_type(value)
 
         is_valid_length = 0 < len(value) < MAX_USERNAME_LENGTH
         if not is_valid_length:
