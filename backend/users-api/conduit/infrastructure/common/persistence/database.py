@@ -1,10 +1,13 @@
 import contextlib
 from collections.abc import AsyncIterator
 from pathlib import Path
+from typing import Final
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from conduit.infrastructure.common.persistence.models import Base
+
+DATABASE_THERSHOLD_SIZE: Final = 100
 
 
 class Database:
@@ -28,7 +31,10 @@ class Database:
             return False
 
         database_file = Path(database)
-        if not database_file.is_file() or database_file.stat().st_size < 100:
+        if (
+            not database_file.is_file()
+            or database_file.stat().st_size < DATABASE_THERSHOLD_SIZE
+        ):
             return False
 
         with database_file.open("rb") as f:  # noqa: ASYNC230

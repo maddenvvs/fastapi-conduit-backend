@@ -51,15 +51,11 @@ select = [
 ignore = [
     "E501", # Disable per https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
     "S101", # Allow asserts globally (should be allowed for tests only).
-    "PLR2004", # Disable magic constants globally (should be disabled for tests only).
     "FA100",
-    "FBT001",
-    "FBT002",
     "TRY002",
     "TRY003",
     "EM101",
 ]
 
 [lint.flake8-bugbear]
-# Allow default arguments like, e.g., `data: List[str] = fastapi.Query(None)`.
 extend-immutable-calls = ["fastapi.Depends"]
