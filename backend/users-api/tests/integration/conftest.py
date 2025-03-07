@@ -53,7 +53,7 @@ def test_settings(
 @pytest.fixture(scope="session")
 def test_container(test_settings: Any) -> Generator[Container, None, None]:
     container = Container()
-    with container.app_settings.override(test_settings):  # type: ignore
+    with container.app_settings.override(test_settings):
         yield container
 
 
