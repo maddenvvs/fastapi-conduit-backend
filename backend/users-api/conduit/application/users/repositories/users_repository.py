@@ -4,7 +4,8 @@ from returns.maybe import Maybe
 
 from conduit.domain.users.new_user import NewUser
 from conduit.domain.users.updated_user import UpdatedUser
-from conduit.domain.users.user import User, UserId
+from conduit.domain.users.user import User
+from conduit.domain.users.user_id import UserId
 
 
 class UsersRepository(abc.ABC):

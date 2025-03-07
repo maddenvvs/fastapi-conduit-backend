@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional, final
 
-from conduit.domain.users.user import UserId
+from conduit.domain.users.user_id import UserId
 
 
 @final

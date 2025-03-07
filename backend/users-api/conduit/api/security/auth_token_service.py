@@ -5,7 +5,8 @@ from typing import Any, Optional
 
 import jwt
 
-from conduit.domain.users.user import User, UserId
+from conduit.domain.users.user import User
+from conduit.domain.users.user_id import UserId
 
 DEFAULT_LOGGER = logging.getLogger(__name__)
 

@@ -16,10 +16,12 @@ class Database:
             db_url,
             echo=True,
         )
+
+        # If I want to EXPLICITLY start any transaction,
+        # "autobegin=False" can be passed to session maker factory.
         self._session = async_sessionmaker(
             bind=self._engine,
             expire_on_commit=False,
-            # autobegin=False,
             close_resets_only=False,
         )
 

@@ -8,8 +8,8 @@ from conduit.domain.users.new_user import NewUser
 from conduit.domain.users.updated_user import UpdatedUser
 from conduit.domain.users.user import (
     User,
-    UserId,
 )
+from conduit.domain.users.user_id import UserId
 from conduit.infrastructure.common.current_time import CurrentTime
 from conduit.infrastructure.common.persistence.models import UserModel
 from conduit.infrastructure.common.persistence.unit_of_work import SqlAlchemyUnitOfWork

@@ -1,11 +1,10 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, final
 
-from typing_extensions import TypeAlias
-
-UserId: TypeAlias = int
+from conduit.domain.users.user_id import UserId
 
 
+@final
 @dataclass(frozen=True)
 class User:
     id: UserId

@@ -3,6 +3,7 @@ from datetime import datetime
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 from conduit.domain.users.user import User
+from conduit.domain.users.user_id import UserId
 
 
 class Base(DeclarativeBase):
@@ -23,7 +24,7 @@ class UserModel(Base):
 
     def to_user(self) -> User:
         return User(
-            id=self.id,
+            id=UserId(self.id),
             email=self.email,
             username=self.username,
             bio=self.bio,
