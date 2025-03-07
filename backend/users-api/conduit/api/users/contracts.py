@@ -87,7 +87,13 @@ class RegisterUserApiRequest(BaseModel):
 
 @final
 class UpdateUserData(BaseModel):
-    username: Optional[str] = UsernameField
+    username: Optional[str] = Field(
+        default=None,
+        description="User name used in a profile. Should be unique among other usernames.",
+        examples=["walkmansit"],
+        min_length=1,
+        max_length=MAX_USERNAME_LENGTH,
+    )
     email: Optional[EmailStr] = Field(
         default=None,
         description="Email address. Should be unique among other emails.",
