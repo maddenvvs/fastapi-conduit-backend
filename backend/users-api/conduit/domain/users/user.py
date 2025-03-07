@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import Optional, final
 
+from pydantic import HttpUrl
+
 from conduit.domain.users.email_address import EmailAddress
 from conduit.domain.users.user_id import UserId
 from conduit.domain.users.username import Username
@@ -13,4 +15,4 @@ class User:
     username: Username
     email: EmailAddress
     bio: str
-    image_url: Optional[str]
+    image_url: Optional[HttpUrl]

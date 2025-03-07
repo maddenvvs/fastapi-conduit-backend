@@ -1,5 +1,7 @@
 from datetime import datetime
+from typing import Optional
 
+from pydantic import HttpUrl
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 from conduit.domain.users.email_address import EmailAddress
@@ -20,7 +22,7 @@ class UserModel(Base):
     email: Mapped[str] = mapped_column(unique=True)
     password_hash: Mapped[str]
     bio: Mapped[str]
-    image_url: Mapped[str] = mapped_column(nullable=True)
+    image_url: Mapped[Optional[str]] = mapped_column(nullable=True)
     created_at: Mapped[datetime]
     updated_at: Mapped[datetime]
 
@@ -30,5 +32,5 @@ class UserModel(Base):
             email=EmailAddress(self.email),
             username=Username(self.username),
             bio=self.bio,
-            image_url=self.image_url,
+            image_url=None if self.image_url is None else HttpUrl(self.image_url),
         )

@@ -32,7 +32,7 @@ class UserData(BaseModel):
         description="The biography information of the logged in user.",
         examples=["Full-time Open Source contributor."],
     )
-    image: Optional[str] = Field(
+    image: Optional[HttpUrl] = Field(
         description="The image URL of the logged in user.",
         examples=[None],
     )
