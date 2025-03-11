@@ -5,9 +5,11 @@ from returns.result import Failure, Result, Success
 from conduit.application.common.errors import ApplicationError, Errors
 from conduit.application.common.unit_of_work import UnitOfWorkFactory
 from conduit.application.users.repositories.users_repository import UsersRepository
+from conduit.application.users.services.events_publisher import EventsPublisher
 from conduit.application.users.use_cases.update_current_user.command import (
     UpdateCurrentUserCommand,
 )
+from conduit.domain.users.events.user_updated import UserUpdatedEvent
 from conduit.domain.users.updated_user import UpdatedUser
 from conduit.domain.users.user import User
 
@@ -18,9 +20,11 @@ class UpdateCurrentUserUseCase:
         self,
         uow_factory: UnitOfWorkFactory,
         users_repository: UsersRepository,
+        events_publisher: EventsPublisher,
     ) -> None:
         self._uow_factory = uow_factory
         self._users_repository = users_repository
+        self._events_publisher = events_publisher
 
     async def __call__(
         self,
@@ -56,4 +60,15 @@ class UpdateCurrentUserUseCase:
             )
 
             current_user = await self._users_repository.update(updated_user)
+
+            await self._events_publisher.user_updated(
+                UserUpdatedEvent(
+                    user_id=current_user.id,
+                    username=current_user.username,
+                    email=current_user.email,
+                    bio=current_user.bio,
+                    image_url=current_user.image_url,
+                ),
+            )
+
             return Success(current_user)

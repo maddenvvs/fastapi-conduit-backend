@@ -1,10 +1,10 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import HttpUrl
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 from conduit.domain.users.email_address import EmailAddress
+from conduit.domain.users.image_url import ImageUrl
 from conduit.domain.users.user import User
 from conduit.domain.users.user_id import UserId
 from conduit.domain.users.username import Username
@@ -32,5 +32,5 @@ class UserModel(Base):
             email=EmailAddress(self.email),
             username=Username(self.username),
             bio=self.bio,
-            image_url=None if self.image_url is None else HttpUrl(self.image_url),
+            image_url=None if self.image_url is None else ImageUrl(self.image_url),
         )

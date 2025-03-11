@@ -1,6 +1,7 @@
 from collections.abc import AsyncGenerator, Generator
 from datetime import datetime, timezone
 from typing import Any, Callable, Protocol
+from unittest import mock
 
 import pytest
 from fastapi import FastAPI
@@ -9,6 +10,7 @@ from typing_extensions import AsyncContextManager, TypeAlias
 
 from conduit.app import create_app
 from conduit.containers import Container
+from conduit.infrastructure.common.messaging.rabbitmq_broker import RabbitMQBroker
 from conduit.infrastructure.common.persistence.database import Database
 from conduit.infrastructure.common.persistence.models import Base, UserModel
 from conduit.settings import Settings
@@ -53,7 +55,10 @@ def test_settings(
 @pytest.fixture(scope="session")
 def test_container(test_settings: Any) -> Generator[Container, None, None]:
     container = Container()
-    with container.app_settings.override(test_settings):
+    with (
+        container.app_settings.override(test_settings),
+        container.message_broker.override(mock.create_autospec(spec=RabbitMQBroker)),
+    ):
         yield container
 
 

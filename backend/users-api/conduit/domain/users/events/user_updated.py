@@ -9,8 +9,8 @@ from conduit.domain.users.username import Username
 
 @final
 @dataclass(frozen=True)
-class User:
-    id: UserId
+class UserUpdatedEvent:
+    user_id: UserId
     username: Username
     email: EmailAddress
     bio: str

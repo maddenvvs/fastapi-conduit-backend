@@ -14,9 +14,13 @@ from conduit.application.users.use_cases.update_current_user.use_case import (
     UpdateCurrentUserUseCase,
 )
 from conduit.infrastructure.common.current_time import current_time
+from conduit.infrastructure.common.messaging.rabbitmq_broker import RabbitMQBroker
 from conduit.infrastructure.common.persistence.database import Database
 from conduit.infrastructure.common.persistence.unit_of_work import (
     SqlAlchemyUnitOfWorkFactory,
+)
+from conduit.infrastructure.users.messaging.events_publisher import (
+    RabbitMQEventsPublisher,
 )
 from conduit.infrastructure.users.repositories.users_repository import (
     SQLiteUsersRepository,
@@ -44,6 +48,11 @@ class Container(containers.DeclarativeContainer):
 
     now = providers.Object(current_time)
 
+    message_broker = providers.Singleton(
+        RabbitMQBroker,
+        rabbitmq_url=app_settings.provided.rabbitmq_url,
+    )
+
     password_service = providers.Singleton(PasswordService)
 
     # Repositories
@@ -68,6 +77,11 @@ class Container(containers.DeclarativeContainer):
         password_hasher=password_service.provided.hash_password,
     )
 
+    events_publisher = providers.Factory(
+        RabbitMQEventsPublisher,
+        broker=message_broker,
+    )
+
     # Use cases
 
     get_current_user_use_case = providers.Factory(
@@ -78,12 +92,14 @@ class Container(containers.DeclarativeContainer):
         RegisterUserUseCase,
         uow_factory=uow_factory,
         users_repository=users_repository,
+        events_publisher=events_publisher,
     )
 
     update_current_user_use_case = providers.Factory(
         UpdateCurrentUserUseCase,
         uow_factory=uow_factory,
         users_repository=users_repository,
+        events_publisher=events_publisher,
     )
 
     login_user_use_case = providers.Factory(
