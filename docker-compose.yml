@@ -12,7 +12,7 @@ services:
 
   conduit-api:
     build:
-      context: ./backend/domain
+      context: ./backend/conduit-api
     container_name: conduit-api
     command: uvicorn conduit.app:app --host 0.0.0.0 --port 8080
     env_file:
