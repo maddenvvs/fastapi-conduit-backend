@@ -23,6 +23,21 @@ services:
       - db-data:/app/database
     networks:
       - conduit-network
+    depends_on:
+      - conduit-rabbitmq
+
+  conduit-rabbitmq:
+    build:
+      context: ./backend/messaging
+    container_name: conduit-rabbitmq
+    hostname: conduit-rabbitmq
+    env_file:
+      - .env.docker
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    networks:
+      - conduit-network
 
 networks:
   conduit-network:
