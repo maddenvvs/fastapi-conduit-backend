@@ -39,6 +39,8 @@ from conduit.domain.use_cases.update_current_user.use_case import (
     UpdateCurrentUserUseCase,
 )
 from conduit.infrastructure.current_time import current_time
+from conduit.infrastructure.messaging.events_subscriber import RabbitMQEventsSubscriber
+from conduit.infrastructure.messaging.rabbitmq_broker import RabbitMQBroker
 from conduit.infrastructure.persistence.database import Database
 from conduit.infrastructure.persistence.repositories.articles import (
     SQLiteArticlesRepository,
@@ -81,6 +83,11 @@ class Container(containers.DeclarativeContainer):
     slug_service = providers.Singleton(SlugService)
 
     password_service = providers.Singleton(PasswordService)
+
+    message_broker = providers.Singleton(
+        RabbitMQBroker,
+        rabbitmq_url=app_settings.provided.rabbitmq_url,
+    )
 
     # Repositories
 
@@ -268,4 +275,11 @@ class Container(containers.DeclarativeContainer):
         DeleteArticleCommentUseCase,
         uow_factory=uow_factory,
         comments_service=comments_service,
+    )
+
+    events_subscriber = providers.Factory(
+        RabbitMQEventsSubscriber,
+        message_broker=message_broker,
+        uow_factory=uow_factory,
+        now=now,
     )

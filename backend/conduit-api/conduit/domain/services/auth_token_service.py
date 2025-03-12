@@ -13,7 +13,6 @@ DEFAULT_LOGGER = logging.getLogger(__name__)
 @dataclasses.dataclass(frozen=True)
 class TokenPayload:
     user_id: UserID
-    username: str
 
 
 class IncorrectJwtTokenError(Exception):
@@ -48,7 +47,6 @@ class AuthTokenService:
         )
         payload: dict[str, Any] = {
             "user_id": user.id,
-            "username": user.username,
             "exp": expire,
         }
         return jwt.encode(payload, self._secret_key, algorithm=self._algorithm)  # type: ignore[unused-ignore]
@@ -65,5 +63,4 @@ class AuthTokenService:
 
         return TokenPayload(
             user_id=payload["user_id"],
-            username=payload["username"],
         )

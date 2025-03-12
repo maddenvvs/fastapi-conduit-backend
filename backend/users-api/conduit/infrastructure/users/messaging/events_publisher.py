@@ -1,6 +1,6 @@
 from typing import Final, final
 
-from pika import BasicProperties, DeliveryMode
+from pika import BasicProperties
 from pydantic import BaseModel
 
 from conduit.application.users.services.events_publisher import EventsPublisher
@@ -13,6 +13,8 @@ from conduit.infrastructure.users.messaging.messages.user_created import (
 from conduit.infrastructure.users.messaging.messages.user_updated import (
     UserUpdatedMessage,
 )
+
+PERSISTENT_DELIVERY_MODE: Final = 2
 
 DOMAIN_EVENTS_EXCHANGE_NAME: Final = "domain_events"
 USER_CREATED_EVENT_NAME: Final = "user_created"
@@ -33,12 +35,13 @@ class RabbitMQEventsPublisher(EventsPublisher):
         await self._publish_message(USER_UPDATED_EVENT_NAME, message)
 
     async def _publish_message(self, routing_key: str, message: BaseModel) -> None:
-        self._broker.channel.basic_publish(
-            exchange="domain_events",
-            routing_key=routing_key,
-            body=message.model_dump_json(),
-            properties=BasicProperties(
-                content_type="application/json",
-                delivery_mode=DeliveryMode.Persistent,
-            ),
-        )
+        with self._broker.channel() as channel:
+            channel.basic_publish(
+                exchange="domain_events",
+                routing_key=routing_key,
+                body=message.model_dump_json(),
+                properties=BasicProperties(
+                    content_type="application/json",
+                    delivery_mode=PERSISTENT_DELIVERY_MODE,
+                ),
+            )

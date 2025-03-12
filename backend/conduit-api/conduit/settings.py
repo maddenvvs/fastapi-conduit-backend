@@ -13,6 +13,8 @@ class Settings(BaseSettings):
     jwt_algorithm: str = Field(default="HS256", min_length=1)
     jwt_token_expiration_minutes: int = Field(default=30, gt=1)
 
+    rabbitmq_url: str = ""
+
     model_config = SettingsConfigDict(
         env_file=(".env", ".env.prod"),
     )

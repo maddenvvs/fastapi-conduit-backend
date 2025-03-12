@@ -13,6 +13,9 @@ from conduit.containers import Container
 async def app_lifespan(app: FastAPI) -> AsyncIterator[None]:
     container = cast(Container, app.extra["container"])
     database = container.db()
+    events_subsciber = container.events_subscriber()
+
+    events_subsciber.start()
 
     await database.create_database(seed=True)
     yield

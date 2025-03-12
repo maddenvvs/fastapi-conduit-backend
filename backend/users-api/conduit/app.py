@@ -14,12 +14,10 @@ from conduit.containers import Container
 async def app_lifespan(app: FastAPI) -> AsyncIterator[None]:
     container = cast(Container, app.extra["container"])
     database = container.db()
-    message_broker = container.message_broker()
 
     await database.create_database()
     yield
     await database.dispose()
-    message_broker.dispose()
 
 
 def create_app(container: Container) -> FastAPI:
