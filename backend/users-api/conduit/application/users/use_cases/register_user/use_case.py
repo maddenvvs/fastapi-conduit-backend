@@ -9,6 +9,7 @@ from conduit.application.users.services.events_publisher import EventsPublisher
 from conduit.application.users.use_cases.register_user.command import (
     RegisterUserCommand,
 )
+from conduit.domain.users import user_id
 from conduit.domain.users.events.user_created import UserCreatedEvent
 from conduit.domain.users.new_user import NewUser
 from conduit.domain.users.user import User
@@ -44,6 +45,7 @@ class RegisterUserUseCase:
                 return Failure(Errors.username_is_taken())
 
             new_user = NewUser(
+                user_id=user_id.new_user_id(),
                 email=command.email,
                 username=command.username,
                 password=command.password,

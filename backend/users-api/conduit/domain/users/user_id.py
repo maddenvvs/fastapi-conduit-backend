@@ -1,16 +1,9 @@
-from typing import Any, final
+import uuid
 
-from typing_extensions import Self
+from typing_extensions import TypeAlias
 
-from conduit.domain.users.errors import Errors
+UserId: TypeAlias = uuid.UUID
 
 
-@final
-class UserId(int):
-    __slots__ = ()
-
-    def __new__(cls, value: Any) -> Self:
-        if type(value) is not int:
-            raise Errors.invalid_user_id_type(value)
-
-        return super().__new__(cls, value)
+def new_user_id() -> UserId:
+    return uuid.uuid4()

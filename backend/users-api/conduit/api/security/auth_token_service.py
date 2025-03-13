@@ -1,6 +1,7 @@
 import dataclasses
 import datetime
 import logging
+import uuid
 from typing import Any, Optional
 
 import jwt
@@ -47,7 +48,7 @@ class AuthTokenService:
             minutes=self._token_expiration_minutes,
         )
         payload: dict[str, Any] = {
-            "user_id": user.id,
+            "user_id": str(user.id),
             "exp": expire,
         }
         return jwt.encode(payload, self._secret_key, algorithm=self._algorithm)  # type: ignore[unused-ignore]
@@ -62,4 +63,4 @@ class AuthTokenService:
             )
             raise IncorrectJwtTokenError from exc
 
-        return TokenPayload(user_id=payload["user_id"])
+        return TokenPayload(user_id=uuid.UUID(payload["user_id"]))

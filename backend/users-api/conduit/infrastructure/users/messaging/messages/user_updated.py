@@ -8,7 +8,7 @@ from conduit.domain.users.events.user_updated import UserUpdatedEvent
 
 @final
 class UserUpdatedMessage(BaseModel):
-    user_id: int
+    user_id: str
     username: str
     email: str
     bio: str
@@ -17,7 +17,7 @@ class UserUpdatedMessage(BaseModel):
     @classmethod
     def from_event(cls, event: UserUpdatedEvent) -> Self:
         return cls(
-            user_id=event.user_id,
+            user_id=str(event.user_id),
             username=event.username,
             email=event.email,
             bio=event.bio,

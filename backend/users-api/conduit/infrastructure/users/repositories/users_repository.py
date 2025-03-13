@@ -29,7 +29,7 @@ class SQLiteUsersRepository(UsersRepository):
     async def get_by_id(self, user_id: UserId) -> Maybe[User]:
         session = SqlAlchemyUnitOfWork.get_current_session()
 
-        query = select(UserModel).where(UserModel.id == user_id)
+        query = select(UserModel).where(UserModel.user_id == user_id)
         if user_model := await session.scalar(query):
             return Some(user_model.to_user())
         return Nothing
@@ -57,6 +57,7 @@ class SQLiteUsersRepository(UsersRepository):
         query = (
             insert(UserModel)
             .values(
+                user_id=new_user.user_id,
                 username=new_user.username,
                 email=new_user.email,
                 password_hash=password_hash,
@@ -76,7 +77,7 @@ class SQLiteUsersRepository(UsersRepository):
         current_time = self._now()
         query = (
             update(UserModel)
-            .where(UserModel.id == updated_user.id)
+            .where(UserModel.user_id == updated_user.id)
             .values(updated_at=current_time)
             .returning(UserModel)
         )

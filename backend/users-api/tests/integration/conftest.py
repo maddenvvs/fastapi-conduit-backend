@@ -1,3 +1,4 @@
+import uuid
 from collections.abc import AsyncGenerator, Generator
 from datetime import datetime, timezone
 from typing import Any, Callable, Protocol
@@ -118,6 +119,7 @@ async def add_to_db(
 async def user_model_factory() -> UserModelFactory:
     def factory(**kwargs: Any) -> UserModel:
         default_kwagrs: dict[str, Any] = {
+            "user_id": uuid.UUID("12345678123456781234567812345678"),
             "username": "admin",
             "email": "admin@gmail.com",
             "password_hash": "oops_i_did_it_again",
@@ -182,11 +184,13 @@ async def anonymous_test_client(
     params=[
         None,
         {
+            "user_id": uuid.UUID("11111111222222223333333344444444"),
             "username": "test_user",
             "email": "test_user@testland.com",
             "password": "super_password",
         },
         {
+            "user_id": uuid.UUID("55555555666666667777777788888888"),
             "username": "admin_user",
             "email": "admin_user@testland.com",
             "password": "wow_look_at_the_password",
@@ -205,6 +209,7 @@ async def any_client(
             yield client
     else:
         user = user_model_factory(
+            user_id=user_credentials["user_id"],
             username=user_credentials["username"],
             email=user_credentials["email"],
             password_hash=user_credentials["password"],
