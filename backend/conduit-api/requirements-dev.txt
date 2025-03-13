@@ -1,8 +1,6 @@
 -r requirements.txt
 
-black==25.1.0
 fastapi-cli==0.0.7
-isort==6.0.0
 mypy==1.15.0
 pytest==8.3.4
 pytest-randomly==3.16.0

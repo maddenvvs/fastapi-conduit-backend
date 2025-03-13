@@ -1,7 +1,11 @@
-[mypy]
-packages =
-    conduit,
-    tests
+[tool.ruff]
+extend = "../../pyproject.toml"
+
+[tool.mypy]
+packages = [
+    "conduit",
+    "tests"
+]
 strict = true
 warn_unreachable = true
 warn_no_return = true

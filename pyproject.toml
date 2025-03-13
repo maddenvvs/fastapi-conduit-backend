@@ -1,4 +1,4 @@
-[lint]
+[tool.ruff.lint]
 select = [
     "A",
     "ARG",
@@ -48,11 +48,12 @@ select = [
     "UP",
     "W",
 ]
+
 ignore = [
     "E501", # Disable per https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
     "S101", # Allow asserts globally (should be allowed for tests only).
     "FA100",
 ]
 
-[lint.flake8-bugbear]
+[tool.ruff.lint.flake8-bugbear]
 extend-immutable-calls = ["fastapi.Depends"]
