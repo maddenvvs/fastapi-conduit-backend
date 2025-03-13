@@ -1,3 +1,4 @@
+import uuid
 from collections.abc import AsyncGenerator
 from typing import Any, Callable
 
@@ -65,8 +66,8 @@ class TestWhenFollowExistingProfile:
         user_model_factory: Callable[..., UserModel],
     ) -> UserModel:
         return user_model_factory(
+            user_id=uuid.uuid4(),
             username=test_username,
-            email="hero@friends.com",
         )
 
     @pytest.fixture(autouse=True)

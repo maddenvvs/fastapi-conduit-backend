@@ -6,8 +6,6 @@ from httpx import AsyncClient, Request
 @pytest.mark.parametrize(
     ("method", "url"),
     [
-        ("GET", "/user"),
-        ("PUT", "/user"),
         ("POST", "/profiles/some-profile/follow"),
         ("DELETE", "/profiles/some-profile/follow"),
         ("GET", "/articles/feed"),

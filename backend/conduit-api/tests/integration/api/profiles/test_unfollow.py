@@ -1,3 +1,4 @@
+import uuid
 from typing import Any
 
 import pytest
@@ -64,8 +65,8 @@ class TestWhenUnfollowExistingProfile:
         user_model_factory: UserModelFactory,
     ) -> UserModel:
         return user_model_factory(
+            user_id=uuid.uuid4(),
             username=test_username,
-            email="hero@friends.com",
         )
 
     @pytest.fixture(autouse=True)

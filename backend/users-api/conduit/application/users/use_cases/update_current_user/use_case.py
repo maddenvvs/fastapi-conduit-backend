@@ -65,7 +65,6 @@ class UpdateCurrentUserUseCase:
                 UserUpdatedEvent(
                     user_id=current_user.id,
                     username=current_user.username,
-                    email=current_user.email,
                     bio=current_user.bio,
                     image_url=current_user.image_url,
                 ),

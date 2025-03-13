@@ -117,7 +117,6 @@ class SQLiteArticlesRepository(ArticlesRepository):
                 UserModel.id.label("user_id"),
                 UserModel.username.label("username"),
                 UserModel.bio.label("bio"),
-                UserModel.email.label("email"),
                 UserModel.image_url.label("image_url"),
                 true().label("following"),
                 # Subquery for favorites count.
@@ -159,7 +158,6 @@ class SQLiteArticlesRepository(ArticlesRepository):
                 UserModel.id,
                 UserModel.username,
                 UserModel.bio,
-                UserModel.email,
                 UserModel.image_url,
             )
         )
@@ -205,7 +203,6 @@ class SQLiteArticlesRepository(ArticlesRepository):
                 UserModel.id.label("user_id"),
                 UserModel.username.label("username"),
                 UserModel.bio.label("bio"),
-                UserModel.email.label("email"),
                 UserModel.image_url.label("image_url"),
                 exists()
                 .where(
@@ -250,7 +247,6 @@ class SQLiteArticlesRepository(ArticlesRepository):
                 UserModel.id,
                 UserModel.username,
                 UserModel.bio,
-                UserModel.email,
                 UserModel.image_url,
             )
             .order_by(ArticleModel.created_at.desc())

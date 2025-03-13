@@ -1,18 +1,19 @@
 import dataclasses
 import datetime
 import logging
+import uuid
 from typing import Any, Optional
 
 import jwt
 
-from conduit.domain.entities.users import User, UserID
+from conduit.domain.entities.users import User
 
 DEFAULT_LOGGER = logging.getLogger(__name__)
 
 
 @dataclasses.dataclass(frozen=True)
 class TokenPayload:
-    user_id: UserID
+    user_id: uuid.UUID
 
 
 class IncorrectJwtTokenError(Exception):
@@ -46,7 +47,7 @@ class AuthTokenService:
             minutes=self._token_expiration_minutes,
         )
         payload: dict[str, Any] = {
-            "user_id": user.id,
+            "user_id": str(user.user_id),
             "exp": expire,
         }
         return jwt.encode(payload, self._secret_key, algorithm=self._algorithm)  # type: ignore[unused-ignore]
@@ -62,5 +63,5 @@ class AuthTokenService:
             raise IncorrectJwtTokenError from exc
 
         return TokenPayload(
-            user_id=payload["user_id"],
+            user_id=uuid.UUID(payload["user_id"]),
         )

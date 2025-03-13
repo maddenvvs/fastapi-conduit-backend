@@ -1,9 +1,8 @@
 import abc
+import uuid
 from typing import Optional
 
 from conduit.domain.entities.users import (
-    CreateUserDetails,
-    UpdateUserDetails,
     User,
     UserID,
 )
@@ -17,9 +16,9 @@ class UsersRepository(abc.ABC):
     ) -> Optional[User]: ...
 
     @abc.abstractmethod
-    async def get_by_email_or_none(
+    async def get_by_user_id_or_none(
         self,
-        email: str,
+        user_id: uuid.UUID,
     ) -> Optional[User]: ...
 
     @abc.abstractmethod
@@ -27,19 +26,6 @@ class UsersRepository(abc.ABC):
         self,
         username: str,
     ) -> Optional[User]: ...
-
-    @abc.abstractmethod
-    async def add(
-        self,
-        user_details: CreateUserDetails,
-    ) -> User: ...
-
-    @abc.abstractmethod
-    async def update(
-        self,
-        user_id: UserID,
-        update_details: UpdateUserDetails,
-    ) -> User: ...
 
     @abc.abstractmethod
     async def list_by_user_ids(self, user_ids: list[UserID]) -> list[User]: ...

@@ -5,8 +5,7 @@ from pydantic import BaseModel, HttpUrl
 
 @final
 class UserUpdatedMessage(BaseModel):
-    user_id: int
+    user_id: str
     username: str
-    email: str
     bio: str
     image_url: Optional[HttpUrl]

@@ -1,3 +1,4 @@
+import uuid
 from collections.abc import AsyncGenerator, Generator
 from datetime import datetime, timezone
 from typing import Any, Callable, Protocol
@@ -15,6 +16,7 @@ from conduit.settings import Settings
 
 ApiClientFactory: TypeAlias = Callable[[], AsyncClient]
 UserModelFactory: TypeAlias = Callable[..., UserModel]
+TokenFactory: TypeAlias = Callable[[UserModel], str]
 
 
 class AddToDb(Protocol):
@@ -113,9 +115,8 @@ async def add_to_db(
 async def user_model_factory() -> UserModelFactory:
     def factory(**kwargs: Any) -> UserModel:
         default_kwagrs: dict[str, Any] = {
+            "user_id": uuid.UUID("12345678123456781234567812345678"),
             "username": "admin",
-            "email": "admin@gmail.com",
-            "password_hash": "oops_i_did_it_again",
             "bio": "Admin user.",
             "image_url": None,
             "created_at": datetime(year=2020, month=1, day=1, tzinfo=timezone.utc),
@@ -138,21 +139,20 @@ async def registered_user(
 
 
 @pytest.fixture
+async def generate_token(test_container: Container) -> TokenFactory:
+    def factory(user_model: UserModel) -> str:
+        auth_token_service = test_container.auth_token_service()
+        return auth_token_service.generate_jwt_token(user_model.to_user())
+
+    return factory
+
+
+@pytest.fixture
 async def registered_user_token(
-    test_client_factory: ApiClientFactory,
     registered_user: UserModel,
-) -> Any:
-    async with test_client_factory() as client:
-        login_response = await client.post(
-            "/users/login",
-            json={
-                "user": {
-                    "email": registered_user.email,
-                    "password": registered_user.password_hash,
-                },
-            },
-        )
-    return login_response.json()["user"]["token"]
+    generate_token: TokenFactory,
+) -> str:
+    return generate_token(registered_user)
 
 
 @pytest.fixture
@@ -177,14 +177,12 @@ async def anonymous_test_client(
     params=[
         None,
         {
+            "user_id": uuid.UUID("11111111222222223333333344444444"),
             "username": "test_user",
-            "email": "test_user@testland.com",
-            "password": "super_password",
         },
         {
+            "user_id": uuid.UUID("55555555666666667777777788888888"),
             "username": "admin_user",
-            "email": "admin_user@testland.com",
-            "password": "wow_look_at_the_password",
         },
     ],
 )
@@ -193,6 +191,7 @@ async def any_client(
     user_model_factory: UserModelFactory,
     test_client_factory: ApiClientFactory,
     add_to_db: AddToDb,
+    generate_token: TokenFactory,
 ) -> AsyncGenerator[AsyncClient, None]:
     user_credentials = request.param
     if user_credentials is None:
@@ -200,21 +199,11 @@ async def any_client(
             yield client
     else:
         user = user_model_factory(
+            user_id=user_credentials["user_id"],
             username=user_credentials["username"],
-            email=user_credentials["email"],
-            password_hash=user_credentials["password"],
         )
         await add_to_db(user)
+        token = generate_token(user)
         async with test_client_factory() as client:
-            response = await client.post(
-                "/users/login",
-                json={
-                    "user": {
-                        "email": user_credentials["email"],
-                        "password": user_credentials["password"],
-                    },
-                },
-            )
-            token = response.json()["user"]["token"]
             client.headers["Authorization"] = f"Token {token}"
             yield client

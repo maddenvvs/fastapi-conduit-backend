@@ -10,7 +10,6 @@ from conduit.domain.users.events.user_updated import UserUpdatedEvent
 class UserUpdatedMessage(BaseModel):
     user_id: str
     username: str
-    email: str
     bio: str
     image_url: Optional[HttpUrl]
 
@@ -19,7 +18,6 @@ class UserUpdatedMessage(BaseModel):
         return cls(
             user_id=str(event.user_id),
             username=event.username,
-            email=event.email,
             bio=event.bio,
             image_url=event.image_url,
         )

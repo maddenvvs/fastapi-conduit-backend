@@ -56,7 +56,6 @@ class RegisterUserUseCase:
                 UserCreatedEvent(
                     user_id=created_user.id,
                     username=created_user.username,
-                    email=created_user.email,
                     bio=created_user.bio,
                     image_url=created_user.image_url,
                 ),

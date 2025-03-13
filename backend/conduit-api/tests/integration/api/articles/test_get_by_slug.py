@@ -30,7 +30,6 @@ class TestWhenArticleExists:
     def article_author(self, user_model_factory: UserModelFactory) -> UserModel:
         return user_model_factory(
             username="article_author",
-            email="author@domain.com",
         )
 
     @pytest.fixture(autouse=True)

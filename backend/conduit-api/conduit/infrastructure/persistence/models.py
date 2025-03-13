@@ -1,7 +1,10 @@
+import uuid
 from datetime import datetime
 
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+
+from conduit.domain.entities.users import User
 
 
 class Base(DeclarativeBase):
@@ -12,13 +15,21 @@ class UserModel(Base):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    user_id: Mapped[uuid.UUID] = mapped_column(unique=True)
     username: Mapped[str] = mapped_column(unique=True)
-    email: Mapped[str] = mapped_column(unique=True)
-    password_hash: Mapped[str]
     bio: Mapped[str]
     image_url: Mapped[str] = mapped_column(nullable=True)
     created_at: Mapped[datetime]
     updated_at: Mapped[datetime] = mapped_column(nullable=True)
+
+    def to_user(self) -> User:
+        return User(
+            id=self.id,
+            user_id=self.user_id,
+            username=self.username,
+            bio=self.bio,
+            image=self.image_url,
+        )
 
 
 class FollowerModel(Base):

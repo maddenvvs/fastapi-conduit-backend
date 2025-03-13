@@ -16,10 +16,6 @@ import conduit.api.endpoints.profiles.follow as profiles_follow
 import conduit.api.endpoints.profiles.get_by_username as profiles_get_by_username
 import conduit.api.endpoints.profiles.unfollow as profiles_unfollow
 import conduit.api.endpoints.tags.list as tags_list
-import conduit.api.endpoints.users.get_current_user as users_get_current_user
-import conduit.api.endpoints.users.login as users_login
-import conduit.api.endpoints.users.register as users_register
-import conduit.api.endpoints.users.update_current_user as users_update_current_user
 
 router = APIRouter(prefix="/api")
 
@@ -37,11 +33,6 @@ router.include_router(add_comment.router)
 router.include_router(delete_comment.router)
 
 router.include_router(tags_list.router)
-
-router.include_router(users_get_current_user.router)
-router.include_router(users_update_current_user.router)
-router.include_router(users_register.router)
-router.include_router(users_login.router)
 
 router.include_router(profiles_get_by_username.router)
 router.include_router(profiles_follow.router)

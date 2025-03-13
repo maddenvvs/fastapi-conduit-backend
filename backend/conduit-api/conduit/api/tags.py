@@ -10,7 +10,6 @@ class Tag(Enum):
     Health = "Health"
     Profiles = "Profiles"
     Tags = "Tags"
-    Users = "Users"
 
 
 OPEN_API_TAGS_METADATA: Final = [
@@ -21,10 +20,6 @@ OPEN_API_TAGS_METADATA: Final = [
     {
         "name": Tag.Comments,
         "description": "Here you can *CRD* comments.",
-    },
-    {
-        "name": Tag.Users,
-        "description": "Operations with users. The **login** logic is also here.",
     },
     {
         "name": Tag.Profiles,

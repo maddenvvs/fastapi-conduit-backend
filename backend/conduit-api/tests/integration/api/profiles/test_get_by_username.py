@@ -1,3 +1,4 @@
+import uuid
 from collections.abc import AsyncGenerator
 from typing import Any
 
@@ -43,8 +44,8 @@ class TestWhenVisitingExistingProfile:
         user_model_factory: UserModelFactory,
     ) -> UserModel:
         return user_model_factory(
+            user_id=uuid.uuid4(),
             username=test_username,
-            email="hero@friends.com",
         )
 
     @pytest.fixture(autouse=True)

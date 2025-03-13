@@ -42,7 +42,7 @@ async def get_current_user_or_none(
     if jwt_token:
         token_payload = auth_token_service.parse_jwt_token(jwt_token)
         async with uow_factory():
-            return await users_repository.get_by_id_or_none(token_payload.user_id)
+            return await users_repository.get_by_user_id_or_none(token_payload.user_id)
     return None
 
 
@@ -57,7 +57,7 @@ async def get_current_user(
 ) -> User:
     token_payload = auth_token_service.parse_jwt_token(jwt_token)
     async with uow_factory():
-        user = await users_repository.get_by_id_or_none(token_payload.user_id)
+        user = await users_repository.get_by_user_id_or_none(token_payload.user_id)
     if user is None:
         raise HTTPException(
             status_code=http_status.HTTP_401_UNAUTHORIZED,

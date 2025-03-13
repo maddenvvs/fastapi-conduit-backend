@@ -5,7 +5,6 @@ from dependency_injector import containers, providers
 from conduit.domain.services.articles_service import ArticlesService
 from conduit.domain.services.auth_token_service import AuthTokenService
 from conduit.domain.services.comments_service import CommentsService
-from conduit.domain.services.password_service import PasswordService
 from conduit.domain.services.profiles_service import ProfilesService
 from conduit.domain.services.slug_service import SlugService
 from conduit.domain.services.tags_service import TagsService
@@ -21,23 +20,17 @@ from conduit.domain.use_cases.follow_profile.use_case import FollowProfileUseCas
 from conduit.domain.use_cases.get_article_by_slug.use_case import (
     GetArticleBySlugUseCase,
 )
-from conduit.domain.use_cases.get_current_user.use_case import GetCurrentUserUseCase
 from conduit.domain.use_cases.get_profile_by_name.use_case import (
     GetProfileByNameUseCase,
 )
 from conduit.domain.use_cases.list_articles.use_case import ListArticlesUseCase
 from conduit.domain.use_cases.list_comments.use_case import ListArticleCommentsUseCase
 from conduit.domain.use_cases.list_tags.use_case import ListTagsUseCase
-from conduit.domain.use_cases.login_user.use_case import LoginUserUseCase
-from conduit.domain.use_cases.register_user.use_case import RegisterUserUseCase
 from conduit.domain.use_cases.unfavorite_article.use_case import (
     UnfavoriteArticleUseCase,
 )
 from conduit.domain.use_cases.unfollow_profile.use_case import UnfollowProfileUseCase
 from conduit.domain.use_cases.update_article.use_case import UpdateArticleUseCase
-from conduit.domain.use_cases.update_current_user.use_case import (
-    UpdateCurrentUserUseCase,
-)
 from conduit.infrastructure.current_time import current_time
 from conduit.infrastructure.messaging.events_subscriber import RabbitMQEventsSubscriber
 from conduit.infrastructure.messaging.rabbitmq_broker import RabbitMQBroker
@@ -81,8 +74,6 @@ class Container(containers.DeclarativeContainer):
     now = providers.Object(current_time)
 
     slug_service = providers.Singleton(SlugService)
-
-    password_service = providers.Singleton(PasswordService)
 
     message_broker = providers.Singleton(
         RabbitMQBroker,
@@ -159,23 +150,6 @@ class Container(containers.DeclarativeContainer):
 
     # Use cases
 
-    register_user_use_case = providers.Factory(
-        RegisterUserUseCase,
-        uow_factory=uow_factory,
-        users_repository=users_repository,
-        auth_token_service=auth_token_service,
-        password_hasher=password_service.provided.hash_password,
-    )
-
-    login_user_use_case = providers.Factory(
-        LoginUserUseCase,
-        uow_factory=uow_factory,
-        users_repository=users_repository,
-        password_checker=password_service.provided.check_password,
-        auth_token_service=auth_token_service,
-        now=now,
-    )
-
     list_tags_use_case = providers.Factory(
         ListTagsUseCase,
         uow_factory=uow_factory,
@@ -204,17 +178,6 @@ class Container(containers.DeclarativeContainer):
         FeedArticlesUseCase,
         uow_factory=uow_factory,
         articles_repository=articles_repository,
-    )
-
-    get_current_user_use_case = providers.Factory(
-        GetCurrentUserUseCase,
-    )
-
-    update_current_user_use_case = providers.Factory(
-        UpdateCurrentUserUseCase,
-        uow_factory=uow_factory,
-        users_repository=users_repository,
-        password_hasher=password_service.provided.hash_password,
     )
 
     get_profile_by_name_use_case = providers.Factory(

@@ -8,7 +8,6 @@ from pydantic import BaseModel, Field
 from typing_extensions import Self
 
 from conduit.domain.exceptions import DomainError, DomainValidationError
-from conduit.domain.use_cases.login_user.exceptions import InvalidCredentialsError
 
 
 @final
@@ -98,15 +97,7 @@ async def domain_error_handler(
     )
 
 
-async def invalid_credentials_error_handler(
-    _request: Request,
-    _exc: InvalidCredentialsError,
-) -> JSONResponse:
-    return JSONResponse(content=None, status_code=status.HTTP_401_UNAUTHORIZED)
-
-
 def register_error_handlers(app: FastAPI) -> None:
     app.exception_handler(RequestValidationError)(request_validation_error_handler)
     app.exception_handler(DomainValidationError)(domain_validation_error_handler)
-    app.exception_handler(InvalidCredentialsError)(invalid_credentials_error_handler)
     app.exception_handler(DomainError)(domain_error_handler)

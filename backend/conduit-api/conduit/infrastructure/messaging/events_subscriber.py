@@ -1,4 +1,5 @@
 import asyncio
+import uuid
 from threading import Thread
 from typing import Any, Final, final
 
@@ -56,12 +57,11 @@ class RabbitMQEventsSubscriber(Thread):
         async with self._uow_factory():
             session = SqlAlchemyUnitOfWork.get_current_session()
             current_time = self._now()
+            user_id = uuid.UUID(message.user_id)
 
             query = insert(UserModel).values(
-                id=message.user_id,
+                user_id=user_id,
                 username=message.username,
-                email=message.email,
-                password_hash="",
                 bio=message.bio,
                 image_url=message.image_url,
                 created_at=current_time,
@@ -87,13 +87,13 @@ class RabbitMQEventsSubscriber(Thread):
         async with self._uow_factory():
             session = SqlAlchemyUnitOfWork.get_current_session()
             current_time = self._now()
+            user_id = uuid.UUID(message.user_id)
 
             query = (
                 update(UserModel)
-                .where(UserModel.id == message.user_id)
+                .where(UserModel.user_id == user_id)
                 .values(
                     username=message.username,
-                    email=message.email,
                     bio=message.bio,
                     image_url=message.image_url,
                     updated_at=current_time,
