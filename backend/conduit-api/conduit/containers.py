@@ -2,34 +2,54 @@ from typing import final
 
 from dependency_injector import containers, providers
 
-from conduit.domain.services.articles_service import ArticlesService
-from conduit.domain.services.comments_service import CommentsService
-from conduit.domain.services.profiles_service import ProfilesService
-from conduit.domain.services.slug_service import SlugService
-from conduit.domain.services.tags_service import TagsService
-from conduit.domain.use_cases.add_comment.use_case import AddCommentToArticleUseCase
-from conduit.domain.use_cases.create_article.use_case import CreateArticleUseCase
-from conduit.domain.use_cases.delete_article_by_slug.use_case import (
+from conduit.application.articles.services.slug_service import SlugService
+from conduit.application.articles.use_cases.create_article.use_case import (
+    CreateArticleUseCase,
+)
+from conduit.application.articles.use_cases.delete_article_by_slug.use_case import (
     DeleteArticleBySlugUseCase,
 )
-from conduit.domain.use_cases.delete_comment.use_case import DeleteArticleCommentUseCase
-from conduit.domain.use_cases.favorite_article.use_case import FavoriteArticleUseCase
-from conduit.domain.use_cases.feed_articles.use_case import FeedArticlesUseCase
-from conduit.domain.use_cases.follow_profile.use_case import FollowProfileUseCase
-from conduit.domain.use_cases.get_article_by_slug.use_case import (
+from conduit.application.articles.use_cases.favorite_article.use_case import (
+    FavoriteArticleUseCase,
+)
+from conduit.application.articles.use_cases.feed_articles.use_case import (
+    FeedArticlesUseCase,
+)
+from conduit.application.articles.use_cases.get_article_by_slug.use_case import (
     GetArticleBySlugUseCase,
 )
-from conduit.domain.use_cases.get_profile_by_name.use_case import (
-    GetProfileByNameUseCase,
+from conduit.application.articles.use_cases.list_articles.use_case import (
+    ListArticlesUseCase,
 )
-from conduit.domain.use_cases.list_articles.use_case import ListArticlesUseCase
-from conduit.domain.use_cases.list_comments.use_case import ListArticleCommentsUseCase
-from conduit.domain.use_cases.list_tags.use_case import ListTagsUseCase
-from conduit.domain.use_cases.unfavorite_article.use_case import (
+from conduit.application.articles.use_cases.unfavorite_article.use_case import (
     UnfavoriteArticleUseCase,
 )
-from conduit.domain.use_cases.unfollow_profile.use_case import UnfollowProfileUseCase
-from conduit.domain.use_cases.update_article.use_case import UpdateArticleUseCase
+from conduit.application.articles.use_cases.update_article.use_case import (
+    UpdateArticleUseCase,
+)
+from conduit.application.comments.services.comments_service import CommentsService
+from conduit.application.comments.use_cases.add_comment.use_case import (
+    AddCommentToArticleUseCase,
+)
+from conduit.application.comments.use_cases.delete_comment.use_case import (
+    DeleteArticleCommentUseCase,
+)
+from conduit.application.comments.use_cases.list_comments.use_case import (
+    ListArticleCommentsUseCase,
+)
+from conduit.application.common.services.articles_service import ArticlesService
+from conduit.application.common.services.profiles_service import ProfilesService
+from conduit.application.profiles.use_cases.follow_profile.use_case import (
+    FollowProfileUseCase,
+)
+from conduit.application.profiles.use_cases.get_profile_by_name.use_case import (
+    GetProfileByNameUseCase,
+)
+from conduit.application.profiles.use_cases.unfollow_profile.use_case import (
+    UnfollowProfileUseCase,
+)
+from conduit.application.tags.services.tags_service import TagsService
+from conduit.application.tags.use_cases.list_tags.use_case import ListTagsUseCase
 from conduit.infrastructure.messaging.events_subscriber import RabbitMQEventsSubscriber
 from conduit.infrastructure.persistence.database_seeder import Database, DatabaseSeeder
 from conduit.infrastructure.persistence.repositories.articles import (

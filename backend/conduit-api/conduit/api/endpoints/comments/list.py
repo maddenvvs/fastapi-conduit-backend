@@ -4,8 +4,10 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from conduit.api.endpoints.articles.contract import ArticleSlug
 from conduit.api.endpoints.comments.contract import ListCommentsApiResponse
 from conduit.api.security.dependencies import OptionalCurrentUser
+from conduit.application.comments.use_cases.list_comments.use_case import (
+    ListArticleCommentsUseCase,
+)
 from conduit.containers import Container
-from conduit.domain.use_cases.list_comments.use_case import ListArticleCommentsUseCase
 from conduit.shared.api.openapi.not_found_error import not_found_error
 from conduit.shared.api.openapi.tags import Tag
 from conduit.shared.api.openapi.validation_error import validation_error

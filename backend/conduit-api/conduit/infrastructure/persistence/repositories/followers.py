@@ -1,7 +1,7 @@
 from sqlalchemy import delete, exists, insert
 
+from conduit.application.common.repositories.followers import FollowersRepository
 from conduit.domain.entities.users import UserID
-from conduit.domain.repositories.followers import FollowersRepository
 from conduit.infrastructure.persistence.models import FollowerModel
 from conduit.shared.infrastructure.current_time import CurrentTime
 from conduit.shared.infrastructure.persistence.unit_of_work import SqlAlchemyUnitOfWork

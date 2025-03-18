@@ -3,11 +3,11 @@ from uuid import UUID
 
 from sqlalchemy import select
 
+from conduit.application.common.repositories.users import UsersRepository
 from conduit.domain.entities.users import (
     User,
     UserID,
 )
-from conduit.domain.repositories.users import UsersRepository
 from conduit.infrastructure.persistence.models import UserModel
 from conduit.shared.infrastructure.current_time import CurrentTime
 from conduit.shared.infrastructure.persistence.unit_of_work import SqlAlchemyUnitOfWork

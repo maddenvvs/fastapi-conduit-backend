@@ -4,6 +4,10 @@ from sqlalchemy import delete, exists, func, insert, select, true, update
 from sqlalchemy.orm import aliased
 from sqlalchemy.sql.functions import count
 
+from conduit.application.common.repositories.articles import (
+    ArticlesRepository,
+    ListFilters,
+)
 from conduit.domain.entities.articles import (
     Article,
     ArticleAuthor,
@@ -14,7 +18,6 @@ from conduit.domain.entities.articles import (
     UpdateArticleFields,
 )
 from conduit.domain.entities.users import UserID
-from conduit.domain.repositories.articles import ArticlesRepository, ListFilters
 from conduit.infrastructure.persistence.models import (
     ArticleModel,
     ArticleTagModel,

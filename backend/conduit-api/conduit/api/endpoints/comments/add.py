@@ -9,8 +9,10 @@ from conduit.api.endpoints.comments.contract import (
     CreateCommentApiRequest,
 )
 from conduit.api.security.dependencies import CurrentUser
+from conduit.application.comments.use_cases.add_comment.use_case import (
+    AddCommentToArticleUseCase,
+)
 from conduit.containers import Container
-from conduit.domain.use_cases.add_comment.use_case import AddCommentToArticleUseCase
 from conduit.shared.api.openapi.not_found_error import not_found_error
 from conduit.shared.api.openapi.tags import Tag
 from conduit.shared.api.openapi.unauthorized_error import unauthorized_error

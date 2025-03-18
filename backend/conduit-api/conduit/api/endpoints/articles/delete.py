@@ -3,10 +3,10 @@ from fastapi import APIRouter, Depends
 
 from conduit.api.endpoints.articles.contract import ArticleSlug
 from conduit.api.security.dependencies import CurrentUser
-from conduit.containers import Container
-from conduit.domain.use_cases.delete_article_by_slug.use_case import (
+from conduit.application.articles.use_cases.delete_article_by_slug.use_case import (
     DeleteArticleBySlugUseCase,
 )
+from conduit.containers import Container
 from conduit.shared.api.openapi.not_found_error import not_found_error
 from conduit.shared.api.openapi.tags import Tag
 from conduit.shared.api.openapi.unauthorized_error import unauthorized_error

@@ -5,6 +5,14 @@ from pydantic import BaseModel, Field
 from typing_extensions import Self, TypeAlias
 
 from conduit.api.serialization import DateTime
+from conduit.application.articles.use_cases.feed_articles.use_case import (
+    FeedArticlesRequest,
+    FeedArticlesResponse,
+)
+from conduit.application.articles.use_cases.list_articles.use_case import (
+    ListArticlesRequest,
+    ListArticlesResponse,
+)
 from conduit.domain.entities.articles import (
     ArticleWithAuthor,
     BodylessArticleWithAuthor,
@@ -12,14 +20,6 @@ from conduit.domain.entities.articles import (
     UpdateArticleFields,
 )
 from conduit.domain.entities.users import User
-from conduit.domain.use_cases.feed_articles.use_case import (
-    FeedArticlesRequest,
-    FeedArticlesResponse,
-)
-from conduit.domain.use_cases.list_articles.use_case import (
-    ListArticlesRequest,
-    ListArticlesResponse,
-)
 
 ArticleSlug: TypeAlias = Annotated[
     str,

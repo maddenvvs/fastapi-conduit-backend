@@ -3,9 +3,9 @@ from typing import final
 from sqlalchemy import select
 from sqlalchemy.dialects.sqlite import insert
 
+from conduit.application.common.repositories.tags import TagsRepository
 from conduit.domain.entities.articles import ArticleID
 from conduit.domain.entities.tags import Tag
-from conduit.domain.repositories.tags import TagsRepository
 from conduit.infrastructure.persistence.models import ArticleTagModel, TagModel
 from conduit.shared.infrastructure.current_time import CurrentTime
 from conduit.shared.infrastructure.persistence.unit_of_work import SqlAlchemyUnitOfWork

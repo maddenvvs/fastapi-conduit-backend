@@ -3,10 +3,10 @@ from unittest import mock
 
 import pytest
 
-from conduit.domain.repositories.articles import ArticlesRepository
-from conduit.domain.repositories.followers import FollowersRepository
-from conduit.domain.repositories.tags import TagsRepository
-from conduit.domain.repositories.users import UsersRepository
+from conduit.application.common.repositories.articles import ArticlesRepository
+from conduit.application.common.repositories.followers import FollowersRepository
+from conduit.application.common.repositories.tags import TagsRepository
+from conduit.application.common.repositories.users import UsersRepository
 
 
 @pytest.fixture

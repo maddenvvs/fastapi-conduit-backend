@@ -8,8 +8,10 @@ from conduit.api.endpoints.articles.contract import (
     PagingParameters,
 )
 from conduit.api.security.dependencies import CurrentUser
+from conduit.application.articles.use_cases.feed_articles.use_case import (
+    FeedArticlesUseCase,
+)
 from conduit.containers import Container
-from conduit.domain.use_cases.feed_articles.use_case import FeedArticlesUseCase
 from conduit.shared.api.openapi.tags import Tag
 from conduit.shared.api.openapi.unauthorized_error import unauthorized_error
 from conduit.shared.api.openapi.validation_error import validation_error

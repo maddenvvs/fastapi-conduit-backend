@@ -5,8 +5,10 @@ from fastapi import APIRouter, Depends, HTTPException, Path, status
 
 from conduit.api.endpoints.articles.contract import ArticleSlug
 from conduit.api.security.dependencies import CurrentUser
+from conduit.application.comments.use_cases.delete_comment.use_case import (
+    DeleteArticleCommentUseCase,
+)
 from conduit.containers import Container
-from conduit.domain.use_cases.delete_comment.use_case import DeleteArticleCommentUseCase
 from conduit.shared.api.openapi.not_found_error import not_found_error
 from conduit.shared.api.openapi.tags import Tag
 from conduit.shared.api.openapi.unauthorized_error import unauthorized_error

@@ -2,8 +2,8 @@ from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 
 from conduit.api.endpoints.tags.contract import ListTagsApiResponse
+from conduit.application.tags.use_cases.list_tags.use_case import ListTagsUseCase
 from conduit.containers import Container
-from conduit.domain.use_cases.list_tags.use_case import ListTagsUseCase
 from conduit.shared.api.openapi.tags import Tag
 
 router = APIRouter()

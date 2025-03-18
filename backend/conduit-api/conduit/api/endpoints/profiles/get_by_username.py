@@ -3,10 +3,10 @@ from fastapi import APIRouter, Depends, HTTPException, status
 
 from conduit.api.endpoints.profiles.contract import ProfileDetailsApiResponse, Username
 from conduit.api.security.dependencies import OptionalCurrentUser
-from conduit.containers import Container
-from conduit.domain.use_cases.get_profile_by_name.use_case import (
+from conduit.application.profiles.use_cases.get_profile_by_name.use_case import (
     GetProfileByNameUseCase,
 )
+from conduit.containers import Container
 from conduit.shared.api.openapi.not_found_error import not_found_error
 from conduit.shared.api.openapi.tags import Tag
 from conduit.shared.api.openapi.validation_error import validation_error

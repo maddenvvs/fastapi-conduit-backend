@@ -1,9 +1,9 @@
 from sqlalchemy import delete, exists, insert, select
 from sqlalchemy.sql.functions import count
 
+from conduit.application.common.repositories.favorites import FavoritesRepository
 from conduit.domain.entities.articles import ArticleID
 from conduit.domain.entities.users import UserID
-from conduit.domain.repositories.favorites import FavoritesRepository
 from conduit.infrastructure.persistence.models import FavoriteModel
 from conduit.shared.infrastructure.current_time import CurrentTime
 from conduit.shared.infrastructure.persistence.unit_of_work import SqlAlchemyUnitOfWork
