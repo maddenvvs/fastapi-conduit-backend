@@ -2,7 +2,7 @@ from typing import final
 
 from conduit.domain.entities.tags import Tag
 from conduit.domain.services.tags_service import TagsService
-from conduit.domain.unit_of_work import UnitOfWorkFactory
+from conduit.shared.application.unit_of_work import UnitOfWorkFactory
 
 
 @final

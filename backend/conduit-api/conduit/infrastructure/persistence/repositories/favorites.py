@@ -4,9 +4,9 @@ from sqlalchemy.sql.functions import count
 from conduit.domain.entities.articles import ArticleID
 from conduit.domain.entities.users import UserID
 from conduit.domain.repositories.favorites import FavoritesRepository
-from conduit.infrastructure.current_time import CurrentTime
 from conduit.infrastructure.persistence.models import FavoriteModel
-from conduit.infrastructure.persistence.unit_of_work import SqlAlchemyUnitOfWork
+from conduit.shared.infrastructure.current_time import CurrentTime
+from conduit.shared.infrastructure.persistence.unit_of_work import SqlAlchemyUnitOfWork
 
 
 class SQLiteFavoritesRepository(FavoritesRepository):

@@ -4,7 +4,7 @@ from typing import Any, Optional, final
 from fastapi import Request
 from fastapi.security import APIKeyHeader
 
-from conduit.api.security.errors import Error
+from conduit.shared.api.security.errors import Error
 
 
 @final

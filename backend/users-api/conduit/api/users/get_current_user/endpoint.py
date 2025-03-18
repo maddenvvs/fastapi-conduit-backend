@@ -1,7 +1,6 @@
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, status
 
-from conduit.api.openapi.unauthorized_error import unauthorized_error
 from conduit.api.security.dependencies import CurrentUser, JwtToken
 from conduit.api.tags import Tag
 from conduit.api.users.contracts import UserDetailsApiResponse
@@ -9,6 +8,7 @@ from conduit.application.users.use_cases.get_current_user.use_case import (
     GetCurrentUserUseCase,
 )
 from conduit.containers import Container
+from conduit.shared.api.openapi.unauthorized_error import unauthorized_error
 
 router = APIRouter()
 

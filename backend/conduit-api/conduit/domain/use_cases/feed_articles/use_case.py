@@ -4,7 +4,7 @@ from typing import final
 from conduit.domain.entities.articles import BodylessArticleWithAuthor
 from conduit.domain.entities.users import User
 from conduit.domain.repositories.articles import ArticlesRepository
-from conduit.domain.unit_of_work import UnitOfWorkFactory
+from conduit.shared.application.unit_of_work import UnitOfWorkFactory
 
 
 @final

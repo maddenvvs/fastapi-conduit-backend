@@ -1,12 +1,13 @@
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from conduit.api import open_api
 from conduit.api.endpoints.profiles.contract import ProfileDetailsApiResponse, Username
 from conduit.api.security.dependencies import CurrentUser
-from conduit.api.tags import Tag
 from conduit.containers import Container
 from conduit.domain.use_cases.follow_profile.use_case import FollowProfileUseCase
+from conduit.shared.api.openapi.not_found_error import not_found_error
+from conduit.shared.api.openapi.tags import Tag
+from conduit.shared.api.openapi.validation_error import validation_error
 
 router = APIRouter()
 
@@ -14,8 +15,8 @@ router = APIRouter()
 @router.post(
     path="/profiles/{username}/follow",
     responses={
-        **open_api.validation_error(),
-        **open_api.not_found_error("Profile"),
+        **validation_error(),
+        **not_found_error("Profile"),
     },
     status_code=status.HTTP_202_ACCEPTED,
     summary="Follow a user with a username",

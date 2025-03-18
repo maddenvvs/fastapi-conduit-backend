@@ -4,9 +4,6 @@ from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Body, Depends, status
 from returns.functions import raise_exception
 
-from conduit.api.errors.mappers import map_application_error
-from conduit.api.openapi.unauthorized_error import unauthorized_error
-from conduit.api.openapi.validation_error import validation_error
 from conduit.api.security.dependencies import CurrentUser, JwtToken
 from conduit.api.tags import Tag
 from conduit.api.users.contracts import (
@@ -17,6 +14,9 @@ from conduit.application.users.use_cases.update_current_user.use_case import (
     UpdateCurrentUserUseCase,
 )
 from conduit.containers import Container
+from conduit.shared.api.errors.mappers import map_application_error
+from conduit.shared.api.openapi.unauthorized_error import unauthorized_error
+from conduit.shared.api.openapi.validation_error import validation_error
 
 router = APIRouter()
 

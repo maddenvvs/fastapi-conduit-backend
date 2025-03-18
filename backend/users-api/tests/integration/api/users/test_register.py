@@ -6,8 +6,8 @@ from httpx import AsyncClient, Response, codes
 from sqlalchemy import delete
 from typing_extensions import TypeAlias
 
-from conduit.infrastructure.common.persistence.database import Database
 from conduit.infrastructure.common.persistence.models import UserModel
+from conduit.shared.infrastructure.persistence.database import Database
 
 RegisterRequest: TypeAlias = dict[str, Any]
 RequestFactory: TypeAlias = Callable[..., RegisterRequest]

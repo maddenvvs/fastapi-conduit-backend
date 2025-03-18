@@ -8,9 +8,9 @@ from conduit.domain.entities.users import (
     UserID,
 )
 from conduit.domain.repositories.users import UsersRepository
-from conduit.infrastructure.current_time import CurrentTime
 from conduit.infrastructure.persistence.models import UserModel
-from conduit.infrastructure.persistence.unit_of_work import SqlAlchemyUnitOfWork
+from conduit.shared.infrastructure.current_time import CurrentTime
+from conduit.shared.infrastructure.persistence.unit_of_work import SqlAlchemyUnitOfWork
 
 
 @final

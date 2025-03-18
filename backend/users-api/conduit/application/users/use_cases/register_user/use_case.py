@@ -3,7 +3,6 @@ from typing import final
 from returns.result import Failure, Result, Success
 
 from conduit.application.common.errors import ApplicationError, Errors
-from conduit.application.common.unit_of_work import UnitOfWorkFactory
 from conduit.application.users.repositories.users_repository import UsersRepository
 from conduit.application.users.services.events_publisher import EventsPublisher
 from conduit.application.users.use_cases.register_user.command import (
@@ -13,6 +12,7 @@ from conduit.domain.users import user_id
 from conduit.domain.users.events.user_created import UserCreatedEvent
 from conduit.domain.users.new_user import NewUser
 from conduit.domain.users.user import User
+from conduit.shared.application.unit_of_work import UnitOfWorkFactory
 
 
 @final

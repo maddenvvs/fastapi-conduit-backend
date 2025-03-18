@@ -5,9 +5,9 @@ from sqlalchemy import delete, insert, select
 from conduit.domain.entities.articles import ArticleID
 from conduit.domain.entities.comments import Comment, NewComment
 from conduit.domain.repositories.comments import CommentsRepository
-from conduit.infrastructure.current_time import CurrentTime
 from conduit.infrastructure.persistence.models import CommentModel
-from conduit.infrastructure.persistence.unit_of_work import SqlAlchemyUnitOfWork
+from conduit.shared.infrastructure.current_time import CurrentTime
+from conduit.shared.infrastructure.persistence.unit_of_work import SqlAlchemyUnitOfWork
 
 
 def _to_domain_comment(comment: CommentModel) -> Comment:

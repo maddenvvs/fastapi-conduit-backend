@@ -31,10 +31,8 @@ from conduit.domain.use_cases.unfavorite_article.use_case import (
 )
 from conduit.domain.use_cases.unfollow_profile.use_case import UnfollowProfileUseCase
 from conduit.domain.use_cases.update_article.use_case import UpdateArticleUseCase
-from conduit.infrastructure.current_time import current_time
 from conduit.infrastructure.messaging.events_subscriber import RabbitMQEventsSubscriber
-from conduit.infrastructure.messaging.rabbitmq_broker import RabbitMQBroker
-from conduit.infrastructure.persistence.database import Database
+from conduit.infrastructure.persistence.database_seeder import Database, DatabaseSeeder
 from conduit.infrastructure.persistence.repositories.articles import (
     SQLiteArticlesRepository,
 )
@@ -49,8 +47,12 @@ from conduit.infrastructure.persistence.repositories.followers import (
 )
 from conduit.infrastructure.persistence.repositories.tags import SQLiteTagsRepository
 from conduit.infrastructure.persistence.repositories.users import SQLiteUsersRepository
-from conduit.infrastructure.persistence.unit_of_work import SqlAlchemyUnitOfWorkFactory
 from conduit.settings import get_settings
+from conduit.shared.infrastructure.current_time import current_time
+from conduit.shared.infrastructure.messaging.rabbitmq_broker import RabbitMQBroker
+from conduit.shared.infrastructure.persistence.unit_of_work import (
+    SqlAlchemyUnitOfWorkFactory,
+)
 
 
 @final
@@ -78,6 +80,12 @@ class Container(containers.DeclarativeContainer):
     message_broker = providers.Singleton(
         RabbitMQBroker,
         rabbitmq_url=app_settings.provided.rabbitmq_url,
+    )
+
+    db_seeder = providers.Singleton(
+        DatabaseSeeder,
+        db=db,
+        now=now,
     )
 
     # Repositories

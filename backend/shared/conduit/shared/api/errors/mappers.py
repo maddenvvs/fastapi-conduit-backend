@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status
 
-from conduit.application.common.errors import ApplicationError, InvalidCredentialsError
+from conduit.shared.application.errors import ApplicationError, InvalidCredentialsError
 
 
 def map_application_error(exc: ApplicationError) -> HTTPException:

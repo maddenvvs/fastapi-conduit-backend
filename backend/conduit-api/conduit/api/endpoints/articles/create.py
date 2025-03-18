@@ -3,15 +3,16 @@ from typing import Annotated
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Body, Depends, status
 
-from conduit.api import open_api
 from conduit.api.endpoints.articles.contract import (
     ArticleWithAuthorApiResponse,
     CreateArticleApiRequest,
 )
 from conduit.api.security.dependencies import CurrentUser
-from conduit.api.tags import Tag
 from conduit.containers import Container
 from conduit.domain.use_cases.create_article.use_case import CreateArticleUseCase
+from conduit.shared.api.openapi.tags import Tag
+from conduit.shared.api.openapi.unauthorized_error import unauthorized_error
+from conduit.shared.api.openapi.validation_error import validation_error
 
 router = APIRouter()
 
@@ -19,8 +20,8 @@ router = APIRouter()
 @router.post(
     path="/articles",
     responses={
-        **open_api.unauthorized_error(),
-        **open_api.validation_error(),
+        **unauthorized_error(),
+        **validation_error(),
     },
     status_code=status.HTTP_201_CREATED,
     summary="Create a new article",

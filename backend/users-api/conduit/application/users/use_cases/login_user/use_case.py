@@ -3,11 +3,11 @@ from typing import final
 from returns.converters import maybe_to_result
 from returns.result import Result
 
-from conduit.application.common.errors import ApplicationError, Errors
-from conduit.application.common.unit_of_work import UnitOfWorkFactory
 from conduit.application.users.services.login_service import LoginService
 from conduit.application.users.use_cases.login_user.command import LoginUserCommand
 from conduit.domain.users.user import User
+from conduit.shared.application.errors import ApplicationError, Errors
+from conduit.shared.application.unit_of_work import UnitOfWorkFactory
 
 
 @final

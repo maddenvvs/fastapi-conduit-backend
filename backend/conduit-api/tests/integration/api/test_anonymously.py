@@ -35,4 +35,4 @@ async def test_visiting_protected_endpoints_returns_unauthorized_response(
 
     # Assert
     assert response.status_code == 401
-    assert response.json() == {"detail": "Missing authorization credentials."}
+    assert response.json() == {"detail": "Missing authorization credentials"}

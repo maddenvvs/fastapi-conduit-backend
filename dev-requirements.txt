@@ -1,4 +1,6 @@
-mypy==1.15.0 # pyright as an alternative
+fastapi-cli==0.0.7
+httpx==0.28.1
+pyright==1.1.396
 pytest-randomly==3.16.0
 pytest-xdist==3.6.1
 pytest==8.3.4

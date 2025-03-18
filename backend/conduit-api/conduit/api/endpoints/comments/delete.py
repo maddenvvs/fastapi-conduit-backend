@@ -3,12 +3,14 @@ from typing import Annotated
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, HTTPException, Path, status
 
-from conduit.api import open_api
 from conduit.api.endpoints.articles.contract import ArticleSlug
 from conduit.api.security.dependencies import CurrentUser
-from conduit.api.tags import Tag
 from conduit.containers import Container
 from conduit.domain.use_cases.delete_comment.use_case import DeleteArticleCommentUseCase
+from conduit.shared.api.openapi.not_found_error import not_found_error
+from conduit.shared.api.openapi.tags import Tag
+from conduit.shared.api.openapi.unauthorized_error import unauthorized_error
+from conduit.shared.api.openapi.validation_error import validation_error
 
 router = APIRouter()
 
@@ -16,9 +18,9 @@ router = APIRouter()
 @router.delete(
     path="/articles/{slug}/comments/{comment_id}",
     responses={
-        **open_api.unauthorized_error(),
-        **open_api.not_found_error("Article"),
-        **open_api.validation_error(),
+        **unauthorized_error(),
+        **not_found_error("Article"),
+        **validation_error(),
     },
     status_code=status.HTTP_200_OK,
     summary="Delete a comment",

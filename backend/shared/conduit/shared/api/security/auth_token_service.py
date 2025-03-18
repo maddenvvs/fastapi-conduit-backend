@@ -6,15 +6,12 @@ from typing import Any, Optional
 
 import jwt
 
-from conduit.domain.users.user import User
-from conduit.domain.users.user_id import UserId
-
 DEFAULT_LOGGER = logging.getLogger(__name__)
 
 
 @dataclasses.dataclass(frozen=True)
 class TokenPayload:
-    user_id: UserId
+    user_id: uuid.UUID
 
 
 class IncorrectJwtTokenError(Exception):
@@ -38,7 +35,7 @@ class AuthTokenService:
 
     def generate_jwt_token(
         self,
-        user: User,
+        user_id: str,
         current_time: Optional[datetime.datetime] = None,
     ) -> str:
         if current_time is None:
@@ -48,7 +45,7 @@ class AuthTokenService:
             minutes=self._token_expiration_minutes,
         )
         payload: dict[str, Any] = {
-            "user_id": str(user.id),
+            "user_id": str(user_id),
             "exp": expire,
         }
         return jwt.encode(payload, self._secret_key, algorithm=self._algorithm)  # type: ignore[unused-ignore]

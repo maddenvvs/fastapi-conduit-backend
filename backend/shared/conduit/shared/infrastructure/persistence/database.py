@@ -1,11 +1,12 @@
 import contextlib
-import datetime
 from collections.abc import AsyncIterator
 from pathlib import Path
+from typing import Final
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.orm import DeclarativeBase
 
-from conduit.infrastructure.persistence.models import Base, TagModel
+DATABASE_THERSHOLD_SIZE: Final = 100
 
 
 class Database:
@@ -14,10 +15,12 @@ class Database:
             db_url,
             echo=True,
         )
+
+        # If I want to EXPLICITLY start any transaction,
+        # "autobegin=False" can be passed to session maker factory.
         self._session = async_sessionmaker(
             bind=self._engine,
             expire_on_commit=False,
-            # autobegin=False,
             close_resets_only=False,
         )
 
@@ -29,7 +32,10 @@ class Database:
             return False
 
         database_file = Path(database)
-        if not database_file.is_file() or database_file.stat().st_size < 100:
+        if (
+            not database_file.is_file()
+            or database_file.stat().st_size < DATABASE_THERSHOLD_SIZE
+        ):
             return False
 
         with database_file.open("rb") as f:  # noqa: ASYNC230
@@ -37,21 +43,19 @@ class Database:
 
         return header[:16] == b"SQLite format 3\x00"
 
-    async def create_tables(self) -> None:
+    async def create_tables(self, model_type: type[DeclarativeBase]) -> None:
         async with self._engine.begin() as conn:
-            await conn.run_sync(Base.metadata.create_all)
+            await conn.run_sync(model_type.metadata.create_all)
 
-    async def drop_tables(self) -> None:
+    async def drop_tables(self, model_type: type[DeclarativeBase]) -> None:
         async with self._engine.begin() as conn:
-            await conn.run_sync(Base.metadata.drop_all)
+            await conn.run_sync(model_type.metadata.drop_all)
 
-    async def create_database(self, seed: bool = False) -> None:
+    async def create_database(self, model_type: type[DeclarativeBase]) -> None:
         if await self.database_exists():
             return
 
-        await self.create_tables()
-        if seed:
-            await self.seed_database()
+        await self.create_tables(model_type)
 
     async def dispose(self) -> None:
         await self._engine.dispose()
@@ -70,31 +74,3 @@ class Database:
 
     def create_session(self) -> AsyncSession:
         return self._session()
-
-    async def seed_database(self) -> None:
-        current_time = datetime.datetime.now(datetime.timezone.utc)
-
-        available_tags = [
-            "android",
-            "python3",
-            "clean-code",
-            "music",
-            "films",
-            "review",
-            "javascript",
-            "typescript",
-            "politics",
-            "сюрприз с пробелами",  # noqa: RUF001
-            "😎 leetcode",
-        ]
-        async with self._session.begin() as session:
-            session.add_all(
-                (
-                    TagModel(
-                        id=i,
-                        name=name,
-                        created_at=current_time,
-                    )
-                    for i, name in enumerate(available_tags, start=1)
-                ),
-            )

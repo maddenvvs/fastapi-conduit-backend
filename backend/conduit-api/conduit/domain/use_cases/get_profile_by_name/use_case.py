@@ -3,7 +3,7 @@ from typing import Optional, final
 from conduit.domain.entities.profiles import Profile
 from conduit.domain.entities.users import User
 from conduit.domain.services.profiles_service import ProfilesService
-from conduit.domain.unit_of_work import UnitOfWorkFactory
+from conduit.shared.application.unit_of_work import UnitOfWorkFactory
 
 
 @final

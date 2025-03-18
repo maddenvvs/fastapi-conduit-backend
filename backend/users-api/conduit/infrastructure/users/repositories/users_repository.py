@@ -10,10 +10,10 @@ from conduit.domain.users.user import (
     User,
 )
 from conduit.domain.users.user_id import UserId
-from conduit.infrastructure.common.current_time import CurrentTime
 from conduit.infrastructure.common.persistence.models import UserModel
-from conduit.infrastructure.common.persistence.unit_of_work import SqlAlchemyUnitOfWork
 from conduit.infrastructure.users.services.password_service import PasswordHasher
+from conduit.shared.infrastructure.current_time import CurrentTime
+from conduit.shared.infrastructure.persistence.unit_of_work import SqlAlchemyUnitOfWork
 
 
 @final

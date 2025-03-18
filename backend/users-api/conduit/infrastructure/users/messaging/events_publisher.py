@@ -6,13 +6,13 @@ from pydantic import BaseModel
 from conduit.application.users.services.events_publisher import EventsPublisher
 from conduit.domain.users.events.user_created import UserCreatedEvent
 from conduit.domain.users.events.user_updated import UserUpdatedEvent
-from conduit.infrastructure.common.messaging.rabbitmq_broker import RabbitMQBroker
 from conduit.infrastructure.users.messaging.messages.user_created import (
     UserCreatedMessage,
 )
 from conduit.infrastructure.users.messaging.messages.user_updated import (
     UserUpdatedMessage,
 )
+from conduit.shared.infrastructure.messaging.rabbitmq_broker import RabbitMQBroker
 
 PERSISTENT_DELIVERY_MODE: Final = 2
 

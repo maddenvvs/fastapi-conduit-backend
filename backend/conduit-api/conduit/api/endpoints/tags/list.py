@@ -1,10 +1,10 @@
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 
-from conduit.api import tags
 from conduit.api.endpoints.tags.contract import ListTagsApiResponse
 from conduit.containers import Container
 from conduit.domain.use_cases.list_tags.use_case import ListTagsUseCase
+from conduit.shared.api.openapi.tags import Tag
 
 router = APIRouter()
 
@@ -12,7 +12,7 @@ router = APIRouter()
 @router.get(
     path="/tags",
     summary="List all tags",
-    tags=[tags.Tag.Tags],
+    tags=[Tag.Tags],
 )
 @inject
 async def get_all_tags(

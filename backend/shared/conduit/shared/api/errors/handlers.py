@@ -2,7 +2,9 @@ from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
-from conduit.api.errors.responses.validation_error import ValidationErrorApiResponse
+from conduit.shared.api.errors.responses.validation_error import (
+    ValidationErrorApiResponse,
+)
 
 
 async def request_validation_error_handler(

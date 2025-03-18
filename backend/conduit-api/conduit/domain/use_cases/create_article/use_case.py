@@ -1,7 +1,7 @@
 from conduit.domain.entities.articles import ArticleWithAuthor, NewArticleDetails
 from conduit.domain.entities.users import User
 from conduit.domain.services.articles_service import ArticlesService
-from conduit.domain.unit_of_work import UnitOfWorkFactory
+from conduit.shared.application.unit_of_work import UnitOfWorkFactory
 
 
 class CreateArticleUseCase:

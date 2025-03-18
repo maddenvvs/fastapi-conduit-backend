@@ -1,17 +1,18 @@
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, HTTPException
 
-from conduit.api import open_api
 from conduit.api.endpoints.articles.contract import (
     ArticleSlug,
     ArticleWithAuthorApiResponse,
 )
 from conduit.api.security.dependencies import OptionalCurrentUser
-from conduit.api.tags import Tag
 from conduit.containers import Container
 from conduit.domain.use_cases.get_article_by_slug.use_case import (
     GetArticleBySlugUseCase,
 )
+from conduit.shared.api.openapi.not_found_error import not_found_error
+from conduit.shared.api.openapi.tags import Tag
+from conduit.shared.api.openapi.unauthorized_error import unauthorized_error
 
 router = APIRouter()
 
@@ -19,8 +20,8 @@ router = APIRouter()
 @router.get(
     path="/articles/{slug}",
     responses={
-        **open_api.unauthorized_error(),
-        **open_api.not_found_error("Article"),
+        **unauthorized_error(),
+        **not_found_error("Article"),
     },
     summary="Get article by slug",
     tags=[Tag.Articles],

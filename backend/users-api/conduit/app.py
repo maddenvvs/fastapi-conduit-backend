@@ -5,9 +5,10 @@ from typing import cast
 from fastapi import FastAPI
 
 import conduit.api.routes as api_endpoints
-from conduit.api.errors import handlers
-from conduit.api.openapi import tags
 from conduit.containers import Container
+from conduit.infrastructure.common.persistence.models import Base as ModelBase
+from conduit.shared.api.errors import handlers
+from conduit.shared.api.openapi import tags
 
 
 @contextlib.asynccontextmanager
@@ -15,7 +16,7 @@ async def app_lifespan(app: FastAPI) -> AsyncIterator[None]:
     container = cast(Container, app.extra["container"])
     database = container.db()
 
-    await database.create_database()
+    await database.create_database(ModelBase)
     yield
     await database.dispose()
 

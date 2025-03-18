@@ -6,8 +6,8 @@ from sqlalchemy import select
 from conduit.application.users.services.login_service import LoginService
 from conduit.domain.users.user import User
 from conduit.infrastructure.common.persistence.models import UserModel
-from conduit.infrastructure.common.persistence.unit_of_work import SqlAlchemyUnitOfWork
 from conduit.infrastructure.users.services.password_service import PasswordHasher
+from conduit.shared.infrastructure.persistence.unit_of_work import SqlAlchemyUnitOfWork
 
 
 @final

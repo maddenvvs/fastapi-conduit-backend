@@ -10,8 +10,9 @@ from typing_extensions import AsyncContextManager, TypeAlias
 
 from conduit.app import create_app
 from conduit.containers import Container
-from conduit.infrastructure.persistence.database import Database
+from conduit.infrastructure.persistence.database_seeder import Database
 from conduit.infrastructure.persistence.models import Base, UserModel
+from conduit.infrastructure.persistence.models import Base as ModelBase
 from conduit.settings import Settings
 
 ApiClientFactory: TypeAlias = Callable[[], AsyncClient]
@@ -55,7 +56,7 @@ def test_settings(
 @pytest.fixture(scope="session")
 def test_container(test_settings: Any) -> Generator[Container, None, None]:
     container = Container()
-    with container.app_settings.override(test_settings):
+    with container.app_settings.override(test_settings):  # type: ignore
         yield container
 
 
@@ -87,9 +88,9 @@ def test_db(test_container: Container) -> Database:
 async def create_db_tables(
     test_db: Database,
 ) -> AsyncGenerator[None, None]:
-    await test_db.create_tables()
+    await test_db.create_tables(ModelBase)
     yield
-    await test_db.drop_tables()
+    await test_db.drop_tables(ModelBase)
 
 
 @pytest.fixture

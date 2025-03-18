@@ -12,13 +12,13 @@ from pika.exceptions import (
 from sqlalchemy import insert, update
 from typing_extensions import override
 
-from conduit.domain.unit_of_work import UnitOfWorkFactory
-from conduit.infrastructure.current_time import CurrentTime
 from conduit.infrastructure.messaging.messages.user_created import UserCreatedMessage
 from conduit.infrastructure.messaging.messages.user_updated import UserUpdatedMessage
-from conduit.infrastructure.messaging.rabbitmq_broker import RabbitMQBroker
 from conduit.infrastructure.persistence.models import UserModel
-from conduit.infrastructure.persistence.unit_of_work import SqlAlchemyUnitOfWork
+from conduit.shared.application.unit_of_work import UnitOfWorkFactory
+from conduit.shared.infrastructure.current_time import CurrentTime
+from conduit.shared.infrastructure.messaging.rabbitmq_broker import RabbitMQBroker
+from conduit.shared.infrastructure.persistence.unit_of_work import SqlAlchemyUnitOfWork
 
 RABBITMQ_LISTENER_THREAD_NAME: Final = "RabbitMQ Domain Event Listener Thread"
 

@@ -10,9 +10,10 @@ class Tag(Enum):
     Health = "Health"
     Profiles = "Profiles"
     Tags = "Tags"
+    Users = "Users"
 
 
-OPEN_API_TAGS_METADATA: Final = [
+OPEN_API_TAGS_METADATA: Final[list[dict[str, Any]]] = [
     {
         "name": Tag.Articles,
         "description": "Here you can *CRUD* articles. Supporting two types of feeds (global and personal).",
@@ -33,8 +34,12 @@ OPEN_API_TAGS_METADATA: Final = [
         "name": Tag.Health,
         "description": "Infrastructural endpoints required for maintenance.",
     },
+    {
+        "name": Tag.Users,
+        "description": "Operations with users. The **login** logic is also here.",
+    },
 ]
 
 
-def open_api_tags_metadata() -> list[dict[str, Any]]:
+def tags_metadata() -> list[dict[str, Any]]:
     return OPEN_API_TAGS_METADATA

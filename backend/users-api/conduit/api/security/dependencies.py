@@ -5,13 +5,16 @@ from fastapi import Depends
 from returns.maybe import Maybe, Nothing
 from typing_extensions import Never, TypeAlias
 
-from conduit.api.security.auth_token_service import AuthTokenService
-from conduit.api.security.errors import Error
-from conduit.api.security.http_token_header import HttpTokenHeader, NoTokenStrategy
-from conduit.application.common.unit_of_work import UnitOfWorkFactory
 from conduit.application.users.repositories.users_repository import UsersRepository
 from conduit.containers import Container
 from conduit.domain.users.user import User
+from conduit.shared.api.security.auth_token_service import AuthTokenService
+from conduit.shared.api.security.errors import Error
+from conduit.shared.api.security.http_token_header import (
+    HttpTokenHeader,
+    NoTokenStrategy,
+)
+from conduit.shared.application.unit_of_work import UnitOfWorkFactory
 
 token_security = HttpTokenHeader(
     name="Authorization",

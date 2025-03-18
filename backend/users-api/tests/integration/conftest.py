@@ -11,10 +11,11 @@ from typing_extensions import AsyncContextManager, TypeAlias
 
 from conduit.app import create_app
 from conduit.containers import Container
-from conduit.infrastructure.common.messaging.rabbitmq_broker import RabbitMQBroker
-from conduit.infrastructure.common.persistence.database import Database
 from conduit.infrastructure.common.persistence.models import Base, UserModel
+from conduit.infrastructure.common.persistence.models import Base as ModelBase
 from conduit.settings import Settings
+from conduit.shared.infrastructure.messaging.rabbitmq_broker import RabbitMQBroker
+from conduit.shared.infrastructure.persistence.database import Database
 
 ApiClientFactory: TypeAlias = Callable[[], AsyncClient]
 UserModelFactory: TypeAlias = Callable[..., UserModel]
@@ -57,8 +58,8 @@ def test_settings(
 def test_container(test_settings: Any) -> Generator[Container, None, None]:
     container = Container()
     with (
-        container.app_settings.override(test_settings),
-        container.message_broker.override(mock.create_autospec(spec=RabbitMQBroker)),
+        container.app_settings.override(test_settings),  # type: ignore
+        container.message_broker.override(mock.create_autospec(spec=RabbitMQBroker)),  # type: ignore
     ):
         yield container
 
@@ -91,9 +92,9 @@ def test_db(test_container: Container) -> Database:
 async def create_db_tables(
     test_db: Database,
 ) -> AsyncGenerator[None, None]:
-    await test_db.create_tables()
+    await test_db.create_tables(ModelBase)
     yield
-    await test_db.drop_tables()
+    await test_db.drop_tables(ModelBase)
 
 
 @pytest.fixture

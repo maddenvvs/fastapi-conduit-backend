@@ -3,7 +3,7 @@ from typing import final
 from conduit.domain.entities.comments import CommentID
 from conduit.domain.entities.users import User
 from conduit.domain.services.comments_service import CommentsService
-from conduit.domain.unit_of_work import UnitOfWorkFactory
+from conduit.shared.application.unit_of_work import UnitOfWorkFactory
 
 
 @final

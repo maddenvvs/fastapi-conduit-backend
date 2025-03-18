@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
 
-from conduit.api.tags import Tag
+from conduit.shared.api.openapi.tags import Tag
 
 
 class HealthCheckApiResponse(BaseModel):

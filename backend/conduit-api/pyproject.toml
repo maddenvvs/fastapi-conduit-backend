@@ -1,13 +1,8 @@
 [tool.ruff]
 extend = "../../pyproject.toml"
 
-[tool.mypy]
-packages = [
-    "conduit",
-    "tests"
+[tool.pyright]
+extends = "../../pyproject.toml"
+extraPaths = [
+    "../shared",
 ]
-strict = true
-warn_unreachable = true
-warn_no_return = true
-show_error_context = true
-pretty = true

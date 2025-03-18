@@ -2,7 +2,6 @@ from typing import final
 
 from dependency_injector import containers, providers
 
-from conduit.api.security.auth_token_service import AuthTokenService
 from conduit.application.users.use_cases.get_current_user.use_case import (
     GetCurrentUserUseCase,
 )
@@ -13,12 +12,6 @@ from conduit.application.users.use_cases.register_user.use_case import (
 from conduit.application.users.use_cases.update_current_user.use_case import (
     UpdateCurrentUserUseCase,
 )
-from conduit.infrastructure.common.current_time import current_time
-from conduit.infrastructure.common.messaging.rabbitmq_broker import RabbitMQBroker
-from conduit.infrastructure.common.persistence.database import Database
-from conduit.infrastructure.common.persistence.unit_of_work import (
-    SqlAlchemyUnitOfWorkFactory,
-)
 from conduit.infrastructure.users.messaging.events_publisher import (
     RabbitMQEventsPublisher,
 )
@@ -28,6 +21,13 @@ from conduit.infrastructure.users.repositories.users_repository import (
 from conduit.infrastructure.users.services.login_service import SQLiteLoginService
 from conduit.infrastructure.users.services.password_service import PasswordService
 from conduit.settings import get_settings
+from conduit.shared.api.security.auth_token_service import AuthTokenService
+from conduit.shared.infrastructure.current_time import current_time
+from conduit.shared.infrastructure.messaging.rabbitmq_broker import RabbitMQBroker
+from conduit.shared.infrastructure.persistence.database import Database
+from conduit.shared.infrastructure.persistence.unit_of_work import (
+    SqlAlchemyUnitOfWorkFactory,
+)
 
 
 @final

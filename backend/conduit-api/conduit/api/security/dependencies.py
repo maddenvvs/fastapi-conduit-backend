@@ -6,24 +6,27 @@ from fastapi import Depends
 from starlette.exceptions import HTTPException
 from typing_extensions import TypeAlias
 
-from conduit.api.security.http_token_header import HttpTokenHeader
 from conduit.containers import Container
 from conduit.domain.entities.users import User
 from conduit.domain.repositories.users import UsersRepository
 from conduit.domain.services.auth_token_service import AuthTokenService
-from conduit.domain.unit_of_work import UnitOfWorkFactory
+from conduit.shared.api.security.http_token_header import (
+    HttpTokenHeader,
+    NoTokenStrategy,
+)
+from conduit.shared.application.unit_of_work import UnitOfWorkFactory
 
 token_security = HttpTokenHeader(
     name="Authorization",
     scheme_name="JWT Token",
     description="Token Format: `Token xxxxxx.yyyyyyy.zzzzzz`",
-    raise_error=True,
+    error_strategy=NoTokenStrategy.Raise,
 )
 optional_token_security = HttpTokenHeader(
     name="Authorization",
     scheme_name="JWT Token",
     description="Token Format: `Token xxxxxx.yyyyyyy.zzzzzz`",
-    raise_error=False,
+    error_strategy=NoTokenStrategy.Silent,
 )
 
 JwtToken = Annotated[str, Depends(token_security)]
