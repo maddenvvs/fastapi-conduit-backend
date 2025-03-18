@@ -3,7 +3,6 @@ from typing import final
 from dependency_injector import containers, providers
 
 from conduit.domain.services.articles_service import ArticlesService
-from conduit.domain.services.auth_token_service import AuthTokenService
 from conduit.domain.services.comments_service import CommentsService
 from conduit.domain.services.profiles_service import ProfilesService
 from conduit.domain.services.slug_service import SlugService
@@ -48,6 +47,7 @@ from conduit.infrastructure.persistence.repositories.followers import (
 from conduit.infrastructure.persistence.repositories.tags import SQLiteTagsRepository
 from conduit.infrastructure.persistence.repositories.users import SQLiteUsersRepository
 from conduit.settings import get_settings
+from conduit.shared.api.security.auth_token_service import AuthTokenService
 from conduit.shared.infrastructure.current_time import current_time
 from conduit.shared.infrastructure.messaging.rabbitmq_broker import RabbitMQBroker
 from conduit.shared.infrastructure.persistence.unit_of_work import (

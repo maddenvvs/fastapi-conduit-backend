@@ -143,7 +143,8 @@ async def registered_user(
 async def generate_token(test_container: Container) -> TokenFactory:
     def factory(user_model: UserModel) -> str:
         auth_token_service = test_container.auth_token_service()
-        return auth_token_service.generate_jwt_token(user_model.to_user())
+        user_id = user_model.to_user().user_id
+        return auth_token_service.generate_jwt_token(str(user_id))
 
     return factory
 

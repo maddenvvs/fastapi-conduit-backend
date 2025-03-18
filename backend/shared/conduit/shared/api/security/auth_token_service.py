@@ -45,7 +45,7 @@ class AuthTokenService:
             minutes=self._token_expiration_minutes,
         )
         payload: dict[str, Any] = {
-            "user_id": str(user_id),
+            "user_id": user_id,
             "exp": expire,
         }
         return jwt.encode(payload, self._secret_key, algorithm=self._algorithm)  # type: ignore[unused-ignore]
