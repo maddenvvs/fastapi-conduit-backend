@@ -1,5 +1,5 @@
 import pytest
-from httpx import AsyncClient, Request
+from httpx import AsyncClient, Request, codes
 
 
 @pytest.mark.anyio
@@ -34,5 +34,5 @@ async def test_visiting_protected_endpoints_returns_unauthorized_response(
     response = await any_client.send(request)
 
     # Assert
-    assert response.status_code == 401
+    assert response.status_code == codes.UNAUTHORIZED
     assert response.json() == {"detail": "Missing authorization credentials"}

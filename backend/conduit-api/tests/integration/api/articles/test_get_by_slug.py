@@ -2,7 +2,7 @@ import datetime
 from typing import Any
 
 import pytest
-from httpx import AsyncClient, Response
+from httpx import AsyncClient, Response, codes
 
 from conduit.infrastructure.persistence.models import ArticleModel, UserModel
 from tests.integration.conftest import UserModelFactory
@@ -15,7 +15,7 @@ class TestWhenThereIsNoArticleWithGivenTag:
 
     @pytest.mark.anyio
     async def test_returns_404_not_found(self, get_article_response: Response) -> None:
-        assert get_article_response.status_code == 404
+        assert get_article_response.status_code == codes.NOT_FOUND
 
     @pytest.mark.anyio
     async def test_returns_json_with_message(
@@ -69,7 +69,7 @@ class TestWhenArticleExists:
 
     @pytest.mark.anyio
     async def test_returns_200_ok(self, get_article_response: Response) -> None:
-        assert get_article_response.status_code == 200
+        assert get_article_response.status_code == codes.OK
 
     @pytest.mark.anyio
     async def test_returns_json_with_article_data(

@@ -3,7 +3,7 @@ from collections.abc import AsyncGenerator
 from typing import Any
 
 import pytest
-from httpx import AsyncClient, Response
+from httpx import AsyncClient, Response, codes
 
 from conduit.infrastructure.persistence.models import UserModel
 from tests.integration.conftest import AddToDb, UserModelFactory
@@ -16,7 +16,7 @@ class TestWhenVisitingNonExistingProfile:
 
     @pytest.mark.anyio
     async def test_returns_404_not_found(self, profile_response: Response) -> None:
-        assert profile_response.status_code == 404
+        assert profile_response.status_code == codes.NOT_FOUND
 
     @pytest.mark.anyio
     async def test_returns_detailed_message(self, profile_response: Response) -> None:
@@ -67,7 +67,7 @@ class TestWhenVisitingExistingProfile:
 
         @pytest.mark.anyio
         async def test_returns_200_ok(self, profile_response: Response) -> None:
-            assert profile_response.status_code == 200
+            assert profile_response.status_code == codes.OK
 
         @pytest.mark.anyio
         async def test_returns_profile_data(

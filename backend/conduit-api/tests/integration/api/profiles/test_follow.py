@@ -3,7 +3,7 @@ from collections.abc import AsyncGenerator
 from typing import Any, Callable
 
 import pytest
-from httpx import AsyncClient, Response
+from httpx import AsyncClient, Response, codes
 
 from conduit.infrastructure.persistence.models import UserModel
 from tests.integration.conftest import AddToDb
@@ -18,7 +18,7 @@ class TestWhenFollowNonexistingProfile:
 
     @pytest.mark.anyio
     async def test_returns_404_not_found(self, profile_response: Response) -> None:
-        assert profile_response.status_code == 404
+        assert profile_response.status_code == codes.NOT_FOUND
 
     @pytest.mark.anyio
     async def test_returns_detailed_message(self, profile_response: Response) -> None:
@@ -38,7 +38,7 @@ class TestWhenFollowYourself:
 
     @pytest.mark.anyio
     async def test_returns_status_400(self, follow_response: Response) -> None:
-        assert follow_response.status_code == 400
+        assert follow_response.status_code == codes.BAD_REQUEST
 
     @pytest.mark.anyio
     async def test_returns_detailed_message(self, follow_response: Response) -> None:
@@ -90,7 +90,7 @@ class TestWhenFollowExistingProfile:
 
     @pytest.mark.anyio
     async def test_returns_202_status(self, follow_response: Response) -> None:
-        assert follow_response.status_code == 202
+        assert follow_response.status_code == codes.ACCEPTED
 
     @pytest.mark.anyio
     async def test_has_followed_true(self, follow_response: Response) -> None:
@@ -110,7 +110,7 @@ class TestWhenFollowExistingProfile:
 
         @pytest.mark.anyio
         async def test_returns_status_400(self, follow_response: Response) -> None:
-            assert follow_response.status_code == 400
+            assert follow_response.status_code == codes.BAD_REQUEST
 
         @pytest.mark.anyio
         async def test_returns_detailed_message(

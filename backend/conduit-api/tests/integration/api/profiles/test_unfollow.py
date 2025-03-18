@@ -2,7 +2,7 @@ import uuid
 from typing import Any
 
 import pytest
-from httpx import AsyncClient, Response
+from httpx import AsyncClient, Response, codes
 
 from conduit.infrastructure.persistence.models import UserModel
 from tests.integration.conftest import AddToDb, UserModelFactory
@@ -17,7 +17,7 @@ class TestWhenUnfollowNonexistingProfile:
 
     @pytest.mark.anyio
     async def test_returns_404_not_found(self, unfollow_response: Response) -> None:
-        assert unfollow_response.status_code == 404
+        assert unfollow_response.status_code == codes.NOT_FOUND
 
     @pytest.mark.anyio
     async def test_returns_detailed_message(self, unfollow_response: Response) -> None:
@@ -37,7 +37,7 @@ class TestWhenUnfollowYourself:
 
     @pytest.mark.anyio
     async def test_returns_status_400(self, unfollow_response: Response) -> None:
-        assert unfollow_response.status_code == 400
+        assert unfollow_response.status_code == codes.BAD_REQUEST
 
     @pytest.mark.anyio
     async def test_returns_detailed_message(self, unfollow_response: Response) -> None:
@@ -88,7 +88,7 @@ class TestWhenUnfollowExistingProfile:
 
     @pytest.mark.anyio
     async def test_returns_400_status(self, unfollow_response: Response) -> None:
-        assert unfollow_response.status_code == 400
+        assert unfollow_response.status_code == codes.BAD_REQUEST
 
     @pytest.mark.anyio
     async def test_has_followed_true(self, unfollow_response: Response) -> None:
@@ -107,7 +107,7 @@ class TestWhenUnfollowExistingProfile:
 
         @pytest.mark.anyio
         async def test_returns_status_202(self, unfollow_response: Response) -> None:
-            assert unfollow_response.status_code == 202
+            assert unfollow_response.status_code == codes.ACCEPTED
 
         @pytest.mark.anyio
         async def test_returns_following_false(
