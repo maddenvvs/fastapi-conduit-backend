@@ -13,7 +13,8 @@ services:
 
   conduit-api:
     build:
-      context: ./backend/conduit-api
+      context: ./backend
+      dockerfile: ./conduit-api/Dockerfile
     container_name: conduit-api
     command: uvicorn conduit.app:app --host 0.0.0.0 --port 8080
     env_file:
@@ -31,7 +32,8 @@ services:
 
   conduit-users-api:
     build:
-      context: ./backend/users-api
+      context: ./backend
+      dockerfile: ./users-api/Dockerfile
     container_name: conduit-users-api
     command: uvicorn conduit.app:app --host 0.0.0.0 --port 8080
     env_file:
