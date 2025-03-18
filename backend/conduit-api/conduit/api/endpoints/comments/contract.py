@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field
 from typing_extensions import Self, TypeAlias
 
 from conduit.api.serialization import DateTime
-from conduit.domain.entities.comments import CommentWithAuthor
+from conduit.domain.comments.comments import CommentWithAuthor
 
 ArticleID: TypeAlias = Annotated[int, Path()]
 

@@ -1,8 +1,8 @@
 from typing import Optional
 
 from conduit.application.common.services.articles_service import ArticlesService
-from conduit.domain.entities.articles import ArticleWithAuthor
-from conduit.domain.entities.users import User
+from conduit.domain.articles.articles import ArticleWithAuthor
+from conduit.domain.users.user import User
 from conduit.shared.application.unit_of_work import UnitOfWorkFactory
 
 

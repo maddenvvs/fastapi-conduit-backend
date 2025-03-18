@@ -13,13 +13,13 @@ from conduit.application.articles.use_cases.list_articles.use_case import (
     ListArticlesRequest,
     ListArticlesResponse,
 )
-from conduit.domain.entities.articles import (
+from conduit.domain.articles.articles import (
     ArticleWithAuthor,
     BodylessArticleWithAuthor,
     NewArticleDetails,
     UpdateArticleFields,
 )
-from conduit.domain.entities.users import User
+from conduit.domain.users.user import User
 
 ArticleSlug: TypeAlias = Annotated[
     str,

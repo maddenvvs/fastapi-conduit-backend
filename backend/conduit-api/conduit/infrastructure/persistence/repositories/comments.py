@@ -3,8 +3,8 @@ from typing import final
 from sqlalchemy import delete, insert, select
 
 from conduit.application.common.repositories.comments import CommentsRepository
-from conduit.domain.entities.articles import ArticleID
-from conduit.domain.entities.comments import Comment, NewComment
+from conduit.domain.articles.articles import ArticleID
+from conduit.domain.comments.comments import Comment, NewComment
 from conduit.infrastructure.persistence.models import CommentModel
 from conduit.shared.infrastructure.current_time import CurrentTime
 from conduit.shared.infrastructure.persistence.unit_of_work import SqlAlchemyUnitOfWork

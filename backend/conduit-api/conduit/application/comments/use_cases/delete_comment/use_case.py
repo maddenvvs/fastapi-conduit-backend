@@ -1,8 +1,8 @@
 from typing import final
 
 from conduit.application.comments.services.comments_service import CommentsService
-from conduit.domain.entities.comments import CommentID
-from conduit.domain.entities.users import User
+from conduit.domain.comments.comments import CommentID
+from conduit.domain.users.user import User
 from conduit.shared.application.unit_of_work import UnitOfWorkFactory
 
 

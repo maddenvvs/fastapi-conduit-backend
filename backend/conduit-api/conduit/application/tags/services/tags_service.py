@@ -3,7 +3,7 @@ import time
 from typing import Final, final
 
 from conduit.application.common.repositories.tags import TagsRepository
-from conduit.domain.entities.tags import Tag
+from conduit.domain.tags.tag import Tag
 
 DEFAULT_LOGGER: Final = logging.getLogger(__name__)
 

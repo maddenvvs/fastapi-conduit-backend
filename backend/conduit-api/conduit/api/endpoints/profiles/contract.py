@@ -4,7 +4,7 @@ from fastapi import Path
 from pydantic import BaseModel, Field
 from typing_extensions import Self, TypeAlias
 
-from conduit.domain.entities.profiles import Profile
+from conduit.domain.profiles.profile import Profile
 
 Username: TypeAlias = Annotated[
     str,

@@ -1,13 +1,14 @@
 import uuid
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, final
 
 from typing_extensions import TypeAlias
 
 UserID: TypeAlias = int
 
 
-@dataclass
+@final
+@dataclass(frozen=True)
 class User:
     id: UserID
     user_id: uuid.UUID

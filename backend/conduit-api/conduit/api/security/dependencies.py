@@ -8,7 +8,7 @@ from typing_extensions import TypeAlias
 
 from conduit.application.common.repositories.users import UsersRepository
 from conduit.containers import Container
-from conduit.domain.entities.users import User
+from conduit.domain.users.user import User
 from conduit.shared.api.security.auth_token_service import AuthTokenService
 from conduit.shared.api.security.http_token_header import (
     HttpTokenHeader,

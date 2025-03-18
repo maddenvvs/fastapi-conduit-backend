@@ -4,7 +4,7 @@ from datetime import datetime
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
-from conduit.domain.entities.users import User
+from conduit.domain.users.user import User
 
 
 class Base(DeclarativeBase):

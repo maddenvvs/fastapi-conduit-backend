@@ -6,7 +6,7 @@ from conduit.application.common.repositories.articles import ArticlesRepository
 from conduit.application.common.repositories.favorites import FavoritesRepository
 from conduit.application.common.repositories.tags import TagsRepository
 from conduit.application.common.services.profiles_service import ProfilesService
-from conduit.domain.entities.articles import (
+from conduit.domain.articles.articles import (
     Article,
     ArticleAuthor,
     ArticleWithAuthor,
@@ -14,8 +14,8 @@ from conduit.domain.entities.articles import (
     NewArticleDetailsWithSlug,
     UpdateArticleFields,
 )
-from conduit.domain.entities.profiles import Profile
-from conduit.domain.entities.users import User
+from conduit.domain.profiles.profile import Profile
+from conduit.domain.users.user import User
 
 
 @final

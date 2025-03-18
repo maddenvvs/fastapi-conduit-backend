@@ -1,6 +1,6 @@
 import abc
 
-from conduit.domain.entities.users import UserID
+from conduit.domain.users.user import UserID
 
 
 class FollowersRepository(abc.ABC):

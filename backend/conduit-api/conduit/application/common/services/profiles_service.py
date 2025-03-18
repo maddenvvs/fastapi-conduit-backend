@@ -3,8 +3,8 @@ from typing import Optional, final
 from conduit.application.common.errors import Errors
 from conduit.application.common.repositories.followers import FollowersRepository
 from conduit.application.common.repositories.users import UsersRepository
-from conduit.domain.entities.profiles import Profile
-from conduit.domain.entities.users import User, UserID
+from conduit.domain.profiles.profile import Profile
+from conduit.domain.users.user import User, UserID
 
 
 def _to_profile(user: User, *, following: bool) -> Profile:

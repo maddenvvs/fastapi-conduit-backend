@@ -2,7 +2,7 @@ import abc
 import uuid
 from typing import Optional
 
-from conduit.domain.entities.users import (
+from conduit.domain.users.user import (
     User,
     UserID,
 )

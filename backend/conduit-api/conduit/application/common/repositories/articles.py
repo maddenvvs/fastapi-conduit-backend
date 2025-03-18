@@ -2,7 +2,7 @@ import abc
 from dataclasses import dataclass
 from typing import Optional, final
 
-from conduit.domain.entities.articles import (
+from conduit.domain.articles.articles import (
     Article,
     ArticleID,
     AuthorID,
@@ -10,7 +10,7 @@ from conduit.domain.entities.articles import (
     NewArticleDetailsWithSlug,
     UpdateArticleFields,
 )
-from conduit.domain.entities.users import UserID
+from conduit.domain.users.user import UserID
 
 
 @final

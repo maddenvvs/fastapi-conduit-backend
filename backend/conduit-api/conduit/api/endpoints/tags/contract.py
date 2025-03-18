@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing_extensions import Self
 
-from conduit.domain.entities.tags import Tag
+from conduit.domain.tags.tag import Tag
 
 
 class ListTagsApiResponse(BaseModel):

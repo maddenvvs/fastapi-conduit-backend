@@ -1,8 +1,8 @@
 from typing import Optional, final
 
 from conduit.application.common.services.profiles_service import ProfilesService
-from conduit.domain.entities.profiles import Profile
-from conduit.domain.entities.users import User
+from conduit.domain.profiles.profile import Profile
+from conduit.domain.users.user import User
 from conduit.shared.application.unit_of_work import UnitOfWorkFactory
 
 

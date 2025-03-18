@@ -1,7 +1,7 @@
 import abc
 
-from conduit.domain.entities.articles import ArticleID
-from conduit.domain.entities.tags import Tag
+from conduit.domain.articles.articles import ArticleID
+from conduit.domain.tags.tag import Tag
 
 
 class TagsRepository(abc.ABC):

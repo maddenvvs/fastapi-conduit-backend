@@ -4,15 +4,15 @@ from conduit.application.common.errors import Errors
 from conduit.application.common.repositories.comments import CommentsRepository
 from conduit.application.common.services.articles_service import ArticlesService
 from conduit.application.common.services.profiles_service import ProfilesService
-from conduit.domain.entities.comments import (
+from conduit.domain.comments.comments import (
     Comment,
     CommentAuthor,
     CommentID,
     CommentWithAuthor,
     NewComment,
 )
-from conduit.domain.entities.profiles import Profile, ProfileID
-from conduit.domain.entities.users import User
+from conduit.domain.profiles.profile import Profile, ProfileID
+from conduit.domain.users.user import User
 
 
 def _to_comment_with_author(comment: Comment, author: Profile) -> CommentWithAuthor:

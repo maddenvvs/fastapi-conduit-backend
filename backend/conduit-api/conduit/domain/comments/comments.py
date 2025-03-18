@@ -4,8 +4,8 @@ from typing import Optional, final
 
 from typing_extensions import TypeAlias
 
-from conduit.domain.entities.articles import ArticleID
-from conduit.domain.entities.users import UserID
+from conduit.domain.articles.articles import ArticleID
+from conduit.domain.users.user import UserID
 
 CommentID: TypeAlias = int
 

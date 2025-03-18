@@ -1,7 +1,7 @@
 import abc
 
-from conduit.domain.entities.articles import ArticleID
-from conduit.domain.entities.comments import Comment, CommentID, NewComment
+from conduit.domain.articles.articles import ArticleID
+from conduit.domain.comments.comments import Comment, CommentID, NewComment
 
 
 class CommentsRepository(abc.ABC):

@@ -4,7 +4,7 @@ from uuid import UUID
 from sqlalchemy import select
 
 from conduit.application.common.repositories.users import UsersRepository
-from conduit.domain.entities.users import (
+from conduit.domain.users.user import (
     User,
     UserID,
 )

@@ -1,8 +1,8 @@
 from typing import Optional, final
 
 from conduit.application.comments.services.comments_service import CommentsService
-from conduit.domain.entities.comments import CommentWithAuthor
-from conduit.domain.entities.users import User
+from conduit.domain.comments.comments import CommentWithAuthor
+from conduit.domain.users.user import User
 from conduit.shared.application.unit_of_work import UnitOfWorkFactory
 
 

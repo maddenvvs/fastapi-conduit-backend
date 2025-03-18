@@ -8,7 +8,7 @@ from conduit.application.common.repositories.articles import (
     ArticlesRepository,
     ListFilters,
 )
-from conduit.domain.entities.articles import (
+from conduit.domain.articles.articles import (
     Article,
     ArticleAuthor,
     ArticleID,
@@ -17,7 +17,7 @@ from conduit.domain.entities.articles import (
     NewArticleDetailsWithSlug,
     UpdateArticleFields,
 )
-from conduit.domain.entities.users import UserID
+from conduit.domain.users.user import UserID
 from conduit.infrastructure.persistence.models import (
     ArticleModel,
     ArticleTagModel,
