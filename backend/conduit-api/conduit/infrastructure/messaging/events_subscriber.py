@@ -117,7 +117,7 @@ class RabbitMQEventsSubscriber(Thread):
                     )
                     channel.start_consuming()
                     channel.stop_consuming()
-            except ConnectionClosedByBroker:
+            except ConnectionClosedByBroker:  # noqa: PERF203
                 continue
             # Do not recover on channel errors
             except AMQPChannelError:
