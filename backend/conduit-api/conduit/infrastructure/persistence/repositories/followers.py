@@ -1,4 +1,4 @@
-from sqlalchemy import delete, exists, insert
+from sqlalchemy import delete, exists, insert, select
 
 from conduit.application.common.repositories.followers import FollowersRepository
 from conduit.domain.users.user import UserID
@@ -47,3 +47,14 @@ class SQLiteFollowersRepository(FollowersRepository):
         )
 
         await session.execute(query)
+
+    async def list(self, follower_id: UserID, following_ids: list[int]) -> list[int]:
+        session = SqlAlchemyUnitOfWork.get_current_session()
+
+        query = select(FollowerModel.following_id).where(
+            FollowerModel.following_id.in_(following_ids),
+            FollowerModel.follower_id == follower_id,
+        )
+
+        result = await session.execute(query)
+        return list(result.scalars())

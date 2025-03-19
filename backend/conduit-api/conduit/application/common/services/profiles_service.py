@@ -116,4 +116,15 @@ class ProfilesService:
         current_user: Optional[User],
     ) -> list[Profile]:
         target_users = await self._users_repository.list_by_user_ids(user_ids)
-        return [_to_profile(user, following=False) for user in target_users]
+        following_user_ids = (
+            await self._followers_repository.list(
+                follower_id=current_user.id,
+                following_ids=[user.id for user in target_users],
+            )
+            if current_user
+            else []
+        )
+        return [
+            _to_profile(user, following=user.id in following_user_ids)
+            for user in target_users
+        ]
